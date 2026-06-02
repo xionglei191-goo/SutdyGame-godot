@@ -39,7 +39,7 @@ godot --headless --path . -s res://tests/mvp_0_2_manual_playtest_preflight.gd
 
 | 项目 | 记录 |
 |---|---|
-| 测试日期 | 2026-05-31 |
+| 测试日期 | 2026-06-02 |
 | 测试者 | xionglei |
 | Godot 版本 | 4.6.3.stable.official.7d41c59c4 |
 | 设备/分辨率 | Linux 桌面 / 窗口模式未单独记录 |
@@ -51,15 +51,15 @@ godot --headless --path . -s res://tests/mvp_0_2_manual_playtest_preflight.gd
 
 | 阶段 | 开始时间 | 结束时间 | 用时 | 备注 |
 |---|---:|---:|---:|---|
-| 新存档进入到 Mina 对话结束 | 00:00 | 00:06 | 00:06 | 外部秒表与报告时间线一致 |
-| Walk With Mina 完成 | 00:06 | 00:13 | 00:07 | 正常完成 |
-| Leo 对话结束 | 00:13 | 00:21 | 00:08 | 正常完成 |
-| Room Helper 完成 | 00:21 | 00:51 | 00:30 | 正常完成 |
-| Nora 对话结束 | 00:51 | 01:06 | 00:15 | 正常完成 |
-| Bird Watch 完成 | 01:06 | 01:10 | 00:04 | 正常完成 |
-| Story Show 25 题完成 | 01:10 | 02:11 | 01:01 | 含 6 道 5 秒朗读倒计时 |
-| 家长摘要阅读并点击完成 | 02:11 | 02:13 | 00:02 | 已点击完成摘要阅读 |
-| 总用时 | 00:00 | 02:13 | 02:13 | 外部秒表与导出报告一致 |
+| 新存档进入到 Mina 对话结束 | 00:00 | 00:23 | 00:23 | First Trip 完成并进入 Walk With Mina |
+| Walk With Mina 完成 | 00:23 | 00:38 | 00:15 | 正常完成 |
+| Leo 对话结束 | 00:38 | 00:46 | 00:08 | 正常完成 |
+| Room Helper 完成 | 00:46 | 00:55 | 00:09 | 正常完成 |
+| Nora 对话结束 | 00:55 | 01:01 | 00:06 | 正常完成 |
+| Bird Watch 完成 | 01:01 | 01:11 | 00:10 | 正常完成 |
+| Story Show 25 题完成 | 01:11 | 02:59 | 01:48 | 含 6 道 5 秒朗读倒计时 |
+| 家长摘要阅读并点击完成 | 02:59 | 02:59 | 00:00 | 已点击完成摘要阅读 |
+| 总用时 | 00:00 | 02:59 | 02:59 | 导出报告与人工记录一致 |
 
 ## 导出报告核对
 
@@ -68,7 +68,7 @@ godot --headless --path . -s res://tests/mvp_0_2_manual_playtest_preflight.gd
 | 是否点击“完成摘要阅读” | 是 |
 | 是否点击“导出计时报告” | 是 |
 | 报告路径 | `user://mvp_0_2_playtest_report.json` |
-| 报告 `playtest_elapsed_text` | 02:13 |
+| 报告 `playtest_elapsed_text` | 02:59 |
 | 报告 `elapsed_vs_target_seconds` | below_min: 0.0 / above_max: 0.0 / within_window: true |
 | 报告 `fixed_review_read_aloud.total_seconds` | 30.0 |
 | 报告 `playtest_events_monotonic` | true |
@@ -109,7 +109,7 @@ godot --headless --path . -s res://tests/mvp_0_2_export_playtest_summary.gd
 记录：
 
 ```text
-人工完整试玩 02:13，主流程无阻塞，完成摘要阅读与计时报告导出均成功。
+人工完整试玩 02:59，主流程无阻塞，完成摘要阅读与计时报告导出均成功。
 本次记录按“成人熟练试玩 2-5 分钟参考窗口”判定为通过；报告字段显示 within_window=true。
 儿童首次试玩预期更长，但不影响本次成人熟练试玩通过结论。
 
@@ -117,19 +117,20 @@ Timing Record Paste
 - 是否点击“完成摘要阅读”：是
 - 是否点击“导出计时报告”：是
 - 报告路径：user://mvp_0_2_playtest_report.json
-- 报告 playtest_elapsed_text：02:13
+- 报告 playtest_elapsed_text：02:59
 - 报告 elapsed_vs_target_seconds：below_min 0.0 / above_max 0.0 / within_window true
 - 报告 fixed_review_read_aloud.total_seconds：30.0
 - 报告 playtest_events_monotonic：true
 - 报告 timeline_coverage_complete：true
 
 Segment Timing Helper
-- playtest_started -> mina_intro_dialogue_finished: 00:06
-- g4_u1_school_tour_started -> g4_u1_school_tour_completed: 00:07
-- g4_u1_tidy_classroom_started -> g4_u1_tidy_classroom_completed: 00:30
-- g4_u1_garden_bird_started -> g4_u1_garden_bird_completed: 00:03
-- review_challenge_started -> review_challenge_completed: 01:02（历史报告兼容事件 ID；前台名称为 Story Show）
-- parent_summary_shown -> parent_summary_read: 00:01
+- playtest_started -> prologue_go_to_school_started: 00:00
+- prologue_go_to_school_started -> prologue_go_to_school_completed: 00:23
+- g4_u1_school_tour_started -> g4_u1_school_tour_completed: 00:15
+- g4_u1_tidy_classroom_started -> g4_u1_tidy_classroom_completed: 00:09
+- g4_u1_garden_bird_started -> g4_u1_garden_bird_completed: 00:10
+- review_challenge_started -> review_challenge_completed: 01:48（历史报告兼容事件 ID；前台名称为 Story Show）
+- parent_summary_shown -> parent_summary_read: 00:00
 ```
 
 人工试玩完成、粘贴 postflight 摘要并选择唯一结果后，可运行最终 gate 检查：

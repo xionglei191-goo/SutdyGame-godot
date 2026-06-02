@@ -42,6 +42,12 @@ const REQUIRED_FORMAL_QUEST_IDS: Array[String] = [
 	"g4_u1_tidy_classroom",
 	"g4_u1_garden_bird"
 ]
+const LEGACY_REPORT_QUEST_IDS: Array[String] = [
+	"prologue_go_to_school",
+	"g4_u1_school_tour",
+	"g4_u1_tidy_classroom",
+	"g4_u1_garden_bird"
+]
 const QA_TIMING_REPORT_SCRIPT := preload("res://scripts/systems/qa_timing_report.gd")
 const DEFAULT_COINS := 5
 const DEFAULT_PARENT_BONUS := 0
@@ -542,6 +548,7 @@ func load_from_path(path: String = DEFAULT_SAVE_PATH) -> bool:
 	playtest_elapsed_msec = int(data.get("playtest_elapsed_msec", 0))
 	playtest_completed = bool(data.get("playtest_completed", false))
 	playtest_events = _event_array_from(data.get("playtest_events", []))
+	_migrate_missing_first_trip_completion()
 	playtest_started_at_msec = -1
 	coins_changed.emit(coins)
 	parent_bonus_changed.emit(parent_bonus)
@@ -653,6 +660,61 @@ func _event_array_from(value: Variant) -> Array[Dictionary]:
 	return result
 
 
+func _migrate_missing_first_trip_completion() -> void:
+	if completed_quests.has("prologue_go_to_school"):
+		return
+	if not _has_any_completed_quest([
+		"g4_u1_school_tour",
+		"g4_u1_tidy_classroom",
+		"g4_u1_garden_bird"
+	]):
+		return
+	completed_quests.append("prologue_go_to_school")
+	if not story_flags.has("prologue_go_to_school_done"):
+		story_flags.append("prologue_go_to_school_done")
+	if not story_flags.has("az_full_unlocked_after_prologue"):
+		story_flags.append("az_full_unlocked_after_prologue")
+	if not _has_playtest_event("prologue_go_to_school_completed"):
+		_insert_playtest_event_before(
+			"g4_u1_school_tour_started",
+			_synthetic_playtest_event_from_neighbor(
+				"prologue_go_to_school_completed",
+				"First Trip 完成",
+				"g4_u1_school_tour_started"
+			)
+		)
+
+
+func _has_any_completed_quest(quest_ids: Array[String]) -> bool:
+	for quest_id: String in quest_ids:
+		if completed_quests.has(quest_id):
+			return true
+	return false
+
+
+func _synthetic_playtest_event_from_neighbor(event_id: String, label: String, neighbor_event_id: String) -> Dictionary:
+	var elapsed_msec := playtest_elapsed_msec
+	for event: Dictionary in playtest_events:
+		if str(event.get("id", "")) == neighbor_event_id:
+			elapsed_msec = int(event.get("elapsed_msec", elapsed_msec))
+			break
+	return {
+		"id": event_id,
+		"label": label,
+		"elapsed_msec": elapsed_msec,
+		"elapsed_seconds": int(round(float(elapsed_msec) / 1000.0)),
+		"elapsed_text": _format_elapsed_msec(elapsed_msec)
+	}
+
+
+func _insert_playtest_event_before(before_event_id: String, event_to_insert: Dictionary) -> void:
+	for index in range(playtest_events.size()):
+		if str(playtest_events[index].get("id", "")) == before_event_id:
+			playtest_events.insert(index, event_to_insert)
+			return
+	playtest_events.append(event_to_insert)
+
+
 func _pet_state_from(value: Variant) -> Dictionary:
 	var result := DEFAULT_PET_STATE.duplicate(true)
 	if typeof(value) != TYPE_DICTIONARY:
@@ -677,13 +739,19 @@ func _format_elapsed_msec(elapsed_msec: int) -> String:
 func _can_export_playtest_report() -> bool:
 	if not playtest_completed:
 		return false
-	for quest_id in REQUIRED_FORMAL_QUEST_IDS:
-		if not completed_quests.has(quest_id):
-			return false
+	if not _has_completed_quest_set(REQUIRED_FORMAL_QUEST_IDS) and not _has_completed_quest_set(LEGACY_REPORT_QUEST_IDS):
+		return false
 	if completed_reviews.is_empty():
 		return false
 	for event_id in REQUIRED_PLAYTEST_EVENT_IDS:
 		if not _has_playtest_event(event_id):
+			return false
+	return true
+
+
+func _has_completed_quest_set(quest_ids: Array[String]) -> bool:
+	for quest_id: String in quest_ids:
+		if not completed_quests.has(quest_id):
 			return false
 	return true
 

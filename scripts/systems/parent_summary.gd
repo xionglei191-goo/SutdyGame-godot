@@ -24,6 +24,12 @@ const REQUIRED_QUEST_IDS: Array[String] = [
 	"prologue_home_pet_care",
 	"prologue_go_to_school"
 ]
+const LEGACY_REPORT_QUEST_IDS: Array[String] = [
+	"prologue_go_to_school",
+	"g4_u1_school_tour",
+	"g4_u1_tidy_classroom",
+	"g4_u1_garden_bird"
+]
 const REQUIRED_REVIEW_ID := "mvp_0_2_review_challenge"
 const QUEST_DATA_DIR := "res://data/quests"
 
@@ -74,13 +80,14 @@ func refresh() -> void:
 	else:
 		finish_reading_button.text = "完成 home-first Quest 和 Story Show 后可用"
 	var parent_bonus_confirmed := _parent_bonus_confirmed(state)
-	parent_bonus_button.disabled = parent_bonus_confirmed or not ready_to_finish
+	var ready_for_parent_bonus := _ready_for_parent_bonus(state)
+	parent_bonus_button.disabled = parent_bonus_confirmed or not ready_for_parent_bonus
 	if parent_bonus_confirmed:
 		parent_bonus_button.text = "Parent Bonus 已发放"
-	elif ready_to_finish:
+	elif ready_for_parent_bonus:
 		parent_bonus_button.text = "发放 Parent Bonus +%d" % GameState.PARENT_BONUS_REWARD
 	else:
-		parent_bonus_button.text = "完成 Story Show 后可发放 Parent Bonus"
+		parent_bonus_button.text = "完成 home-first Quest 后可发放 Parent Bonus"
 	export_report_button.disabled = not bool(state.get("playtest_completed", false))
 
 
@@ -176,6 +183,14 @@ func _timeline_text(value: Variant) -> String:
 
 func _ready_to_finish_playtest(snapshot: Dictionary) -> bool:
 	var completed_quests := _completed_quests_from(snapshot)
+	if not _has_completed_required_quests(completed_quests) and not _has_completed_legacy_report_quests(completed_quests):
+		return false
+	var completed_reviews: Array = snapshot.get("completed_reviews", [])
+	return completed_reviews.has(REQUIRED_REVIEW_ID)
+
+
+func _ready_for_parent_bonus(snapshot: Dictionary) -> bool:
+	var completed_quests := _completed_quests_from(snapshot)
 	if not _has_completed_required_quests(completed_quests):
 		return false
 	var completed_reviews: Array = snapshot.get("completed_reviews", [])
@@ -188,6 +203,13 @@ func _completed_quests_from(snapshot: Dictionary) -> Array:
 
 func _has_completed_required_quests(completed_quests: Array) -> bool:
 	for quest_id in REQUIRED_QUEST_IDS:
+		if not completed_quests.has(quest_id):
+			return false
+	return true
+
+
+func _has_completed_legacy_report_quests(completed_quests: Array) -> bool:
+	for quest_id in LEGACY_REPORT_QUEST_IDS:
 		if not completed_quests.has(quest_id):
 			return false
 	return true
