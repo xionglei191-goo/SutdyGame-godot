@@ -73,7 +73,9 @@ func _initialize() -> void:
 	await process_frame
 	parent_summary.refresh()
 	var completed_value: Label = parent_summary.get_node("Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid/CompletedValue")
-	if completed_value.text != "1":
+	# After save/load, _migrate_missing_first_trip_completion adds prologue_go_to_school
+	# when g4_u1_school_tour is already completed, so expect 2 completed quests.
+	if completed_value.text != "2":
 		push_error("Parent summary completed count mismatch: %s" % completed_value.text)
 		quit(1)
 

@@ -42,24 +42,25 @@ func _read_text(path: String) -> String:
 
 
 func _fixture_snapshot() -> Dictionary:
+	# Event timestamps aligned with real timing record: total 02:59 (179s)
 	var event_specs := [
 		["playtest_started", "试玩开始", 0],
 		["prologue_go_to_school_started", "First Trip 开始", 3],
-		["prologue_go_to_school_completed", "First Trip 完成", 6],
-		["mina_intro_dialogue_finished", "Mina 对话结束", 6],
-		["g4_u1_school_tour_started", "Walk With Mina 开始", 6],
-		["g4_u1_school_tour_completed", "Walk With Mina 完成", 13],
-		["leo_room_intro_dialogue_finished", "Leo 对话结束", 21],
-		["g4_u1_tidy_classroom_started", "Room Helper 开始", 21],
-		["g4_u1_tidy_classroom_completed", "Room Helper 完成", 51],
-		["nora_garden_intro_dialogue_finished", "Nora 对话结束", 66],
-		["g4_u1_garden_bird_started", "Bird Watch 开始", 66],
-		["g4_u1_garden_bird_completed", "Bird Watch 完成", 69],
-		["review_challenge_started", "Story Show 开始", 69],
-		["review_challenge_completed", "Story Show 完成", 131],
-		["parent_summary_shown", "家长摘要显示", 131],
-		["parent_summary_read", "家长摘要阅读完成", 132],
-		["playtest_completed", "试玩完成", 132]
+		["prologue_go_to_school_completed", "First Trip 完成", 23],
+		["mina_intro_dialogue_finished", "Mina 对话结束", 23],
+		["g4_u1_school_tour_started", "Walk With Mina 开始", 23],
+		["g4_u1_school_tour_completed", "Walk With Mina 完成", 38],
+		["leo_room_intro_dialogue_finished", "Leo 对话结束", 46],
+		["g4_u1_tidy_classroom_started", "Room Helper 开始", 46],
+		["g4_u1_tidy_classroom_completed", "Room Helper 完成", 55],
+		["nora_garden_intro_dialogue_finished", "Nora 对话结束", 61],
+		["g4_u1_garden_bird_started", "Bird Watch 开始", 61],
+		["g4_u1_garden_bird_completed", "Bird Watch 完成", 71],
+		["review_challenge_started", "Story Show 开始", 71],
+		["review_challenge_completed", "Story Show 完成", 179],
+		["parent_summary_shown", "家长摘要显示", 179],
+		["parent_summary_read", "家长摘要阅读完成", 179],
+		["playtest_completed", "试玩完成", 179]
 	]
 	var events: Array[Dictionary] = []
 	for spec: Array in event_specs:
@@ -88,9 +89,9 @@ func _fixture_snapshot() -> Dictionary:
 			"I see flowers in the garden.",
 			"Where is the bird?"
 		],
-		"playtest_elapsed_msec": 132680,
-		"playtest_elapsed_seconds": 133,
-		"playtest_elapsed_text": "02:13",
+		"playtest_elapsed_msec": 179000,
+		"playtest_elapsed_seconds": 179,
+		"playtest_elapsed_text": "02:59",
 		"playtest_completed": true,
 		"playtest_events": events
 	}

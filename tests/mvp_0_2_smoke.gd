@@ -348,7 +348,7 @@ func _assert_parent_summary_empty(parent_summary: CanvasLayer) -> void:
 	_assert(review_value.text.contains("Welcome Box"), "empty parent summary should suggest the starter event")
 	_assert(timeline_value.text.contains("试玩开始"), "empty parent summary should show start timeline event")
 	_assert(parent_bonus_button.disabled, "empty parent summary should not allow parent bonus confirmation")
-	_assert(parent_bonus_button.text.contains("完成 Story Show"), "empty parent summary should explain parent bonus prerequisite")
+	_assert(parent_bonus_button.text.contains("完成 home-first Quest"), "empty parent summary should explain parent bonus prerequisite")
 	_assert(export_report_button.disabled, "empty parent summary should not allow report export")
 
 
