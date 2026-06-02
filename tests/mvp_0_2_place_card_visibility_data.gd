@@ -31,9 +31,29 @@ func _initialize() -> void:
 	game_state.mark_story_flag(game_state.TOWN_ROUTE_FLAG)
 	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "bus_station", "choose_town_route", "missing_town_route", false)
 
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "taxi", "find_town_road", "missing_town_road", true)
+	game_state.mark_story_flag(game_state.TOWN_ROAD_FLAG)
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "taxi", "find_town_road", "missing_town_road", false)
+
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "railway_station", "choose_train_stop", "missing_train_stop", true)
+	game_state.mark_story_flag(game_state.TRAIN_STOP_FLAG)
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "railway_station", "choose_train_stop", "missing_train_stop", false)
+
 	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "bookshop", "help_find_book", "quest_not_completed:town_bookshop_find_book", true)
 	game_state.complete_quest("town_bookshop_find_book")
 	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "bookshop", "help_find_book", "quest_not_completed:town_bookshop_find_book", false)
+
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "post_office", "help_carry_parcel", "quest_not_completed:town_post_office_small_parcel", true)
+	game_state.complete_quest("town_post_office_small_parcel")
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "post_office", "help_carry_parcel", "quest_not_completed:town_post_office_small_parcel", false)
+
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "restaurant", "help_choose_snack", "quest_not_completed:town_restaurant_snack_order", true)
+	game_state.complete_quest("town_restaurant_snack_order")
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "restaurant", "help_choose_snack", "quest_not_completed:town_restaurant_snack_order", false)
+
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "cinema", "help_make_poster", "quest_not_completed:town_cinema_show_poster", true)
+	game_state.complete_quest("town_cinema_show_poster")
+	await _assert_action_visibility(town_map, click_game, place_card, action_button, close_event, "cinema", "help_make_poster", "quest_not_completed:town_cinema_show_poster", false)
 
 	print("mvp_0_2_place_card_visibility_data passed.")
 	main.queue_free()

@@ -1,6 +1,7 @@
 {
   "id": "mina_home_intro",
   "speaker": "Mina",
+  "starts_quest": "prologue_go_to_school",
   "lines": [
     {
       "speaker": "Mina",

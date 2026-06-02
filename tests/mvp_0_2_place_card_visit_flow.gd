@@ -33,7 +33,7 @@ func _initialize() -> void:
 	var place_label: Label = place_card.get_node("Panel/MarginContainer/VBoxContainer/PlaceLabel")
 	var reward_label: Label = place_card.get_node("Panel/MarginContainer/VBoxContainer/RewardLabel")
 	var action_button: Button = place_card.get_node("Panel/MarginContainer/VBoxContainer/ActionButton")
-	_assert(title_label.text == "Town Visit", "place card should use the town visit title")
+	_assert(title_label.text == "Helper Stop", "bookshop commission card should use the helper stop title")
 	_assert(place_label.text == "bookshop", "place card should show hotspot label")
 	_assert(reward_label.text == "+1 coin", "first visit should show a coin reward")
 	_assert(action_button.visible, "bookshop should expose the starter commission action")
@@ -57,6 +57,7 @@ func _initialize() -> void:
 	_assert(not place_card.visible, "place card should close again on revisit")
 	click_game.target_clicked.emit("supermarket")
 	await process_frame
+	_assert(title_label.text == "Shop Stop", "supermarket purchase card should use the shop stop title")
 	_assert(action_button.visible, "supermarket should expose a starter purchase action")
 	place_card._unhandled_input(close_event)
 	await process_frame

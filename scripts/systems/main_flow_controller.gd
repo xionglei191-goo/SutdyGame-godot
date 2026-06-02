@@ -80,6 +80,7 @@ func handle_quest_completed(quest_id: String, reward_id: String, reward_name: St
 	drag_place_game.visible = false
 	if not _apply_quest_completion_from_data(quest_id):
 		_apply_legacy_quest_completion(quest_id)
+	GameState.save_game()
 
 
 func handle_story_show_completed() -> void:
@@ -224,6 +225,9 @@ func _apply_quest_completion_from_data(quest_id: String) -> bool:
 		push_error("Quest completion data should be a dictionary: %s" % quest_id)
 		return false
 	var completion_data := completion as Dictionary
+	var pet_name := str(completion_data.get("pet_name", ""))
+	if not pet_name.is_empty():
+		GameState.set_pet_name(pet_name)
 	var story_flags: Variant = completion_data.get("story_flags", [])
 	if typeof(story_flags) == TYPE_ARRAY:
 		for story_flag: Variant in story_flags:
@@ -237,6 +241,9 @@ func _apply_quest_completion_from_data(quest_id: String) -> bool:
 	var scene_id := str(completion_data.get("scene_id", ""))
 	if not scene_id.is_empty():
 		town_map.show_scene(scene_id)
+	var focus_hotspot := str(completion_data.get("focus_hotspot", ""))
+	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
+		town_map.focus_world_hotspot(focus_hotspot)
 	if completion_data.has("npc_prompts_visible"):
 		town_map.set_npc_prompts_visible(bool(completion_data.get("npc_prompts_visible", false)))
 	if completion_data.has("click_input_enabled"):

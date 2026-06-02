@@ -1,0 +1,19 @@
+{
+  "id": "mina_home_pet_care_intro",
+  "speaker": "Mina",
+  "starts_quest": "prologue_home_pet_care",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Coco is part of our home now."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Before we go outside, let's feed Coco."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Press Feed in the pet corner."
+    }
+  ]
+}

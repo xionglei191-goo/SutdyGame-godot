@@ -21,7 +21,7 @@
 
 说明：
 
-- 当前新存档默认进入 `HomeLayer`；`world_overview` 是从家进入的世界总览与探索真相，已包含 `Welcome Box` 微序章、4 个正式 MVP 前台事件（`First Trip`、`Walk With Mina`、`Room Helper`、`Bird Watch`）、`Story Show`、`ParentSummary -> Parent Bonus +2`、`home pet care`、non-school `PlaceCard`、`bookshop -> Help Find a Book -> Bookshop Helper`、`bus_station -> Choose Town Route -> travel_route_town_edge`、`owned_items` 轻量物品归属层、`supermarket -> pet bowl -> home`、`pet_shop -> pet ball -> home play feedback`、`general_store -> Buy Star Rug (4) -> home Room decor`、`clothes_shop -> Buy Explorer Cape (1 Parent Bonus)`、pilot `Memory Spark`。
+- 当前新存档默认进入 `HomeLayer`；`world_overview` 是从家进入的世界总览与探索真相，已包含新 home-first 链 `Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip`、后续 `Walk With Mina -> Room Helper -> Bird Watch -> Story Show`、`ParentSummary -> Parent Bonus +2` 新 gate、home bedroom/kitchen/yard/pet corner、non-school `PlaceCard`、`bookshop/post_office/restaurant/cinema` 小镇委托、`bus_station/taxi/railway_station` 交通切片、`owned_items` 轻量物品归属层、starter shops、`clothes_shop -> Buy Explorer Cape (1 Parent Bonus)`、全量 A-Z `Memory Spark` 回访覆盖。
 - 地图资产需要明确区分：
   - runtime 底图
   - 工程/热点对位图

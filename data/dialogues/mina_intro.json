@@ -1,6 +1,7 @@
 {
   "id": "mina_intro",
   "speaker": "Mina",
+  "starts_quest": "g4_u1_school_tour",
   "lines": [
     {
       "speaker": "Mina",

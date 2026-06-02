@@ -29,7 +29,7 @@
    - non-school `PlaceCard`
    - `supermarket -> pet bowl -> home`
    - `pet_shop -> pet ball -> home play feedback`
-   - pilot `Memory Spark`
+   - full A-Z `Memory Spark`
 
 ## 2. 核心设计判断
 

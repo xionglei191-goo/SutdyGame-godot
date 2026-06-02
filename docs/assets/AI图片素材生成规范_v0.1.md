@@ -386,6 +386,6 @@ existing IP, logo, trademark, brand name, celebrity, realistic adult fashion, ma
 当前状态补充：
 
 - `map_home_interior_bg_v001.png` 已生成并接入 `TownMap.tscn` 的 `HomeLayer/HomeBackgroundSlot`；旧 Godot 节点色块仅作为隐藏备份层保留。
-- `reward_first_trip_ticket_v001.png` 尚未生成，运行时的 `first_trip_ticket` 暂时复用 Adventure Star 图标。
+- `reward_first_trip_ticket_v001.png` 已生成并由 `data/rewards/reward_icons_v001.json` 映射到 `first_trip_ticket`；不得再复用 Adventure Star 图标作为当前 runtime 事实。
 - `props/home/`、`props/town/` 与 `ui_place_card_ornament_v001.png` 中列出的若干图标仍是待生成项。
 - 已生成的 school/garden 图标、desk/shelf、UI ornament 多数是备用资产，不能在文档中等同于已接入 runtime。

@@ -95,7 +95,7 @@ var target_labels: Dictionary = current_quest.get("target_labels", {})
 
 - `library` hotspot 配置存在且能发出 `target_clicked("library")`。
 - `classroom` hotspot 配置存在且能发出 `target_clicked("classroom")`。
-- 自由探索点击 pilot anchor 能进入 `Memory Spark` 或首访 anchor dialogue。
+- 自由探索点击 A-Z anchor 能进入首访 anchor dialogue；首访后可进入全量 A-Z `Memory Spark`。
 - 点击空白区域不会完成事件。
 - 热点视觉中心与点击区域保持一致，避免“看得到但点不到”。
 
@@ -158,7 +158,7 @@ env = { GODOT_PATH = "/home/xionglei/.local/bin/godot" }
 
 当前修复策略：
 
-- `ParentSummary` 只有在 4 个正式 MVP 前台事件（`First Trip`、`Walk With Mina`、`Room Helper`、`Bird Watch`）和 `mvp_0_2_review_challenge`（报告/存档兼容 ID；前台名称为 Story Show）都完成后，才允许点击“完成摘要阅读”。
+- `ParentSummary` 只有在新 home-first gate（`Welcome Box`、`Room Starter`、`Pet Hello`、`Home Pet Care`、`First Trip`）和 `mvp_0_2_review_challenge`（报告/存档兼容 ID；前台名称为 Story Show）都完成后，才允许点击“完成摘要阅读”；旧 `parent_bonus_confirmed_mvp_0_2` flag 仍可读并防重复。
 - `mvp_0_2_smoke.gd` 覆盖空摘要和未完成 Story Show 时按钮不可用。
 - 导出 Markdown 摘要前再次校验报告 schema、完整时间线、25 题 Story Show、6 个朗读倒计时和人工结论留空。
 

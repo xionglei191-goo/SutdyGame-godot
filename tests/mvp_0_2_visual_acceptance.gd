@@ -250,14 +250,33 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	var pet_state_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetStateValue")
 	var outfit_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
 	var room_decor_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
+	var pet_bowl: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetBowl")
+	var pet_food: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetFood")
+	var pet_toy: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetToy")
+	var pet_soap: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetSoap")
+	var bedroom_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/BedroomLabel")
+	var kitchen_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/KitchenLabel")
+	var yard_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/YardLabel")
+	var pet_corner_space_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/PetCornerSpaceLabel")
 	_assert(pet_corner_label.text.contains("corner"), "home should include a visible pet corner label")
 	_assert(home_background_slot.visible, "home background slot should be visible after generated art is connected")
 	_assert(home_background_slot.texture != null, "home background slot should use generated home interior art")
+	_assert(pet_bowl.texture != null, "home pet bowl prop texture should be connected")
+	_assert(pet_food.texture != null, "home pet food prop texture should be connected")
+	_assert(pet_toy.texture != null, "home pet toy prop texture should be connected")
+	_assert(pet_soap.texture != null, "home pet soap prop texture should be connected")
 	_assert(pet_name_value.text == "Sunny", "home pet panel should include the starter pet name")
 	_assert(feedback_label.autowrap_mode != TextServer.AUTOWRAP_OFF, "home pet feedback should wrap text")
 	_assert(pet_state_value.autowrap_mode != TextServer.AUTOWRAP_OFF, "home pet state should wrap text")
 	_assert(outfit_value.autowrap_mode != TextServer.AUTOWRAP_OFF, "home outfit status should wrap text")
 	_assert(room_decor_value.autowrap_mode != TextServer.AUTOWRAP_OFF, "home room decor status should wrap text")
+	_assert(bedroom_label.text == "Bedroom", "home should expose a bedroom section")
+	_assert(kitchen_label.text == "Kitchen", "home should expose a kitchen section")
+	_assert(yard_label.text == "Yard", "home should expose a yard section")
+	_assert(pet_corner_space_label.text == "Pet Corner", "home should expose a pet corner section")
+	var home_rects: Dictionary = town_map.get_node("ClickGame").get_place_rects_for_scene("home")
+	for target_id in ["home_door", "home_kitchen", "home_yard", "home_pet_toy", "home_pet_bed"]:
+		_assert(home_rects.has(target_id), "home expanded space target should come from scene_click_targets data: %s" % target_id)
 	for button_path in [
 		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton",
 		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton",
@@ -277,6 +296,9 @@ func _assert_place_card_layout(place_card: CanvasLayer) -> void:
 	var hint_label: Label = _required_node(place_card, "Panel/MarginContainer/VBoxContainer/HintLabel")
 	var reward_label: Label = _required_node(place_card, "Panel/MarginContainer/VBoxContainer/RewardLabel")
 	var action_button: Button = _required_node(place_card, "Panel/MarginContainer/VBoxContainer/ActionButton")
+	var ornament_texture: TextureRect = _required_node(place_card, "Panel/MarginContainer/VBoxContainer/OrnamentTexture")
+	_assert(ornament_texture.texture != null, "PlaceCard ornament texture should be connected")
+	_assert(ornament_texture.custom_minimum_size.x >= 44.0, "PlaceCard ornament should keep a stable cell")
 	_assert(place_label.autowrap_mode != TextServer.AUTOWRAP_OFF, "place card place label should wrap text")
 	_assert(hint_label.autowrap_mode != TextServer.AUTOWRAP_OFF, "place card hint should wrap text")
 	_assert(reward_label.autowrap_mode != TextServer.AUTOWRAP_OFF, "place card reward should wrap text")
@@ -577,8 +599,14 @@ func _assert_generated_assets_present() -> void:
 		"res://assets/generated/props/room/prop_pencil_v001.png",
 		"res://assets/generated/props/room/prop_schoolbag_blue_v001.png",
 		"res://assets/generated/rewards/reward_adventure_star_piece_v001.png",
+		"res://assets/generated/rewards/reward_first_trip_ticket_v001.png",
 		"res://assets/generated/rewards/reward_tidy_badge_piece_v001.png",
 		"res://assets/generated/rewards/reward_garden_leaf_piece_v001.png",
+		"res://assets/generated/props/home/prop_pet_bowl_v001.png",
+		"res://assets/generated/props/home/prop_pet_food_v001.png",
+		"res://assets/generated/props/home/prop_pet_toy_v001.png",
+		"res://assets/generated/props/home/prop_soap_v001.png",
+		"res://assets/generated/ui/ui_place_card_ornament_v001.png",
 		"res://assets/generated/ui/ui_quest_diary_ornament_v001.png",
 		"res://assets/generated/ui/ui_memory_spark_ornament_v001.png",
 		"res://assets/source_prompts/maps/map_backgrounds_v001.md",
@@ -586,6 +614,11 @@ func _assert_generated_assets_present() -> void:
 		"res://assets/source_prompts/props/icon_atlas_v001.md"
 	]:
 		_assert(FileAccess.file_exists(path), "generated asset or prompt should exist: %s" % path)
+	var reward_icon_data := _read_json_dict("res://data/rewards/reward_icons_v001.json")
+	var reward_icons: Dictionary = reward_icon_data.get("icons", {})
+	_assert(str(reward_icons.get("first_trip_ticket", "")) == "res://assets/generated/rewards/reward_first_trip_ticket_v001.png", "First Trip Ticket should use its own reward icon")
+	_assert(str(reward_icons.get("first_trip_ticket", "")) != str(reward_icons.get("school_star_piece", "")), "First Trip Ticket should not reuse Adventure Star icon")
+	_assert(str(reward_icons.get("bookshop_leafmark", "")) != str(reward_icons.get("school_star_piece", "")), "Bookshop Leafmark should not reuse Adventure Star icon")
 
 
 func _assert_world_overview_assets_present() -> void:
@@ -614,6 +647,16 @@ func _assert_memory_spark_data_is_derived_from_hotspots(main: Node) -> void:
 	var memory_spark_defs: Dictionary = main_script.memory_spark_defs
 	for anchor_id in ["anchor_b_bear", "anchor_g_gate", "anchor_h_hat", "anchor_o_orange", "anchor_t_taxi", "anchor_w_watch"]:
 		_assert(memory_spark_defs.has(anchor_id), "Memory Spark defs should include pilot anchor %s" % anchor_id)
+	_assert(memory_spark_defs.size() == 26, "Memory Spark defs should cover the full frozen A-Z memory palace")
+	_assert(memory_spark_defs.has("anchor_a_apple"), "Memory Spark defs should preserve A = Apple coverage")
+	_assert(memory_spark_defs.has("anchor_y_yo_yo"), "Memory Spark defs should cover non-pilot anchors after the home prologue foundation")
+	var town_map: Node = main.get_node("TownMap")
+	var b_hotspot: Dictionary = town_map.get_hotspot_by_id("anchor_b_bear")
+	var b_spark: Dictionary = b_hotspot.get("memory_spark", {})
+	_assert(not b_spark.is_empty(), "anchor B should keep parameterized Memory Spark data in hotspot data")
+	_assert(str(memory_spark_defs["anchor_b_bear"].get("prompt", "")) == str(b_spark.get("prompt", "")), "Memory Spark should read parameterized prompt from hotspot data")
+	_assert(int(memory_spark_defs["anchor_b_bear"].get("reward_coins", 0)) == int(b_spark.get("reward_coins", 0)), "Memory Spark should read parameterized reward from hotspot data")
+	_assert(str(memory_spark_defs["anchor_h_hat"].get("prompt", "")) == "Look at letter H. What comes back?", "Memory Spark should still derive fallback prompt for pilot anchors without overrides")
 
 
 func _assert_anchor_dialogues_complete() -> void:

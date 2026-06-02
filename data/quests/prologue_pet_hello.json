@@ -1,0 +1,33 @@
+{
+  "id": "prologue_pet_hello",
+  "title": "Pet Hello",
+  "scene_id": "home",
+  "type": "click_target",
+  "prompt": "Say hello to the pet corner.",
+  "vocabulary": ["pet", "hello", "corner", "Coco"],
+  "patterns": [
+    "Hello, Coco.",
+    "This is my pet.",
+    "Coco is at home."
+  ],
+  "targets": ["home_pet_corner", "home_pet_bowl"],
+  "target_labels": {
+    "home_pet_corner": "pet corner",
+    "home_pet_bowl": "pet bowl"
+  },
+  "correct_target": "home_pet_corner",
+  "wrong_target_text": "This is the %s. Say hello at the pet corner.",
+  "success_text": "Coco waves hello from the pet corner.",
+  "reward_id": "pet_hello_tag",
+  "reward_name": "Pet Hello Tag",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["prologue_pet_hello_done"],
+    "pet_name": "Coco"
+  },
+  "next_quest": "prologue_home_pet_care",
+  "start_feedback": "Tap the pet corner to meet Coco."
+}

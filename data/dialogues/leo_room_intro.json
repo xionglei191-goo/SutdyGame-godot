@@ -1,6 +1,7 @@
 {
   "id": "leo_room_intro",
   "speaker": "Leo",
+  "starts_quest": "g4_u1_tidy_classroom",
   "lines": [
     {
       "speaker": "Leo",

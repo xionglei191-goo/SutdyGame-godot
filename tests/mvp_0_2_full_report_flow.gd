@@ -80,6 +80,24 @@ func _run_main_flow(main: Node) -> void:
 	var parent_summary: CanvasLayer = main.get_node("ParentSummary")
 	var story_show: CanvasLayer = main.get_node("StoryShow")
 
+	quest_diary.start_quest("prologue_letter_box")
+	quest_diary.check_target("home_letter_box")
+	await process_frame
+
+	quest_diary.start_quest("prologue_room_starter")
+	quest_diary.check_target("home_bag")
+	await process_frame
+
+	quest_diary.start_quest("prologue_pet_hello")
+	quest_diary.check_target("home_pet_corner")
+	await process_frame
+
+	quest_diary.start_quest("prologue_home_pet_care")
+	var pet_care_result: Dictionary = _game_state.care_for_pet("feed")
+	_assert(bool(pet_care_result.get("success", false)), "home pet care should feed the pet before completion")
+	quest_diary.complete_pet_care_action("feed")
+	await process_frame
+
 	quest_diary.start_quest("prologue_go_to_school")
 	quest_diary.check_target("sunshine_school")
 	await process_frame

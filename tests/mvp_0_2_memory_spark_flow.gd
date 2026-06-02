@@ -35,6 +35,12 @@ func _initialize() -> void:
 	_assert(title_label.text == "Memory Spark", "memory spark card should use child-facing title")
 	var prompt_label: Label = memory_spark_card.get_node("Panel/MarginContainer/VBoxContainer/PromptLabel")
 	_assert(prompt_label.text == "Look at letter B. What comes back?", "memory spark should use memory-palace prompt without exposing anchor jargon")
+	var b_hotspot: Dictionary = town_map.get_hotspot_by_id("anchor_b_bear")
+	var b_spark_data: Dictionary = b_hotspot.get("memory_spark", {})
+	var memory_spark_defs: Dictionary = main.memory_spark_defs
+	_assert(not b_spark_data.is_empty(), "anchor B should declare parameterized Memory Spark data")
+	_assert(str(memory_spark_defs.get("anchor_b_bear", {}).get("prompt", "")) == str(b_spark_data.get("prompt", "")), "anchor B Memory Spark prompt should come from hotspot data")
+	_assert(int(memory_spark_defs.get("anchor_b_bear", {}).get("reward_coins", 0)) == int(b_spark_data.get("reward_coins", 0)), "anchor B Memory Spark reward should come from hotspot data")
 	var choices_grid: GridContainer = memory_spark_card.get_node("Panel/MarginContainer/VBoxContainer/ChoicesGrid")
 	_assert(choices_grid.get_child_count() == 3, "Memory Spark should show configured choices")
 	var choice_texts: Array[String] = []
@@ -74,6 +80,21 @@ func _initialize() -> void:
 	_assert(memory_spark_card.visible, "pilot anchor H should also open memory spark on revisit")
 	prompt_label = memory_spark_card.get_node("Panel/MarginContainer/VBoxContainer/PromptLabel")
 	_assert(prompt_label.text == "Look at letter H. What comes back?", "pilot H memory spark should derive memory-palace prompt from hotspot letter")
+	memory_spark_card.visible = false
+
+	click_game.memory_anchor_clicked.emit("anchor_y_yo_yo")
+	await process_frame
+	_assert(dialogue_box.visible, "full A-Z anchor Y should start with anchor dialogue after prologue unlock")
+	_assert(dialogue_box.dialogue_id == "anchor_y_yo_yo", "full A-Z anchor Y should keep its stable anchor dialogue id")
+	dialogue_box._finish()
+	await process_frame
+	click_game.memory_anchor_clicked.emit("anchor_y_yo_yo")
+	await process_frame
+	_assert(memory_spark_card.visible, "full A-Z anchor Y should open Memory Spark on revisit")
+	prompt_label = memory_spark_card.get_node("Panel/MarginContainer/VBoxContainer/PromptLabel")
+	_assert(prompt_label.text == "Look at letter Y. What comes back?", "full A-Z memory spark should derive prompt from frozen hotspot letter")
+	choices_grid = memory_spark_card.get_node("Panel/MarginContainer/VBoxContainer/ChoicesGrid")
+	_assert(_choice_button_matching(choices_grid, "Yo-yo") != null, "full A-Z memory spark should include the frozen keyword")
 
 	print("mvp_0_2_memory_spark_flow passed.")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(game_state.DEFAULT_SAVE_PATH))

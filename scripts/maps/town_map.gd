@@ -9,6 +9,13 @@ signal home_pet_action_requested(action_id: String)
 const STANDARD_SCENE_SIZE := Vector2(1280.0, 720.0)
 const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 1440.0)
 const VIEWPORT_SIZE := Vector2(1280.0, 720.0)
+const HOME_DIALOGUE_SEQUENCE := [
+	{"quest_id": "prologue_letter_box", "dialogue_id": "mina_letter_box_intro"},
+	{"quest_id": "prologue_room_starter", "dialogue_id": "mina_room_starter_intro"},
+	{"quest_id": "prologue_pet_hello", "dialogue_id": "mina_pet_hello_intro"},
+	{"quest_id": "prologue_home_pet_care", "dialogue_id": "mina_home_pet_care_intro"},
+	{"quest_id": "prologue_go_to_school", "dialogue_id": "mina_first_trip_handoff"}
+]
 
 @onready var mina: Area2D = $NpcLayer/Mina
 @onready var leo: Area2D = $NpcLayer/Leo
@@ -106,10 +113,7 @@ func show_scene(scene_id: String) -> void:
 			home_pet_panel.visible = true
 		_set_npc_active(mina, true)
 		if mina.has_method("set_dialogue_id"):
-			if GameState.has_completed_quest("prologue_letter_box"):
-				mina.set_dialogue_id("mina_home_intro")
-			else:
-				mina.set_dialogue_id("mina_letter_box_intro")
+			mina.set_dialogue_id(_next_home_dialogue_id())
 		mina.position = Vector2(760, 410)
 		_set_npc_active(leo, false)
 		_set_npc_active(nora, false)
@@ -336,3 +340,11 @@ func update_home_pet_ui(
 		home_room_decor_label.text = room_decor_status_text
 	if home_pet_feedback_label != null and not feedback.is_empty():
 		home_pet_feedback_label.text = feedback
+
+
+func _next_home_dialogue_id() -> String:
+	for step: Dictionary in HOME_DIALOGUE_SEQUENCE:
+		var quest_id := str(step.get("quest_id", ""))
+		if not quest_id.is_empty() and not GameState.has_completed_quest(quest_id):
+			return str(step.get("dialogue_id", "mina_home_intro"))
+	return "mina_home_intro"

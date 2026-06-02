@@ -1,0 +1,73 @@
+{
+  "version": "v001",
+  "actions": {
+    "buy_pet_bowl": {
+      "currency": "coins",
+      "cost": 3,
+      "owned_item": "pet_bowl",
+      "legacy_flag": "owned_pet_bowl",
+      "already_message": "The pet bowl is already ready at home.",
+      "not_enough_message": "You need 3 coins for the pet bowl.",
+      "success_message": "The pet bowl is ready at home.",
+      "learned_words": ["shop", "bowl", "food"],
+      "learned_patterns": ["Buy a pet bowl."]
+    },
+    "buy_pet_ball": {
+      "currency": "coins",
+      "cost": 2,
+      "owned_item": "pet_ball",
+      "legacy_flag": "owned_pet_ball",
+      "already_message": "The pet ball is already ready at home.",
+      "not_enough_message": "You need 2 coins for the pet ball.",
+      "success_message": "The pet ball is ready at home.",
+      "learned_words": ["pet", "ball", "play"],
+      "learned_patterns": ["Buy a pet ball."]
+    },
+    "buy_explorer_cape": {
+      "currency": "parent_bonus",
+      "cost": 1,
+      "owned_item": "explorer_cape",
+      "legacy_flag": "owned_explorer_cape",
+      "already_message": "The explorer cape is already in your closet.",
+      "not_enough_message": "You need 1 Parent Bonus for the explorer cape.",
+      "success_message": "The explorer cape is ready at home.",
+      "learned_words": ["clothes", "cape", "wear"],
+      "learned_patterns": ["Wear the explorer cape."]
+    },
+    "buy_star_rug": {
+      "currency": "coins",
+      "cost": 4,
+      "owned_item": "star_rug",
+      "legacy_flag": "owned_star_rug",
+      "already_message": "The star rug is already in your room.",
+      "not_enough_message": "You need 4 coins for the star rug.",
+      "success_message": "The star rug is ready at home.",
+      "learned_words": ["room", "rug", "star"],
+      "learned_patterns": ["Put the star rug in your room."]
+    },
+    "choose_town_route": {
+      "story_flag": "travel_route_town_edge",
+      "already_message": "The town route is already marked.",
+      "success_message": "Town route marked: +1 coin.",
+      "reward_coins": 1,
+      "learned_words": ["bus", "route", "town"],
+      "learned_patterns": ["Take the bus to town."]
+    },
+    "find_town_road": {
+      "story_flag": "travel_route_town_road",
+      "already_message": "The town road is already marked.",
+      "success_message": "Town road found: +1 coin.",
+      "reward_coins": 1,
+      "learned_words": ["taxi", "road", "stop"],
+      "learned_patterns": ["Take a taxi to the road."]
+    },
+    "choose_train_stop": {
+      "story_flag": "travel_route_train_stop",
+      "already_message": "The train stop is already marked.",
+      "success_message": "Train stop marked: +1 coin.",
+      "reward_coins": 1,
+      "learned_words": ["train", "station", "stop"],
+      "learned_patterns": ["Take the train to the station."]
+    }
+  }
+}

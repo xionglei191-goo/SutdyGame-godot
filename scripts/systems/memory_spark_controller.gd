@@ -14,7 +14,7 @@ func configure(town_map_node: Node, card_node: CanvasLayer, refresh_callback: Ca
 	town_map = town_map_node
 	card = card_node
 	refresh_home_pet_ui_callback = refresh_callback
-	pilot_memory_spark_anchor_ids = WorldOverviewRules.collect_pilot_recall_anchor_ids(_all_world_hotspots())
+	pilot_memory_spark_anchor_ids = WorldOverviewRules.collect_memory_spark_anchor_ids(_all_world_hotspots())
 	memory_spark_defs = _build_memory_spark_defs()
 
 
@@ -72,33 +72,95 @@ func _build_memory_spark_defs() -> Dictionary:
 		var hotspot: Dictionary = town_map.get_hotspot_by_id(anchor_id)
 		if hotspot.is_empty():
 			continue
-		var keyword := str(hotspot.get("keyword", anchor_id))
-		var letter := str(hotspot.get("letter", "")).strip_edges()
-		var choices: Array[String] = [keyword]
-		for other_id in pilot_memory_spark_anchor_ids:
-			if other_id == anchor_id:
-				continue
-			var other_keyword := str(keywords_by_id.get(other_id, ""))
-			if other_keyword.is_empty() or choices.has(other_keyword):
-				continue
-			choices.append(other_keyword)
-			if choices.size() >= 3:
-				break
-		var learned_words: Array[String] = []
-		for word_value: Variant in hotspot.get("vocabulary_cluster", []):
-			var word := str(word_value)
-			if not learned_words.has(word):
-				learned_words.append(word)
-		defs[anchor_id] = {
-				"prompt": "Look at letter %s. What comes back?" % letter,
-			"choices": choices,
-			"answer": keyword,
-				"success_text": "Letter %s brings back %s." % [letter, keyword],
-			"reward_coins": 1,
-			"learned_words": learned_words,
-			"learned_patterns": ["%s is for %s." % [letter, keyword]]
-		}
+		defs[anchor_id] = _memory_spark_def_from_hotspot(anchor_id, hotspot, keywords_by_id)
 	return defs
+
+
+func _memory_spark_def_from_hotspot(anchor_id: String, hotspot: Dictionary, keywords_by_id: Dictionary) -> Dictionary:
+	var keyword := str(hotspot.get("keyword", anchor_id))
+	var letter := str(hotspot.get("letter", "")).strip_edges()
+	var choices := _fallback_choices(anchor_id, keyword, keywords_by_id)
+	var learned_words: Array[String] = []
+	for word_value: Variant in hotspot.get("vocabulary_cluster", []):
+		var word := str(word_value)
+		if not learned_words.has(word):
+			learned_words.append(word)
+	var spark_def := {
+		"prompt": "Look at letter %s. What comes back?" % letter,
+		"choices": choices,
+		"answer": keyword,
+		"success_text": "Letter %s brings back %s." % [letter, keyword],
+		"reward_coins": 1,
+		"learned_words": learned_words,
+		"learned_patterns": ["%s is for %s." % [letter, keyword]]
+	}
+	return _apply_memory_spark_override(spark_def, hotspot)
+
+
+func _fallback_choices(anchor_id: String, keyword: String, keywords_by_id: Dictionary) -> Array[String]:
+	var choices: Array[String] = [keyword]
+	for other_id in pilot_memory_spark_anchor_ids:
+		if other_id == anchor_id:
+			continue
+		var other_keyword := str(keywords_by_id.get(other_id, ""))
+		if other_keyword.is_empty() or choices.has(other_keyword):
+			continue
+		choices.append(other_keyword)
+		if choices.size() >= 3:
+			break
+	return choices
+
+
+func _apply_memory_spark_override(base_def: Dictionary, hotspot: Dictionary) -> Dictionary:
+	var override_value: Variant = hotspot.get("memory_spark", {})
+	if typeof(override_value) != TYPE_DICTIONARY:
+		return base_def
+	var override := override_value as Dictionary
+	var spark_def := base_def.duplicate(true)
+	for field in ["prompt", "answer", "success_text"]:
+		if override.has(field):
+			var text := str(override.get(field, "")).strip_edges()
+			if not text.is_empty():
+				spark_def[field] = text
+	if override.has("reward_coins"):
+		spark_def["reward_coins"] = max(0, int(override.get("reward_coins", 1)))
+	var fallback_choices: Array[String] = spark_def.get("choices", [])
+	var override_choices := _string_array_from(override.get("choices", []))
+	if not override_choices.is_empty():
+		spark_def["choices"] = _normalized_choices(override_choices, str(spark_def.get("answer", "")), fallback_choices)
+	var learned_words := _string_array_from(override.get("learned_words", []))
+	if not learned_words.is_empty():
+		spark_def["learned_words"] = learned_words
+	var learned_patterns := _string_array_from(override.get("learned_patterns", []))
+	if not learned_patterns.is_empty():
+		spark_def["learned_patterns"] = learned_patterns
+	return spark_def
+
+
+func _normalized_choices(raw_choices: Array[String], answer: String, fallback_choices: Array[String]) -> Array[String]:
+	var choices: Array[String] = []
+	if not answer.is_empty():
+		choices.append(answer)
+	for choice in raw_choices:
+		if not choice.is_empty() and not choices.has(choice):
+			choices.append(choice)
+	for choice in fallback_choices:
+		if not choice.is_empty() and not choices.has(choice):
+			choices.append(choice)
+		if choices.size() >= 3:
+			break
+	return choices
+
+
+func _string_array_from(value: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if typeof(value) != TYPE_ARRAY:
+		return result
+	for item: Variant in value:
+		var text := str(item).strip_edges()
+		if not text.is_empty() and not result.has(text):
+			result.append(text)
+	return result
 
 
 func _all_world_hotspots() -> Array[Dictionary]:

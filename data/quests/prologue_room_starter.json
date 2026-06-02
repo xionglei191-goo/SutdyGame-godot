@@ -1,0 +1,33 @@
+{
+  "id": "prologue_room_starter",
+  "title": "Room Starter",
+  "scene_id": "home",
+  "type": "click_target",
+  "prompt": "Find your blue bag at home.",
+  "vocabulary": ["home", "bag", "book", "bed"],
+  "patterns": [
+    "This is my bag.",
+    "This is my book.",
+    "This is my bed."
+  ],
+  "targets": ["home_book", "home_bag", "home_bed"],
+  "target_labels": {
+    "home_book": "book",
+    "home_bag": "bag",
+    "home_bed": "bed"
+  },
+  "correct_target": "home_bag",
+  "wrong_target_text": "This is the %s. Look for the blue bag.",
+  "success_text": "Nice! Your bag is ready for the trip.",
+  "reward_id": "room_starter_sticker",
+  "reward_name": "Room Starter Sticker",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["prologue_room_starter_done"]
+  },
+  "next_quest": "prologue_pet_hello",
+  "start_feedback": "Tap the blue bag in your room."
+}

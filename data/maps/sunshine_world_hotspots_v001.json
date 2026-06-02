@@ -206,6 +206,15 @@
         "action": "place_card"
       },
       "place_card_hint": "Send letters and packages.",
+      "place_card_actions": [
+        {
+          "id": "help_carry_parcel",
+          "label": "Help Carry a Parcel",
+          "start_quest_id": "town_post_office_small_parcel",
+          "visible_when": "quest_not_completed:town_post_office_small_parcel",
+          "success_focus_hotspot": "post_office"
+        }
+      ],
       "memory_anchor_id": "anchor_g_gate",
       "quest_targets": []
     },
@@ -254,6 +263,7 @@
         {
           "id": "buy_pet_bowl",
           "label": "Buy Pet Bowl (3)",
+          "game_state_action": "buy_pet_bowl",
           "visible_when": "missing_pet_bowl",
           "success_status_text": "The pet bowl is ready at home.",
           "home_feedback": "The pet bowl is ready at home."
@@ -285,6 +295,7 @@
         {
           "id": "buy_pet_ball",
           "label": "Buy Pet Ball (2)",
+          "game_state_action": "buy_pet_ball",
           "visible_when": "missing_pet_ball",
           "success_status_text": "The pet ball is ready at home.",
           "home_feedback": "The pet ball is ready at home."
@@ -316,6 +327,7 @@
         {
           "id": "buy_explorer_cape",
           "label": "Buy Explorer Cape (1 Parent Bonus)",
+          "game_state_action": "buy_explorer_cape",
           "visible_when": "missing_explorer_cape",
           "success_status_text": "The explorer cape is ready at home.",
           "home_feedback": "The explorer cape is ready at home."
@@ -347,6 +359,7 @@
         {
           "id": "buy_star_rug",
           "label": "Buy Star Rug (4)",
+          "game_state_action": "buy_star_rug",
           "visible_when": "missing_star_rug",
           "success_status_text": "The star rug is ready at home.",
           "home_feedback": "The star rug is ready at home."
@@ -378,6 +391,7 @@
         {
           "id": "help_find_book",
           "label": "Help Find a Book",
+          "start_quest_id": "town_bookshop_find_book",
           "visible_when": "quest_not_completed:town_bookshop_find_book"
         }
       ],
@@ -403,6 +417,15 @@
         "action": "place_card"
       },
       "place_card_hint": "Eat, drink, and say hello.",
+      "place_card_actions": [
+        {
+          "id": "help_choose_snack",
+          "label": "Help Choose a Snack",
+          "start_quest_id": "town_restaurant_snack_order",
+          "visible_when": "quest_not_completed:town_restaurant_snack_order",
+          "success_focus_hotspot": "restaurant"
+        }
+      ],
       "memory_anchor_id": "anchor_o_orange",
       "quest_targets": []
     },
@@ -447,6 +470,15 @@
         "action": "place_card"
       },
       "place_card_hint": "Watch, listen, and enjoy.",
+      "place_card_actions": [
+        {
+          "id": "help_make_poster",
+          "label": "Help Make a Poster",
+          "start_quest_id": "town_cinema_show_poster",
+          "visible_when": "quest_not_completed:town_cinema_show_poster",
+          "success_focus_hotspot": "cinema"
+        }
+      ],
       "memory_anchor_id": "anchor_q_queen",
       "quest_targets": []
     },
@@ -473,12 +505,45 @@
         {
           "id": "choose_town_route",
           "label": "Choose Town Route",
+          "game_state_action": "choose_town_route",
           "visible_when": "missing_town_route",
           "success_status_text": "Town route marked: +1 coin.",
           "success_focus_hotspot": "bus_station"
         }
       ],
       "memory_anchor_id": "anchor_t_taxi",
+      "quest_targets": []
+    },
+    {
+      "id": "taxi",
+      "kind": "place",
+      "zone": "outskirts_transport",
+      "label": "taxi",
+      "rect": {
+        "x": 575,
+        "y": 935,
+        "w": 210,
+        "h": 125
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Taxi, road, and a quick town ride.",
+      "place_card_actions": [
+        {
+          "id": "find_town_road",
+          "label": "Find Town Road",
+          "game_state_action": "find_town_road",
+          "visible_when": "missing_town_road",
+          "success_status_text": "Town road found: +1 coin.",
+          "success_focus_hotspot": "taxi"
+        }
+      ],
+      "memory_anchor_id": "",
       "quest_targets": []
     },
     {
@@ -500,6 +565,16 @@
         "action": "place_card"
       },
       "place_card_hint": "Train, ticket, and travel.",
+      "place_card_actions": [
+        {
+          "id": "choose_train_stop",
+          "label": "Choose Train Stop",
+          "game_state_action": "choose_train_stop",
+          "visible_when": "missing_train_stop",
+          "success_status_text": "Train stop marked: +1 coin.",
+          "success_focus_hotspot": "railway_station"
+        }
+      ],
       "memory_anchor_id": "anchor_w_watch",
       "quest_targets": []
     },
@@ -820,6 +895,15 @@
         "read",
         "library"
       ],
+      "memory_spark": {
+        "prompt": "Look at letter B. What comes back?",
+        "choices": ["Bear", "Hat", "Taxi"],
+        "answer": "Bear",
+        "success_text": "Letter B brings back Bear.",
+        "reward_coins": 1,
+        "learned_words": ["bear", "book", "read", "library"],
+        "learned_patterns": ["B is for Bear."]
+      },
       "quest_targets": []
     },
     {

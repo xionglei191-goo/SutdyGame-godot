@@ -10,6 +10,7 @@ signal dialogue_finished(dialogue_id: String)
 var dialogue_id := ""
 var lines: Array = []
 var current_index := 0
+var _dialogue_cache: Dictionary = {}
 
 
 func _ready() -> void:
@@ -26,6 +27,11 @@ func start_dialogue(id: String) -> void:
 		return
 	visible = true
 	_show_current_line()
+
+
+func starts_quest(id: String) -> String:
+	var data := _load_dialogue(id)
+	return str(data.get("starts_quest", ""))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -60,6 +66,8 @@ func _finish() -> void:
 
 
 func _load_dialogue(id: String) -> Dictionary:
+	if _dialogue_cache.has(id):
+		return _dialogue_cache[id]
 	var file := FileAccess.open("res://data/dialogues/%s.json" % id, FileAccess.READ)
 	if file == null:
 		push_error("Dialogue not found: %s" % id)
@@ -68,4 +76,6 @@ func _load_dialogue(id: String) -> Dictionary:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("Dialogue parse failed: %s" % id)
 		return {}
-	return parsed
+	var data: Dictionary = parsed
+	_dialogue_cache[id] = data
+	return data

@@ -1,0 +1,19 @@
+{
+  "id": "mina_room_starter_intro",
+  "speaker": "Mina",
+  "starts_quest": "prologue_room_starter",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Your room is waking up with us."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's find the blue bag for our first trip."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Tap the bag when you see it."
+    }
+  ]
+}

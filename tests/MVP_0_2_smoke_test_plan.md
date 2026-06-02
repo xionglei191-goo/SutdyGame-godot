@@ -47,7 +47,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 - 交通区和边缘地标位于外圈，需要继续移动才能到达。
 - `home` 属于校外关键场景，必须存在正式热点与可读标签。
 - `home` 点击后应能进入正式 `HomeLayer` 子场景，而不是只停留在 world overview。
-- `HomeLayer` 内的 Mina 新存档起手对话使用 `mina_letter_box_intro`，启动 `Welcome Box`（`prologue_letter_box`）；完成 `home_letter_box` 后，Mina 再切到 `mina_home_intro`，启动 `First Trip` 并衔接 Walk With Mina。
+- `HomeLayer` 内的 Mina 新存档起手对话使用 `mina_letter_box_intro`，启动 `Welcome Box`（`prologue_letter_box`，target `home_letter_box`）；随后按 `mina_room_starter_intro`、`mina_pet_hello_intro`、`mina_home_pet_care_intro`、`mina_first_trip_handoff` 接上 `Room Starter -> Pet Hello -> Home Pet Care -> First Trip`，再衔接 Walk With Mina。
 - `bus station` 应贴近主路，`supermarket` 下移到更外圈商业区，避免把交通节点放进商业街深处。
 - 总览图热点从 `data/maps/sunshine_world_hotspots_v001.json` 读取，而不是只依赖硬编码矩形；`home`、`campus_gate`、`garden` 等子场景目标也应通过 `data/maps/scene_click_targets_v001.json` 这类数据配置继续迁移和扩展。
 - world hotspot 启用规则当前由热点数据驱动：
@@ -64,7 +64,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 
 ### 2.1.2 Home Pet Care 输入基线
 
-- `HomeLayer` 内应存在 Welcome Box、宠物照料入口和 Mina 起手对话；宠物照料不阻塞 `Welcome Box -> First Trip` 序章链。
+- `HomeLayer` 内应存在 Welcome Box、房间物件、宠物照料入口和 Mina 起手对话；宠物照料已纳入 `Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip` 序章链。
 - 宠物照料状态通过 `GameState` 读写，不新增平行存档字段。
 - `feed` 消耗 `2 coins`；`clean` 与 `play` 不消耗 `coins`。
 - 宠物照料完成后，`coins` 和 `pet_state` 变更可被运行时和存档回读观察到。
@@ -72,10 +72,10 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 ### 2.1.3 Non-school PlaceCard 与首访 Coin 基线
 
 - `world_overview` 中的非学校（non-school）`place hotspot` 点击当前应弹出 `PlaceCard`，而不是强制切入子场景。
-- `home` 仍保留进入正式 `HomeLayer` 子场景的例外路由，用于承接 `Welcome Box`、`First Trip` 与 Home Pet Care。
+- `home` 仍保留进入正式 `HomeLayer` 子场景的例外路由，用于承接 `Welcome Box`、`Room Starter`、`Pet Hello`、`Home Pet Care` 与 `First Trip`。
 - 首次访问通过 `visited_place_<id>` 故事标记发放 `+1 coin`；重复访问只显示 `Already visited`，不重复发币。
 - `bookshop` 当前已从 generic PlaceCard 样例升级成首个非学校 Quest Diary 委托入口；自由探索仍先打开 `PlaceCard`，但会显示 `Help Find a Book` 动作。
-- `tests/mvp_0_2_home_pet_care_input_flow.gd` 当前顺带锁定 `bookshop` 打开 PlaceCard 但不触发委托时，Mina 的 `mina_letter_box_intro -> Welcome Box -> mina_home_intro` 仍可继续接上 `First Trip`。
+- `tests/mvp_0_2_home_pet_care_input_flow.gd` 当前顺带锁定 `bookshop` 打开 PlaceCard 但不触发委托时，Mina 的 home-first 对话链仍可继续接上 `First Trip`。
 - `tests/mvp_0_2_non_school_place_card_matrix.gd` 批量锁定 `post_office`、`hospital`、`restaurant`、`cinema`、`bus_station`、`railway_station`、`airport` 的 PlaceCard 打开、首访 coin、重复访问和关闭后输入恢复。
 
 ### 2.1.3.1 Bookshop Helper 委托基线
@@ -91,7 +91,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
   - 仍停留在 `world_overview`，并聚焦 bookshop 区域。
 - 点击错误地点应显示 `Look again`，点击 `bookshop` 完成委托。
 - 完成后记录 `bookshop / book / read` 与 `Find a book. / Read at the bookshop.`，发放 `Bookshop Leafmark`，额外奖励 `+1 coin`。
-- `town_bookshop_find_book` 是自由探索支线，不加入 Parent Bonus 当前 4 个正式 MVP Quest 门槛。
+- `town_bookshop_find_book` 是自由探索支线，不加入 Parent Bonus 当前 home-first Quest 门槛。
 - `tests/mvp_0_2_bookshop_commission_flow.gd` 锁定当前第一个非学校 Quest Diary 委托闭环。
 
 ### 2.1.4 Supermarket Pet Bowl 基线
@@ -174,9 +174,9 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 
 ### 2.1.8 Memory Spark 基线
 
-- `memory_anchor` 不再只是一轮三句对话；首版试点允许“首访编码、回访提取”的轻 progression。
-- 首次点击试点 anchor 时，仍先显示现有 `anchor_*.json` 对话，并写入 `anchor_seen_<id>` 轻量标记。
-- 再次点击同一试点 anchor 时，若尚未完成 recall，应打开 `Memory Spark` 小卡，而不是再次只播对话。
+- `memory_anchor` 不再只是一轮三句对话；当前全量 A-Z anchors 支持“首访编码、回访提取”的轻 progression。
+- 首次点击 anchor 时，仍先显示现有 `anchor_*.json` 对话，并写入 `anchor_seen_<id>` 轻量标记。
+- 再次点击同一 anchor 时，若尚未完成 recall，应打开 `Memory Spark` 小卡，而不是再次只播对话。
 - 首版 recall 只做低压图像线索选择，不接入 `Quest Diary`，不污染主线 Quest 完成状态；Debug/报告层的 legacy `completed_tasks` 兼容字段不得被 Memory Spark 写入。
 - `Memory Spark` 小卡前台使用 `picture clue / memory word / What comes back?` 口吻，不回退成填空题、词表测验或 `anchor` / `recall` 机制词。
 - 首版完成 recall 后：
@@ -184,11 +184,11 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
   - 增加少量 `coins`；
   - 回流到 `learned_words / learned_patterns`；
   - 关闭 recall 卡后返回 `world_overview` 自由探索。
-- 当前试点锚点锁定为 `anchor_b_bear`、`anchor_g_gate`、`anchor_h_hat`、`anchor_o_orange`、`anchor_t_taxi`、`anchor_w_watch`；其余 anchors 仍可继续只走对话。
+- 历史试点锚点 `anchor_b_bear`、`anchor_g_gate`、`anchor_h_hat`、`anchor_o_orange`、`anchor_t_taxi`、`anchor_w_watch` 继续作为回归样本；当前 `memory_spark_defs` 覆盖完整 26 个 frozen A-Z anchors。
 - A-Z 可点击开放由 `az_unlock_mode` 控制，不再由 `default_visible` 或 `world_enabled_mode: pilot_recall` 隐式决定。
 - 序章完成前只开放 starter anchors：`anchor_a_apple`、`anchor_c_clock`、`anchor_e_elephant`、`anchor_g_gate`、`anchor_s_sun`、`anchor_u_umbrella`。
-- 序章完成后写入 `az_full_unlocked_after_prologue`，全部 26 个 A-Z anchors 可点击；Memory Spark 仍只覆盖 pilot anchors。
-- `tests/mvp_0_2_memory_spark_flow.gd` 负责锁定“首访对话 -> Memory Spark 回访 -> 奖励与家长层词汇/表达记录回流”的试点路径。
+- 序章完成后写入 `az_full_unlocked_after_prologue`，全部 26 个 A-Z anchors 可点击，并可在首访对话后进入 `Memory Spark` 回访。
+- `tests/mvp_0_2_memory_spark_flow.gd` 负责锁定“首访对话 -> Memory Spark 回访 -> 奖励与家长层词汇/表达记录回流”的全量覆盖样本路径。
 - `tests/mvp_0_2_az_unlock_flow.gd` 负责锁定 starter 限定、序章后全量开放和 route_order 1-26 完整性。
 - `tests/mvp_0_2_world_hotspot_enablement.gd` 负责锁定：
   - `tree / flower / bench / bird` 在自由探索中保持隐藏；
@@ -209,9 +209,12 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 
 ### 2.3 起手与 Quest 状态闭环
 
-脚本直接调用 Quest 系统或 UI 暴露的测试接口，模拟完成：
+脚本直接调用 Quest 系统或 UI 暴露的测试接口，模拟完成新 home-first 链与后续兼容链：
 
 - Welcome Box。
+- Room Starter。
+- Pet Hello。
+- Home Pet Care。
 - First Trip。
 - Walk With Mina。
 - Room Helper。
@@ -219,10 +222,10 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 
 建议断言：
 
-- 前台断言 `Welcome Box` 微序章和 4 个正式 MVP Quest 事件完成；`GameState.get_completed_quests()` / `completed_quests` 镜像保留 5 个 Quest ID；Debug IDs 中 `completed_tasks` 继续保留同一组兼容任务 ID，但报告验证必须以 `completed_quests` 为主字段，`completed_tasks` 只能镜像派生。Parent Bonus 当前仍以 `First Trip / Walk With Mina / Room Helper / Bird Watch` 这 4 个正式 MVP Quest 为门槛。
+- 前台断言新 home-first 链 `Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip` 与后续 `Walk With Mina -> Room Helper -> Bird Watch` 均可完成；`GameState.get_completed_quests()` / `completed_quests` 镜像保留 8 个 Quest ID；Debug IDs 中 `completed_tasks` 继续保留同一组兼容任务 ID，但报告验证必须以 `completed_quests` 为主字段，`completed_tasks` 只能镜像派生。Parent Bonus 当前以 `Welcome Box / Room Starter / Pet Hello / Home Pet Care / First Trip + Story Show` 为门槛。
 - `rewards` 包含兼容 ID `first_trip_ticket`、`school_star_piece`、`tidy_badge_piece`、`garden_leaf_piece`，其中 `school_star_piece` 前台奖励名为 `Adventure Star`。
-- `learned_words` 包含 4 个事件的核心单词。
-- `learned_patterns` 或等价字段包含 4 个事件的核心句型。
+- `learned_words` 包含 home-first 链与后续兼容链的核心单词。
+- `learned_patterns` 或等价字段包含 home-first 链与后续兼容链的核心句型。
 
 ### 2.4 小游戏判定
 
@@ -239,21 +242,21 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 ### 2.5 存档回读
 
 - 清理测试存档或使用独立测试存档路径。
-- 写入 4 个已完成事件、奖励、家长层词汇和表达记录。
+- 写入 8 个已完成 Quest、奖励、家长层词汇和表达记录。
 - 重新加载存档。
 - 断言状态与写入前一致。
 - 写入损坏 JSON 或缺字段存档，断言能回退到初始状态且不崩溃。
 
 ### 2.6 家长摘要数据
 
-- 完成 4 个 Quest 事件后加载家长摘要页面或摘要系统。
+- 完成 home-first Quest 事件组和 Story Show 后加载家长摘要页面或摘要系统。
 - 断言摘要数据包含完成事件、接触过的词汇/表达、建议回访内容。
 - 无家长层记录时加载摘要，断言有空状态且不崩溃。
 - 断言点击“完成摘要阅读”后写入试玩总用时和试玩节点。
 - 断言 `ParentSummary` 展示 `Parent Bonus` 当前值，空摘要时为 `0`。
-- 断言未完成 4 个 Quest 和 25 题 Story Show 前，`Parent Bonus` 按钮禁用。
+- 断言未完成 home-first Quest 事件组和 25 题 Story Show 前，`Parent Bonus` 按钮禁用。
 - 断言 Story Show 完成后可在家长摘要中一次性发放 `Parent Bonus +2`。
-- 断言发放后写入 `parent_bonus_confirmed_mvp_0_2`，重复点击不重复加值。
+- 断言发放后写入 `parent_bonus_confirmed_home_prologue_v001`；旧 `parent_bonus_confirmed_mvp_0_2` 仍可读并防重复，重复点击不重复加值。
 - 断言 `Parent Bonus` 与 `Coins` 分离，存档回读后 `parent_bonus` 和确认 flag 都恢复。
 
 ### 2.7 Story Show 时长合同

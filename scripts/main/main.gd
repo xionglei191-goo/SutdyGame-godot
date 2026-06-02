@@ -47,6 +47,8 @@ func _ready() -> void:
 	if memory_spark_card.has_signal("closed") and not memory_spark_card.closed.is_connected(_on_memory_spark_closed):
 		memory_spark_card.closed.connect(_on_memory_spark_closed)
 	GameState.coins_changed.connect(_on_game_state_coins_changed)
+	if GameState.has_signal("pet_name_changed"):
+		GameState.pet_name_changed.connect(_on_game_state_pet_name_changed)
 	GameState.pet_state_changed.connect(_on_game_state_pet_state_changed)
 	if GameState.has_signal("story_flags_changed"):
 		GameState.story_flags_changed.connect(_on_game_state_story_flags_changed)
@@ -87,7 +89,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_dialogue_finished(dialogue_id: String) -> void:
-	var quest_id: String = str(dialogue_to_quest.get(dialogue_id, ""))
+	var quest_id := ""
+	if dialogue_box.has_method("starts_quest"):
+		quest_id = str(dialogue_box.starts_quest(dialogue_id))
+	if quest_id.is_empty():
+		quest_id = str(dialogue_to_quest.get(dialogue_id, ""))
 	if not quest_id.is_empty() and not GameState.has_completed_quest(quest_id):
 		GameState.record_playtest_event(_playtest_event_id_for_dialogue(dialogue_id), _event_label_for_dialogue(dialogue_id))
 		quest_diary.start_quest(quest_id)
@@ -130,6 +136,10 @@ func _on_game_state_coins_changed(value: int) -> void:
 
 
 func _on_game_state_pet_state_changed(state: Dictionary) -> void:
+	_refresh_home_pet_ui()
+
+
+func _on_game_state_pet_name_changed(_value: String) -> void:
 	_refresh_home_pet_ui()
 
 

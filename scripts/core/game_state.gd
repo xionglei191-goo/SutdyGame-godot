@@ -8,12 +8,14 @@ signal reward_added(reward_id: String)
 signal review_completed(review_id: String)
 signal coins_changed(value: int)
 signal parent_bonus_changed(value: int)
+signal pet_name_changed(value: String)
 signal pet_state_changed(state: Dictionary)
 signal story_flags_changed(flags: Array[String])
 signal owned_items_changed(items: Array[String])
 
 const DEFAULT_SAVE_PATH: String = "user://study_game_save.json"
 const DEFAULT_PLAYTEST_REPORT_PATH: String = "user://mvp_0_2_playtest_report.json"
+const STARTER_ACTIONS_PATH: String = "res://data/economy/starter_actions_v001.json"
 const REQUIRED_PLAYTEST_EVENT_IDS: Array[String] = [
 	"playtest_started",
 	"prologue_go_to_school_started",
@@ -31,6 +33,10 @@ const REQUIRED_PLAYTEST_EVENT_IDS: Array[String] = [
 	"playtest_completed"
 ]
 const REQUIRED_FORMAL_QUEST_IDS: Array[String] = [
+	"prologue_letter_box",
+	"prologue_room_starter",
+	"prologue_pet_hello",
+	"prologue_home_pet_care",
 	"prologue_go_to_school",
 	"g4_u1_school_tour",
 	"g4_u1_tidy_classroom",
@@ -40,7 +46,8 @@ const QA_TIMING_REPORT_SCRIPT := preload("res://scripts/systems/qa_timing_report
 const DEFAULT_COINS := 5
 const DEFAULT_PARENT_BONUS := 0
 const DEFAULT_PET_NAME := "Sunny"
-const PARENT_BONUS_CONFIRM_FLAG := "parent_bonus_confirmed_mvp_0_2"
+const LEGACY_PARENT_BONUS_CONFIRM_FLAG := "parent_bonus_confirmed_mvp_0_2"
+const PARENT_BONUS_CONFIRM_FLAG := "parent_bonus_confirmed_home_prologue_v001"
 const PARENT_BONUS_REWARD := 2
 const EXPLORER_CAPE_FLAG := "owned_explorer_cape"
 const EXPLORER_CAPE_ITEM := "explorer_cape"
@@ -55,6 +62,8 @@ const PET_BALL_FLAG := "owned_pet_ball"
 const PET_BALL_ITEM := "pet_ball"
 const PET_BALL_COST := 2
 const TOWN_ROUTE_FLAG := "travel_route_town_edge"
+const TOWN_ROAD_FLAG := "travel_route_town_road"
+const TRAIN_STOP_FLAG := "travel_route_train_stop"
 const LEGACY_ITEM_FLAGS := {
 	PET_BOWL_FLAG: PET_BOWL_ITEM,
 	PET_BALL_FLAG: PET_BALL_ITEM,
@@ -84,6 +93,7 @@ var playtest_started_at_msec: int = -1
 var playtest_elapsed_msec: int = 0
 var playtest_completed: bool = false
 var playtest_events: Array[Dictionary] = []
+var _starter_actions_cache: Dictionary = {}
 
 
 func complete_task(task_id: String, words: Array = [], patterns: Array = []) -> void:
@@ -146,7 +156,7 @@ func spend_parent_bonus(amount: int) -> bool:
 
 
 func can_confirm_parent_bonus(required_quest_ids: Array[String] = [], required_review_id: String = "") -> bool:
-	if has_story_flag(PARENT_BONUS_CONFIRM_FLAG):
+	if has_confirmed_parent_bonus():
 		return false
 	for quest_id in required_quest_ids:
 		if not has_completed_quest(quest_id):
@@ -163,7 +173,7 @@ func confirm_parent_bonus(required_quest_ids: Array[String] = [], required_revie
 		"amount": 0,
 		"parent_bonus": parent_bonus
 	}
-	if has_story_flag(PARENT_BONUS_CONFIRM_FLAG):
+	if has_confirmed_parent_bonus():
 		result["message"] = "Parent Bonus already confirmed."
 		return result
 	if not can_confirm_parent_bonus(required_quest_ids, required_review_id):
@@ -175,6 +185,10 @@ func confirm_parent_bonus(required_quest_ids: Array[String] = [], required_revie
 	result["amount"] = PARENT_BONUS_REWARD
 	result["parent_bonus"] = parent_bonus
 	return result
+
+
+func has_confirmed_parent_bonus() -> bool:
+	return has_story_flag(PARENT_BONUS_CONFIRM_FLAG) or has_story_flag(LEGACY_PARENT_BONUS_CONFIRM_FLAG)
 
 
 func get_pet_state() -> Dictionary:
@@ -189,7 +203,10 @@ func set_pet_name(value: String) -> void:
 	var cleaned := value.strip_edges()
 	if cleaned.is_empty():
 		cleaned = DEFAULT_PET_NAME
+	if pet_name == cleaned:
+		return
 	pet_name = cleaned
+	pet_name_changed.emit(pet_name)
 
 
 func care_for_pet(action_id: String) -> Dictionary:
@@ -369,106 +386,40 @@ func has_town_route() -> bool:
 	return has_story_flag(TOWN_ROUTE_FLAG)
 
 
+func has_town_road() -> bool:
+	return has_story_flag(TOWN_ROAD_FLAG)
+
+
+func has_train_stop() -> bool:
+	return has_story_flag(TRAIN_STOP_FLAG)
+
+
 func buy_pet_bowl() -> Dictionary:
-	var result := {
-		"success": false,
-		"message": "Visit the supermarket for pet things."
-	}
-	if has_pet_bowl():
-		result["message"] = "The pet bowl is already ready at home."
-		return result
-	if not spend_coins(PET_BOWL_COST):
-		result["message"] = "You need 3 coins for the pet bowl."
-		return result
-	own_item(PET_BOWL_ITEM, PET_BOWL_FLAG)
-	add_learned_word("shop")
-	add_learned_word("bowl")
-	add_learned_word("food")
-	add_learned_pattern("Buy a pet bowl.")
-	result["success"] = true
-	result["message"] = "The pet bowl is ready at home."
-	return result
+	return _run_starter_action("buy_pet_bowl", "Visit the supermarket for pet things.")
 
 
 func buy_pet_ball() -> Dictionary:
-	var result := {
-		"success": false,
-		"message": "Visit the pet shop for a new toy."
-	}
-	if has_pet_ball():
-		result["message"] = "The pet ball is already ready at home."
-		return result
-	if not spend_coins(PET_BALL_COST):
-		result["message"] = "You need 2 coins for the pet ball."
-		return result
-	own_item(PET_BALL_ITEM, PET_BALL_FLAG)
-	add_learned_word("pet")
-	add_learned_word("ball")
-	add_learned_word("play")
-	add_learned_pattern("Buy a pet ball.")
-	result["success"] = true
-	result["message"] = "The pet ball is ready at home."
-	return result
+	return _run_starter_action("buy_pet_ball", "Visit the pet shop for a new toy.")
 
 
 func buy_explorer_cape() -> Dictionary:
-	var result := {
-		"success": false,
-		"message": "Ask a parent for Parent Bonus first."
-	}
-	if has_explorer_cape():
-		result["message"] = "The explorer cape is already in your closet."
-		return result
-	if not spend_parent_bonus(EXPLORER_CAPE_PARENT_BONUS_COST):
-		result["message"] = "You need 1 Parent Bonus for the explorer cape."
-		return result
-	own_item(EXPLORER_CAPE_ITEM, EXPLORER_CAPE_FLAG)
-	add_learned_word("clothes")
-	add_learned_word("cape")
-	add_learned_word("wear")
-	add_learned_pattern("Wear the explorer cape.")
-	result["success"] = true
-	result["message"] = "The explorer cape is ready at home."
-	return result
+	return _run_starter_action("buy_explorer_cape", "Ask a parent for Parent Bonus first.")
 
 
 func buy_star_rug() -> Dictionary:
-	var result := {
-		"success": false,
-		"message": "Visit the general store for room decor."
-	}
-	if has_star_rug():
-		result["message"] = "The star rug is already in your room."
-		return result
-	if not spend_coins(STAR_RUG_COST):
-		result["message"] = "You need 4 coins for the star rug."
-		return result
-	own_item(STAR_RUG_ITEM, STAR_RUG_FLAG)
-	add_learned_word("room")
-	add_learned_word("rug")
-	add_learned_word("star")
-	add_learned_pattern("Put the star rug in your room.")
-	result["success"] = true
-	result["message"] = "The star rug is ready at home."
-	return result
+	return _run_starter_action("buy_star_rug", "Visit the general store for room decor.")
 
 
 func choose_town_route() -> Dictionary:
-	var result := {
-		"success": false,
-		"message": "The town route is already marked."
-	}
-	if has_town_route():
-		return result
-	mark_story_flag(TOWN_ROUTE_FLAG)
-	add_coins(1)
-	add_learned_word("bus")
-	add_learned_word("route")
-	add_learned_word("town")
-	add_learned_pattern("Take the bus to town.")
-	result["success"] = true
-	result["message"] = "Town route marked: +1 coin."
-	return result
+	return _run_starter_action("choose_town_route", "The town route is already marked.")
+
+
+func find_town_road() -> Dictionary:
+	return _run_starter_action("find_town_road", "The town road is already marked.")
+
+
+func choose_train_stop() -> Dictionary:
+	return _run_starter_action("choose_train_stop", "The train stop is already marked.")
 
 
 func get_pet_item_status_text() -> String:
@@ -594,6 +545,7 @@ func load_from_path(path: String = DEFAULT_SAVE_PATH) -> bool:
 	playtest_started_at_msec = -1
 	coins_changed.emit(coins)
 	parent_bonus_changed.emit(parent_bonus)
+	pet_name_changed.emit(pet_name)
 	pet_state_changed.emit(get_pet_state())
 	story_flags_changed.emit(story_flags.duplicate())
 	owned_items_changed.emit(owned_items.duplicate())
@@ -618,6 +570,7 @@ func reset() -> void:
 	playtest_events.clear()
 	coins_changed.emit(coins)
 	parent_bonus_changed.emit(parent_bonus)
+	pet_name_changed.emit(pet_name)
 	pet_state_changed.emit(get_pet_state())
 	story_flags_changed.emit(story_flags.duplicate())
 	owned_items_changed.emit(owned_items.duplicate())
@@ -765,3 +718,74 @@ func _has_playtest_event(event_id: String) -> bool:
 
 func _completed_tasks_legacy_snapshot() -> Array[String]:
 	return completed_quests.duplicate()
+
+
+func _run_starter_action(action_id: String, default_message: String) -> Dictionary:
+	var result := {
+		"success": false,
+		"message": default_message
+	}
+	var config := _starter_action_config(action_id)
+	if config.is_empty():
+		result["message"] = "That action is not ready."
+		return result
+	var owned_item := str(config.get("owned_item", ""))
+	var legacy_flag := str(config.get("legacy_flag", ""))
+	if not owned_item.is_empty() and (has_owned_item(owned_item) or (not legacy_flag.is_empty() and has_story_flag(legacy_flag))):
+		result["message"] = str(config.get("already_message", default_message))
+		return result
+	var story_flag := str(config.get("story_flag", ""))
+	if not story_flag.is_empty() and has_story_flag(story_flag):
+		result["message"] = str(config.get("already_message", default_message))
+		return result
+	var cost := int(config.get("cost", 0))
+	var currency := str(config.get("currency", "coins"))
+	if currency == "parent_bonus":
+		if not spend_parent_bonus(cost):
+			result["message"] = str(config.get("not_enough_message", default_message))
+			return result
+	else:
+		if not spend_coins(cost):
+			result["message"] = str(config.get("not_enough_message", default_message))
+			return result
+	if not owned_item.is_empty():
+		own_item(owned_item, legacy_flag)
+	if not story_flag.is_empty():
+		mark_story_flag(story_flag)
+	var reward_coins := int(config.get("reward_coins", 0))
+	if reward_coins > 0:
+		add_coins(reward_coins)
+	for word_value: Variant in config.get("learned_words", []):
+		add_learned_word(str(word_value))
+	for pattern_value: Variant in config.get("learned_patterns", []):
+		add_learned_pattern(str(pattern_value))
+	result["success"] = true
+	result["message"] = str(config.get("success_message", default_message))
+	return result
+
+
+func _starter_action_config(action_id: String) -> Dictionary:
+	var actions := _starter_actions()
+	var config: Variant = actions.get(action_id, {})
+	if typeof(config) != TYPE_DICTIONARY:
+		return {}
+	return config as Dictionary
+
+
+func _starter_actions() -> Dictionary:
+	if not _starter_actions_cache.is_empty():
+		return _starter_actions_cache
+	var file := FileAccess.open(STARTER_ACTIONS_PATH, FileAccess.READ)
+	if file == null:
+		push_warning("Starter action config not found: %s" % STARTER_ACTIONS_PATH)
+		return {}
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_warning("Starter action config parse failed: %s" % STARTER_ACTIONS_PATH)
+		return {}
+	var data: Dictionary = parsed
+	var actions: Variant = data.get("actions", {})
+	if typeof(actions) != TYPE_DICTIONARY:
+		return {}
+	_starter_actions_cache = actions as Dictionary
+	return _starter_actions_cache

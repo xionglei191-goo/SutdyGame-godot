@@ -18,12 +18,17 @@ const REWARD_NAMES := {
 	"garden_leaf_piece": "Garden Leaf Charm"
 }
 const REQUIRED_QUEST_IDS: Array[String] = [
-	"prologue_go_to_school",
-	"g4_u1_school_tour",
-	"g4_u1_tidy_classroom",
-	"g4_u1_garden_bird"
+	"prologue_letter_box",
+	"prologue_room_starter",
+	"prologue_pet_hello",
+	"prologue_home_pet_care",
+	"prologue_go_to_school"
 ]
 const REQUIRED_REVIEW_ID := "mvp_0_2_review_challenge"
+const QUEST_DATA_DIR := "res://data/quests"
+
+var _quest_data_cache: Dictionary = {}
+var _reward_name_cache: Dictionary = {}
 
 @onready var completed_value: Label = $Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid/CompletedValue
 @onready var quests_value: Label = $Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/QuestsValue
@@ -51,8 +56,8 @@ func refresh() -> void:
 	var state := _parent_summary_state()
 	var completed_quests := _completed_quests_from(state)
 	completed_value.text = str(completed_quests.size())
-	quests_value.text = _join_mapped_or_empty(completed_quests, QUEST_NAMES)
-	rewards_value.text = _join_mapped_or_empty(state.get("rewards", []), REWARD_NAMES)
+	quests_value.text = _join_quest_titles_or_empty(completed_quests)
+	rewards_value.text = _join_reward_names_or_empty(state.get("rewards", []))
 	playtime_value.text = str(state.get("playtest_elapsed_text", "00:00"))
 	parent_bonus_value.text = str(int(state.get("parent_bonus", 0)))
 	words_value.text = _join_or_empty(state.get("learned_words", []))
@@ -67,7 +72,7 @@ func refresh() -> void:
 	elif ready_to_finish:
 		finish_reading_button.text = "完成摘要阅读"
 	else:
-		finish_reading_button.text = "完成 4 个 Quest 和 Story Show 后可用"
+		finish_reading_button.text = "完成 home-first Quest 和 Story Show 后可用"
 	var parent_bonus_confirmed := _parent_bonus_confirmed(state)
 	parent_bonus_button.disabled = parent_bonus_confirmed or not ready_to_finish
 	if parent_bonus_confirmed:
@@ -104,11 +109,41 @@ func _join_mapped_or_empty(value: Variant, labels: Dictionary) -> String:
 	return ", ".join(text_items)
 
 
+func _join_quest_titles_or_empty(value: Variant) -> String:
+	if typeof(value) != TYPE_ARRAY:
+		return "-"
+	var items: Array = value
+	if items.is_empty():
+		return "-"
+	var text_items: Array[String] = []
+	for item: Variant in items:
+		text_items.append(_quest_title(str(item)))
+	return ", ".join(text_items)
+
+
+func _join_reward_names_or_empty(value: Variant) -> String:
+	if typeof(value) != TYPE_ARRAY:
+		return "-"
+	var items: Array = value
+	if items.is_empty():
+		return "-"
+	var text_items: Array[String] = []
+	for item: Variant in items:
+		text_items.append(_reward_name(str(item)))
+	return ", ".join(text_items)
+
+
 func _review_text(snapshot: Dictionary) -> String:
 	var completed := _completed_quests_from(snapshot)
 	if completed.is_empty():
 		return "先从 home 出发，打开 Welcome Box。"
 	if completed.has("prologue_letter_box") and not completed.has("prologue_go_to_school"):
+		if not completed.has("prologue_room_starter"):
+			return "接下来在 home 完成 Room Starter，找到出门要带的物品。"
+		if not completed.has("prologue_pet_hello"):
+			return "接下来认识 Coco，完成 Pet Hello。"
+		if not completed.has("prologue_home_pet_care"):
+			return "接下来照顾 Coco，完成 Home Pet Care。"
 		return "接下来从 home 出发，完成 First Trip。"
 	if completed.has("prologue_go_to_school") and not completed.has("g4_u1_school_tour"):
 		return "接下来陪 Mina 继续 Walk With Mina，寻找 story stop。"
@@ -160,12 +195,12 @@ func _has_completed_required_quests(completed_quests: Array) -> bool:
 
 func _parent_bonus_confirmed(snapshot: Dictionary) -> bool:
 	var flags: Array = snapshot.get("story_flags", [])
-	return flags.has(GameState.PARENT_BONUS_CONFIRM_FLAG)
+	return flags.has(GameState.PARENT_BONUS_CONFIRM_FLAG) or flags.has(GameState.LEGACY_PARENT_BONUS_CONFIRM_FLAG)
 
 
 func _on_finish_reading_pressed() -> void:
 	if not _ready_to_finish_playtest(_parent_summary_state()):
-		report_status_value.text = "请先完成 4 个 Quest 和 25 题 Story Show。"
+		report_status_value.text = "请先完成 home-first Quest 和 25 题 Story Show。"
 		refresh()
 		return
 	GameState.record_playtest_event("parent_summary_read", "家长摘要阅读完成")
@@ -177,7 +212,7 @@ func _on_finish_reading_pressed() -> void:
 
 func _on_parent_bonus_pressed() -> void:
 	if not _ready_to_finish_playtest(_parent_summary_state()):
-		report_status_value.text = "请先完成 4 个 Quest 和 25 题 Story Show。"
+		report_status_value.text = "请先完成 home-first Quest 和 25 题 Story Show。"
 		refresh()
 		return
 	var result := GameState.confirm_parent_bonus(REQUIRED_QUEST_IDS, REQUIRED_REVIEW_ID)
@@ -196,3 +231,55 @@ func _on_export_report_pressed() -> void:
 
 func _parent_summary_state() -> Dictionary:
 	return GameState.get_parent_summary_state()
+
+
+func _quest_title(quest_id: String) -> String:
+	var quest_data := _load_quest_data(quest_id)
+	var title := str(quest_data.get("title", ""))
+	if not title.is_empty():
+		return title
+	return str(QUEST_NAMES.get(quest_id, quest_id))
+
+
+func _reward_name(reward_id: String) -> String:
+	if _reward_name_cache.has(reward_id):
+		return str(_reward_name_cache[reward_id])
+	var from_quests := _reward_name_from_quest_data(reward_id)
+	if not from_quests.is_empty():
+		_reward_name_cache[reward_id] = from_quests
+		return from_quests
+	return str(REWARD_NAMES.get(reward_id, reward_id))
+
+
+func _reward_name_from_quest_data(reward_id: String) -> String:
+	var dir := DirAccess.open(QUEST_DATA_DIR)
+	if dir == null:
+		return ""
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while not file_name.is_empty():
+		if not dir.current_is_dir() and file_name.ends_with(".json"):
+			var quest_id := file_name.get_basename()
+			var quest_data := _load_quest_data(quest_id)
+			if str(quest_data.get("reward_id", "")) == reward_id:
+				dir.list_dir_end()
+				return str(quest_data.get("reward_name", ""))
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	return ""
+
+
+func _load_quest_data(quest_id: String) -> Dictionary:
+	if _quest_data_cache.has(quest_id):
+		return _quest_data_cache[quest_id]
+	var file := FileAccess.open("%s/%s.json" % [QUEST_DATA_DIR, quest_id], FileAccess.READ)
+	if file == null:
+		_quest_data_cache[quest_id] = {}
+		return {}
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		_quest_data_cache[quest_id] = {}
+		return {}
+	var data: Dictionary = parsed
+	_quest_data_cache[quest_id] = data
+	return data

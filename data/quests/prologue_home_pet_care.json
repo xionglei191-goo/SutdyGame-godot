@@ -1,0 +1,31 @@
+{
+  "id": "prologue_home_pet_care",
+  "title": "Home Pet Care",
+  "scene_id": "home",
+  "type": "pet_care",
+  "prompt": "Feed Coco before the first trip.",
+  "vocabulary": ["feed", "pet", "food", "happy"],
+  "patterns": [
+    "Feed the pet.",
+    "Coco is happy.",
+    "I care for my pet."
+  ],
+  "targets": ["feed"],
+  "target_labels": {
+    "feed": "Feed"
+  },
+  "correct_action": "feed",
+  "wrong_target_text": "Try the Feed button for Coco.",
+  "success_text": "Great care! Coco is ready at home.",
+  "reward_id": "pet_care_heart",
+  "reward_name": "Pet Care Heart",
+  "reward_coins": 2,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["prologue_home_pet_care_done"]
+  },
+  "next_quest": "prologue_go_to_school",
+  "start_feedback": "Press Feed in the pet corner."
+}

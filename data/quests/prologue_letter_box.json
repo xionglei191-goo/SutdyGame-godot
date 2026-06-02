@@ -26,6 +26,6 @@
     "npc_prompts_visible": true,
     "story_flags": ["prologue_letter_box_done"]
   },
-  "next_quest": "prologue_go_to_school",
+  "next_quest": "prologue_room_starter",
   "start_feedback": "Tap the Welcome Box at home."
 }

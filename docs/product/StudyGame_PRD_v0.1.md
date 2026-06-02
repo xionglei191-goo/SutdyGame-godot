@@ -127,7 +127,7 @@ A-Z 记忆宫殿是产品底层学习骨架，不是彩蛋系统。
 
 - 序章完成后，全量 A-Z 锚点正式开放
 - 在此之前只暴露序章教学所需的强锚点或基础锚点
-- 当前实现边界：全量开放指锚点可点击、可进入首访记忆对话；`Memory Spark` 回访提取仍是 pilot 范围，先覆盖少量锚点，再按验证结果扩展到全量 A-Z。
+- 当前实现边界：全量开放指锚点可点击、可进入首访记忆对话，并在首访后可进入全量 A-Z `Memory Spark` 回访提取；`Memory Spark` 仍保持低压图像线索选择，不升级为测试或词表练习。
 
 ### 5.2 半开放 RPG 线
 
@@ -383,15 +383,30 @@ A-Z 记忆宫殿是产品底层学习骨架，不是彩蛋系统。
 
 ### 10.1 当前 MVP 方向
 
-现有可玩切片不再前台表述为“校园三任务链”，而是一个生活事件型垂直切片。`MVP 0.2` 在本文中视为历史验证切片，用于证明起步路线、任务包装和家长摘要链路成立，不再作为完整产品边界。
+当前新 MVP 不再把历史 `MVP 0.2` 的 school-side 事件链当作产品边界，而是把第一个正式目标收敛为 `Letters, Home, My First Pet` 的 home-first 生活序章。
 
-该切片的产品解释是：
+新 MVP P0 目标链为：
+
+`Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip`
+
+该链路的产品解释是：
 
 - 新存档默认从 `HomeLayer` 进入；打开 `world_overview` 后看到 `home + school` 起步构图
-- 通过 Mina 进入 school 起步事件
-- 通过 Leo 完成空间整理事件
-- 通过 Nora 完成 garden 观察事件
-- 通过奖励和家长摘要证明“生活冒险中发生了学习”
+- 先打开 `Welcome Box`，建立 letters / box / home 的低压起手
+- 再通过 `Room Starter` 认识房间物件，让家成为真实 hub
+- 接着通过 `Pet Hello` 认识并命名第一只宠物，复用 `GameState.pet_name`
+- 然后通过 `Home Pet Care` 完成 feed / clean / play / rest 的第一轮照顾
+- 最后通过 `First Trip` 从家出发，前往 `school_arrival` / 内部兼容 `campus_gate`
+
+儿童前台不出现 `lesson panel`、`word list drill`、`review test`、`school app`、`L1/L2/L3`。这些概念只允许保留在家长解释、兼容说明、测试 denylist 或课程审核语境。
+
+| 技术 ID | 儿童端标题 | 主要场景 | 产品职责 | 奖励方向 | 完成路由期望 |
+|---|---|---|---|---|---|
+| `prologue_letter_box` | `Welcome Box` | `home` | 打开欢迎箱，建立 letters / home 起手 | `Welcome Box Star` / `+1 coin` | 写入 `prologue_letter_box_done`，下一步 `prologue_room_starter` |
+| `prologue_room_starter` | `Room Starter` | `home` | 找到 bed / bag / book / door 等房间物件 | `Room Starter Sticker` / `+1 coin` | 写入 `prologue_room_starter_done`，下一步 `prologue_pet_hello` |
+| `prologue_pet_hello` | `Pet Hello` | `home` / pet corner | 遇见宠物，展示或选择宠物名 | `Pet Name Tag` / `+1 coin` | 写入 `prologue_pet_hello_done`，下一步 `prologue_home_pet_care` |
+| `prologue_home_pet_care` | `Home Pet Care` | `home` / pet corner | 复用 `care_for_pet()` 完成第一轮照顾 | `Pet Care Heart` / `+2 coins` | 写入 `prologue_home_pet_care_done`，下一步 `prologue_go_to_school` |
+| `prologue_go_to_school` | `First Trip` | `world_overview` -> `school_arrival` | 从家出发，完成第一次短路线 | `First Trip Ticket` / `+1 coin` | 写入 `prologue_go_to_school_done` 与 `az_full_unlocked_after_prologue`，下一步兼容 `g4_u1_school_tour` |
 
 ### 10.2 Prototype 0.1（历史原型验证）
 
@@ -418,7 +433,41 @@ A-Z 记忆宫殿是产品底层学习骨架，不是彩蛋系统。
 - 简单存档
 - 家长摘要基线
 
-### 10.4 Alpha 0.3
+历史边界：
+
+- `MVP 0.2` 仅证明 HomeLayer 起步、Quest Diary、Story Show、ParentSummary 和兼容 ID 可运行。
+- `First Trip / Walk With Mina / Room Helper / Bird Watch` 仍是现有 runtime 与报告兼容链，但不是新 MVP 的完整产品目标。
+- `parent_bonus_confirmed_mvp_0_2` 是历史 gate flag，后续迁移不得删除或改义。
+
+### 10.4 P1 town / transport 实施范围
+
+P1 不扩大 school 叙事，而是把非学校地点做成短生活委托和可玩的轻出行切片。
+
+| Area | Starter spec | 前台包装 | 数据/状态期望 |
+|---|---|---|---|
+| `town` | `town_post_office_small_parcel` | `Parcel Helper` / `Help Carry a Parcel` | PlaceCard 进入 Quest Diary；完成写 `town_post_office_small_parcel_done`；奖励 `Parcel Stamp` |
+| `town` | `town_restaurant_snack_order` | `Snack Stop` / `Help Choose a Snack` | PlaceCard 进入 Quest Diary；完成写 `town_restaurant_snack_order_done`；奖励 `Snack Star` |
+| `town` | `town_cinema_show_poster` | `Show Poster` / `Help Make a Poster` | PlaceCard 进入 Quest Diary；完成写 `town_cinema_show_poster_done`；可提示 `Story Show` |
+| `transport` | `taxi -> Find Town Road` | `Find Town Road` | 写 `travel_route_town_road`，发 `+1 coin`，不新增路线背包 |
+| `transport` | `railway_station -> Choose Train Stop` | `Choose Train Stop` | 写 `travel_route_train_stop`，发 `+1 coin`，不新增时刻表系统 |
+
+这些 P1 事件不加入当前 Parent Bonus gate。儿童前台使用 help / shop / trip / show，不使用练习、测试或词表包装。
+
+### 10.5 P2 Parent Bonus gate 迁移
+
+当新 home-first MVP runtime 稳定后，Parent Bonus gate 从历史 `First Trip / Walk With Mina / Room Helper / Bird Watch + Story Show` 迁移到：
+
+`Welcome Box / Room Starter / Pet Hello / Home Pet Care / First Trip + Story Show`
+
+迁移要求：
+
+- 新确认 flag 建议为 `parent_bonus_confirmed_home_prologue_v001`。
+- 旧 `parent_bonus_confirmed_mvp_0_2` 继续可读、可报告、可防重复。
+- 同一阶段奖励仍为一次性 `Parent Bonus +2`，不得因旧 gate 和新 gate 同时满足而重复发放。
+- `Coins` 与 `Parent Bonus` 继续分离；`Explorer Cape` 和后续稀有奖励继续只消耗 `Parent Bonus`。
+- ParentSummary 使用 `GameState.get_parent_summary_state()` 或明确 getter，不把 `debug_snapshot()` 作为产品 UI 主数据 API。
+
+### 10.6 Alpha 0.3
 
 目标：建立序章与前两篇可持续循环。
 
@@ -430,7 +479,7 @@ A-Z 记忆宫殿是产品底层学习骨架，不是彩蛋系统。
 - 换装与家园角落基线
 - 8-10 个剧情任务
 
-### 10.5 Beta 0.4
+### 10.7 Beta 0.4
 
 目标：形成 `序章 + 七篇` 的稳定内容骨架。
 

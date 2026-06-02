@@ -1,0 +1,17 @@
+{
+  "version": "v001",
+  "icons": {
+    "welcome_box_star": "res://assets/generated/ui/ui_reward_sparkle_v001.png",
+    "room_starter_sticker": "res://assets/generated/ui/ui_quest_diary_ornament_v001.png",
+    "pet_hello_tag": "res://assets/generated/props/home/prop_pet_bowl_v001.png",
+    "pet_care_heart": "res://assets/generated/props/home/prop_pet_food_v001.png",
+    "first_trip_ticket": "res://assets/generated/rewards/reward_first_trip_ticket_v001.png",
+    "school_star_piece": "res://assets/generated/rewards/reward_adventure_star_piece_v001.png",
+    "bookshop_leafmark": "res://assets/generated/rewards/reward_garden_leaf_piece_v001.png",
+    "tidy_badge_piece": "res://assets/generated/rewards/reward_tidy_badge_piece_v001.png",
+    "garden_leaf_piece": "res://assets/generated/rewards/reward_garden_leaf_piece_v001.png",
+    "parcel_stamp": "res://assets/generated/rewards/reward_first_trip_ticket_v001.png",
+    "snack_star": "res://assets/generated/ui/ui_reward_sparkle_v001.png",
+    "poster_spark": "res://assets/generated/ui/ui_reward_sparkle_v001.png"
+  }
+}

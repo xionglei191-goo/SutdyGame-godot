@@ -103,6 +103,19 @@ func complete_drag_task() -> void:
 	_complete_current_task()
 
 
+func complete_pet_care_action(action_id: String) -> void:
+	if not active:
+		return
+	if str(current_quest.get("type", "")) != "pet_care":
+		return
+	var correct_action := str(current_quest.get("correct_action", ""))
+	if action_id == correct_action:
+		_complete_current_task()
+		return
+	status_label.text = STATUS_RETRY
+	_set_feedback(str(current_quest.get("wrong_target_text", "Try another pet care button.")))
+
+
 func dismiss() -> void:
 	active = false
 	panel.visible = false

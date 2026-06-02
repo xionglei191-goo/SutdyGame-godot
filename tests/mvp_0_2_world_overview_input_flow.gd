@@ -77,13 +77,46 @@ func _initialize() -> void:
 	_assert(not quest_diary.active, "Welcome Box should complete after tapping home_letter_box")
 	_assert(game_state.has_completed_quest("prologue_letter_box"), "Welcome Box completion should be saved")
 	_assert(town_map.get_active_scene() == "home", "Welcome Box completion should leave the player at home")
-	_assert(mina.dialogue_id == "mina_home_intro", "Welcome Box completion should retarget Mina to First Trip")
+	_assert(mina.dialogue_id == "mina_room_starter_intro", "Welcome Box completion should retarget Mina to Room Starter")
 	mina.interaction_requested.emit(mina.dialogue_id)
 	await process_frame
 	main_dialogue_box._finish()
 	await process_frame
-	_assert(quest_diary.active, "home intro should start First Trip after Welcome Box")
-	_assert(quest_diary.quest_id == "prologue_go_to_school", "home intro should start First Trip before Walk With Mina")
+	_assert(quest_diary.active, "home intro should start Room Starter after Welcome Box")
+	_assert(quest_diary.quest_id == "prologue_room_starter", "home intro should continue into Room Starter")
+	_assert(quest_diary.prompt_label.text == "Find your blue bag at home.", "Room Starter should use room-object wording")
+	quest_diary.check_target("home_bag")
+	await process_frame
+	_assert(game_state.has_completed_quest("prologue_room_starter"), "Room Starter completion should be saved")
+	_assert(mina.dialogue_id == "mina_pet_hello_intro", "Room Starter should retarget Mina to Pet Hello")
+	mina.interaction_requested.emit(mina.dialogue_id)
+	await process_frame
+	main_dialogue_box._finish()
+	await process_frame
+	_assert(quest_diary.active, "Pet Hello intro should start Pet Hello")
+	_assert(quest_diary.quest_id == "prologue_pet_hello", "home intro should continue into Pet Hello")
+	quest_diary.check_target("home_pet_corner")
+	await process_frame
+	_assert(game_state.has_completed_quest("prologue_pet_hello"), "Pet Hello completion should be saved")
+	_assert(game_state.get_pet_name() == "Coco", "Pet Hello should name the starter pet")
+	_assert(mina.dialogue_id == "mina_home_pet_care_intro", "Pet Hello should retarget Mina to Home Pet Care")
+	mina.interaction_requested.emit(mina.dialogue_id)
+	await process_frame
+	main_dialogue_box._finish()
+	await process_frame
+	_assert(quest_diary.active, "Home Pet Care intro should start the pet care quest")
+	_assert(quest_diary.quest_id == "prologue_home_pet_care", "home intro should continue into Home Pet Care")
+	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	feed_button.pressed.emit()
+	await process_frame
+	_assert(game_state.has_completed_quest("prologue_home_pet_care"), "Home Pet Care completion should be saved after feeding Coco")
+	_assert(mina.dialogue_id == "mina_first_trip_handoff", "Home Pet Care completion should retarget Mina to First Trip")
+	mina.interaction_requested.emit(mina.dialogue_id)
+	await process_frame
+	main_dialogue_box._finish()
+	await process_frame
+	_assert(quest_diary.active, "home handoff should start First Trip after Home Pet Care")
+	_assert(quest_diary.quest_id == "prologue_go_to_school", "home handoff should start First Trip before Walk With Mina")
 	_assert(quest_diary.prompt_label.text == "Start Mina's first trip.", "First Trip should keep adventure wording")
 	town_map.show_scene("world_overview")
 	await process_frame

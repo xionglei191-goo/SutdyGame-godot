@@ -5,7 +5,6 @@ const WorldOverviewRules = preload("res://scripts/systems/world_overview_rules.g
 const PlaceCardController = preload("res://scripts/systems/place_card_controller.gd")
 
 const SCHOOL_TOUR_QUEST_ID := WorldOverviewRules.SCHOOL_TOUR_QUEST_ID
-const BOOKSHOP_QUEST_ID := "town_bookshop_find_book"
 
 var town_map: Node
 var quest_diary: CanvasLayer
@@ -64,6 +63,8 @@ func handle_home_pet_action(action_id: String) -> void:
 		return
 	var result: Dictionary = GameState.care_for_pet(action_id)
 	if bool(result.get("success", false)):
+		if quest_diary.active and quest_diary.has_method("complete_pet_care_action"):
+			quest_diary.complete_pet_care_action(action_id)
 		GameState.save_game()
 	if refresh_home_pet_ui_callback.is_valid():
 		refresh_home_pet_ui_callback.call(str(result.get("message", "")))
@@ -107,12 +108,14 @@ func show_place_card(target_id: String) -> void:
 
 
 func handle_place_card_action(place_id: String, action_id: String) -> void:
-	if place_id == "bookshop" and action_id == PlaceCardController.PLACE_CARD_ACTION_HELP_FIND_BOOK:
-		if not PlaceCardController.is_action_currently_available(place_card, place_id, action_id):
-			if place_card.has_method("set_status"):
-				place_card.set_status("That action is not ready.")
-			return
-		_start_bookshop_commission()
+	var current_action := PlaceCardController.current_action_for_place_card(place_card, place_id, action_id)
+	if current_action.is_empty():
+		if place_card.has_method("set_status"):
+			place_card.set_status("That action is not ready.")
+		return
+	var start_quest_id := str(current_action.get("start_quest_id", ""))
+	if not start_quest_id.is_empty():
+		_start_place_card_quest(start_quest_id, str(current_action.get("success_focus_hotspot", place_id)))
 		return
 	PlaceCardController.handle_action(place_card, place_id, action_id, refresh_home_pet_ui_callback)
 
@@ -133,7 +136,7 @@ func _resolve_world_overview_target(target_id: String) -> Dictionary:
 	)
 
 
-func _start_bookshop_commission() -> void:
+func _start_place_card_quest(quest_id: String, focus_hotspot: String = "") -> void:
 	if place_card != null:
 		place_card.visible = false
 	if hide_active_overlays_callback.is_valid():
@@ -141,7 +144,7 @@ func _start_bookshop_commission() -> void:
 	town_map.show_scene("world_overview")
 	town_map.set_click_input_enabled(true)
 	town_map.set_quest_active(true)
-	town_map.set_current_quest_id(BOOKSHOP_QUEST_ID)
-	if town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot("bookshop")
-	quest_diary.start_quest(BOOKSHOP_QUEST_ID)
+	town_map.set_current_quest_id(quest_id)
+	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
+		town_map.focus_world_hotspot(focus_hotspot)
+	quest_diary.start_quest(quest_id)

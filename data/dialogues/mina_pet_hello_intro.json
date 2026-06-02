@@ -1,0 +1,19 @@
+{
+  "id": "mina_pet_hello_intro",
+  "speaker": "Mina",
+  "starts_quest": "prologue_pet_hello",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Listen. A tiny friend is in the pet corner."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's say hello and give our pet a name."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Tap the pet corner with me."
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 {
   "id": "nora_garden_intro",
   "speaker": "Nora",
+  "starts_quest": "g4_u1_garden_bird",
   "lines": [
     {
       "speaker": "Nora",

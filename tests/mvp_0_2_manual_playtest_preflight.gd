@@ -37,7 +37,7 @@ func _initialize() -> void:
 	var finish_button: Button = parent_summary.get_node("Panel/MarginContainer/VBoxContainer/FinishReadingButton")
 	var export_button: Button = parent_summary.get_node("Panel/MarginContainer/VBoxContainer/ExportReportButton")
 	_assert(finish_button.disabled, "preflight should not allow finishing parent summary early")
-	_assert(finish_button.text == "完成 4 个 Quest 和 Story Show 后可用", "preflight should explain finish prerequisite")
+	_assert(finish_button.text == "完成 home-first Quest 和 Story Show 后可用", "preflight should explain finish prerequisite")
 	_assert(export_button.disabled, "preflight should not allow report export before completion")
 	finish_button.pressed.emit()
 	_assert(not game_state.playtest_completed, "early finish press should not complete playtest")

@@ -1,6 +1,7 @@
 {
   "id": "mina_letter_box_intro",
   "speaker": "Mina",
+  "starts_quest": "prologue_letter_box",
   "lines": [
     {
       "speaker": "Mina",

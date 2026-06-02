@@ -1,0 +1,19 @@
+{
+  "id": "mina_first_trip_handoff",
+  "speaker": "Mina",
+  "starts_quest": "prologue_go_to_school",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "The room feels ready, and Coco has a cozy corner."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Now our first trip can begin from home."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's find my next story stop on the town path."
+    }
+  ]
+}

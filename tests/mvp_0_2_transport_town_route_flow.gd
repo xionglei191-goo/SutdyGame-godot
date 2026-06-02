@@ -55,6 +55,49 @@ func _initialize() -> void:
 	_assert(not action_button.visible, "marked route should not expose the route action again")
 	_assert(reward_label.text == "Already visited", "bus station revisit should use the normal visited status")
 
+	place_card._unhandled_input(close_event)
+	await process_frame
+	town_map.set_click_input_enabled(true)
+	click_game.target_clicked.emit("taxi")
+	await process_frame
+	_assert(place_card.visible, "taxi should open a place card")
+	_assert(game_state.coins == 8, "first taxi visit should add the discovery coin after the bus route")
+	_assert(action_button.visible, "taxi should offer a town road action")
+	_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, "taxi", "find_town_road"), "taxi should expose the road action from hotspot data")
+	var taxi_rect: Rect2 = click_game.get_hotspot_rect("taxi")
+	action_button.pressed.emit()
+	await process_frame
+	_assert(game_state.has_town_road(), "finding the town road should set the road flag")
+	_assert(game_state.coins == 9, "finding the town road should add a route coin after the visit bonus")
+	_assert(game_state.learned_words.has("taxi"), "finding the town road should add taxi to word records")
+	_assert(game_state.learned_words.has("road"), "finding the town road should add road to word records")
+	_assert(game_state.learned_patterns.has("Take a taxi to the road."), "finding the town road should add a taxi pattern")
+	_assert(reward_label.text == PlaceCardDataAssertions.action_success_status_text(town_map, "taxi", "find_town_road"), "taxi action should update status from action data")
+	_assert(not action_button.visible, "taxi action should hide after the road is marked")
+	_assert(town_map.get_world_overview_camera_rect().has_point(taxi_rect.get_center()), "taxi action should focus the taxi area")
+
+	place_card._unhandled_input(close_event)
+	await process_frame
+	town_map.set_click_input_enabled(true)
+	click_game.target_clicked.emit("railway_station")
+	await process_frame
+	_assert(place_card.visible, "railway station should open a place card")
+	_assert(game_state.coins == 10, "first railway visit should add the discovery coin after taxi")
+	_assert(action_button.visible, "railway station should offer a train stop action")
+	_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, "railway_station", "choose_train_stop"), "railway station should expose the train action from hotspot data")
+	var train_rect: Rect2 = click_game.get_hotspot_rect("railway_station")
+	action_button.pressed.emit()
+	await process_frame
+	_assert(game_state.has_train_stop(), "choosing the train stop should set the train stop flag")
+	_assert(game_state.coins == 11, "choosing the train stop should add a route coin after the visit bonus")
+	_assert(game_state.learned_words.has("train"), "choosing the train stop should add train to word records")
+	_assert(game_state.learned_words.has("station"), "choosing the train stop should add station to word records")
+	_assert(game_state.learned_words.has("stop"), "choosing the train stop should add stop to word records")
+	_assert(game_state.learned_patterns.has("Take the train to the station."), "choosing the train stop should add a train pattern")
+	_assert(reward_label.text == PlaceCardDataAssertions.action_success_status_text(town_map, "railway_station", "choose_train_stop"), "railway action should update status from action data")
+	_assert(not action_button.visible, "train stop action should hide after the stop is marked")
+	_assert(town_map.get_world_overview_camera_rect().has_point(train_rect.get_center()), "train action should focus the railway area")
+
 	print("mvp_0_2_transport_town_route_flow passed.")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(game_state.DEFAULT_SAVE_PATH))
 	quit(0)

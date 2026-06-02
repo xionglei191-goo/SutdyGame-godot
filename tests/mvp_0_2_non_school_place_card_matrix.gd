@@ -9,9 +9,19 @@ const MATRIX_PLACE_IDS := [
 	"restaurant",
 	"cinema",
 	"bus_station",
+	"taxi",
 	"railway_station",
 	"airport"
 ]
+
+const EXPECTED_ACTIONS := {
+	"post_office": "help_carry_parcel",
+	"restaurant": "help_choose_snack",
+	"cinema": "help_make_poster",
+	"bus_station": "choose_town_route",
+	"taxi": "find_town_road",
+	"railway_station": "choose_train_stop"
+}
 
 
 func _initialize() -> void:
@@ -53,10 +63,11 @@ func _initialize() -> void:
 		_assert(hint_label.text == PlaceCardDataAssertions.hint(town_map, place_id), "%s should show the hotspot place card hint" % place_id)
 		_assert(reward_label.text == "+1 coin", "%s first visit should show coin reward" % place_id)
 		_assert(game_state.coins == expected_coins, "%s first visit should add exactly 1 coin" % place_id)
-		if place_id == "bus_station":
-			_assert(action_button.visible, "bus station should expose the starter transport action")
-			_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, "bus_station", "choose_town_route"), "bus station should expose the town route action from hotspot data")
-			_assert(PlaceCardDataAssertions.action_visible_when(town_map, "bus_station", "choose_town_route") == "missing_town_route", "bus station route action should declare its visible_when condition")
+		var expected_action_id := str(EXPECTED_ACTIONS.get(place_id, ""))
+		if not expected_action_id.is_empty():
+			_assert(action_button.visible, "%s should expose its starter action" % place_id)
+			_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, place_id, expected_action_id), "%s should expose the action label from hotspot data" % place_id)
+			_assert(not PlaceCardDataAssertions.action_visible_when(town_map, place_id, expected_action_id).is_empty(), "%s action should declare its visible_when condition" % place_id)
 		else:
 			_assert(not action_button.visible, "%s should not expose a starter action in the generic matrix" % place_id)
 		place_card._unhandled_input(close_event)

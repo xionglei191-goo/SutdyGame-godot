@@ -1,0 +1,31 @@
+{
+  "id": "town_cinema_show_poster",
+  "title": "Show Poster",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help make a bright show poster at the cinema.",
+  "vocabulary": ["show", "poster", "ticket"],
+  "patterns": [
+    "Put up the poster.",
+    "The show ticket is ready."
+  ],
+  "targets": ["cinema"],
+  "target_labels": {
+    "cinema": "cinema"
+  },
+  "correct_target": "cinema",
+  "wrong_target_text": "Look for the cinema and the poster lights.",
+  "success_text": "Sparkly! The show poster is up.",
+  "reward_id": "poster_spark",
+  "reward_name": "Poster Spark",
+  "reward_coins": 1,
+  "start_focus_hotspot": "cinema",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_cinema_show_poster_done"],
+    "focus_hotspot": "cinema"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the cinema to help with the show poster."
+}

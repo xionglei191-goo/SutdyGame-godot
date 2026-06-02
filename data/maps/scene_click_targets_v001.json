@@ -4,7 +4,17 @@
   "scenes": {
     "home": {
       "targets": [
-        { "id": "home_letter_box", "rect": { "x": 485, "y": 455, "w": 230, "h": 180 } }
+        { "id": "home_letter_box", "rect": { "x": 485, "y": 455, "w": 230, "h": 180 } },
+        { "id": "home_book", "rect": { "x": 608, "y": 480, "w": 90, "h": 90 } },
+        { "id": "home_bag", "rect": { "x": 500, "y": 485, "w": 110, "h": 105 } },
+        { "id": "home_bed", "rect": { "x": 855, "y": 385, "w": 250, "h": 165 } },
+        { "id": "home_door", "rect": { "x": 610, "y": 215, "w": 150, "h": 245 } },
+        { "id": "home_kitchen", "rect": { "x": 70, "y": 155, "w": 330, "h": 225 } },
+        { "id": "home_yard", "rect": { "x": 36, "y": 585, "w": 250, "h": 105 } },
+        { "id": "home_pet_corner", "rect": { "x": 125, "y": 445, "w": 305, "h": 150 } },
+        { "id": "home_pet_bowl", "rect": { "x": 335, "y": 488, "w": 90, "h": 70 } },
+        { "id": "home_pet_toy", "rect": { "x": 125, "y": 505, "w": 86, "h": 74 } },
+        { "id": "home_pet_bed", "rect": { "x": 140, "y": 470, "w": 190, "h": 72 } }
       ]
     },
     "campus_gate": {

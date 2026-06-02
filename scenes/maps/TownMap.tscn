@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bt8bykcrcpwov"]
+[gd_scene load_steps=18 format=3 uid="uid://bt8bykcrcpwov"]
 
 [ext_resource type="Script" uid="uid://jeb1jwl6sjrp" path="res://scripts/maps/town_map.gd" id="1_town_map"]
 [ext_resource type="PackedScene" path="res://scenes/actors/Player.tscn" id="2_player"]
@@ -9,6 +9,10 @@
 [ext_resource type="Texture2D" path="res://assets/generated/maps/school_arrival/map_school_arrival_bg_v002.png" id="5_school_gate_bg"]
 [ext_resource type="Texture2D" uid="uid://bl7p8abulguvr" path="res://assets/generated/maps/classroom/map_classroom_bg_v001.png" id="6_classroom_bg"]
 [ext_resource type="Texture2D" uid="uid://dpckv3vmwg0nv" path="res://assets/generated/maps/garden/map_garden_bg_v001.png" id="7_garden_bg"]
+[ext_resource type="Texture2D" path="res://assets/generated/props/home/prop_pet_bowl_v001.png" id="10_pet_bowl"]
+[ext_resource type="Texture2D" path="res://assets/generated/props/home/prop_pet_food_v001.png" id="11_pet_food"]
+[ext_resource type="Texture2D" path="res://assets/generated/props/home/prop_pet_toy_v001.png" id="12_pet_toy"]
+[ext_resource type="Texture2D" path="res://assets/generated/props/home/prop_soap_v001.png" id="13_pet_soap"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_marker"]
 size = Vector2(210, 130)
@@ -150,13 +154,45 @@ offset_bottom = 106.0
 mouse_filter = 2
 color = Color(0.16, 0.12, 0.1, 1)
 
-[node name="PetBowl" type="ColorRect" parent="HomeLayer/PetCorner"]
-offset_left = 172.0
-offset_top = 126.0
-offset_right = 232.0
-offset_bottom = 150.0
+[node name="PetBowl" type="TextureRect" parent="HomeLayer/PetCorner"]
+offset_left = 154.0
+offset_top = 98.0
+offset_right = 254.0
+offset_bottom = 178.0
 mouse_filter = 2
-color = Color(0.47, 0.7, 0.93, 1)
+texture = ExtResource("10_pet_bowl")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PetFood" type="TextureRect" parent="HomeLayer/PetCorner"]
+offset_left = 212.0
+offset_top = 68.0
+offset_right = 292.0
+offset_bottom = 132.0
+mouse_filter = 2
+texture = ExtResource("11_pet_food")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PetToy" type="TextureRect" parent="HomeLayer/PetCorner"]
+offset_left = -44.0
+offset_top = 122.0
+offset_right = 48.0
+offset_bottom = 198.0
+mouse_filter = 2
+texture = ExtResource("12_pet_toy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PetSoap" type="TextureRect" parent="HomeLayer/PetCorner"]
+offset_left = 232.0
+offset_top = 10.0
+offset_right = 306.0
+offset_bottom = 84.0
+mouse_filter = 2
+texture = ExtResource("13_pet_soap")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PetCornerLabel" type="Label" parent="HomeLayer/PetCorner"]
 offset_left = -22.0
@@ -234,6 +270,44 @@ offset_right = 1066.0
 offset_bottom = 660.0
 theme_override_font_sizes/font_size = 20
 text = "Talk to Mina, then start the first trip."
+horizontal_alignment = 1
+
+[node name="HomeSpaces" type="Node2D" parent="HomeLayer"]
+
+[node name="BedroomLabel" type="Label" parent="HomeLayer/HomeSpaces"]
+offset_left = 862.0
+offset_top = 330.0
+offset_right = 1115.0
+offset_bottom = 368.0
+theme_override_font_sizes/font_size = 18
+text = "Bedroom"
+horizontal_alignment = 1
+
+[node name="KitchenLabel" type="Label" parent="HomeLayer/HomeSpaces"]
+offset_left = 94.0
+offset_top = 150.0
+offset_right = 360.0
+offset_bottom = 188.0
+theme_override_font_sizes/font_size = 18
+text = "Kitchen"
+horizontal_alignment = 1
+
+[node name="YardLabel" type="Label" parent="HomeLayer/HomeSpaces"]
+offset_left = 62.0
+offset_top = 566.0
+offset_right = 258.0
+offset_bottom = 604.0
+theme_override_font_sizes/font_size = 18
+text = "Yard"
+horizontal_alignment = 1
+
+[node name="PetCornerSpaceLabel" type="Label" parent="HomeLayer/HomeSpaces"]
+offset_left = 128.0
+offset_top = 418.0
+offset_right = 430.0
+offset_bottom = 456.0
+theme_override_font_sizes/font_size = 18
+text = "Pet Corner"
 horizontal_alignment = 1
 
 [node name="PetPanel" type="Panel" parent="HomeLayer" unique_id=188001120]

@@ -88,9 +88,9 @@
 - 点击正确地点后任务完成
 - 获得第一块探索奖励
 
-### 3.2 MVP 0.2
+### 3.2 MVP 0.2（历史验证切片）
 
-目标：完成一个“从 home 出发，经过 school 事件链，再进入回顾活动和家长摘要”的儿童试玩闭环。
+目标：完成一个“从 home 出发，经过 school 事件链，再进入回顾活动和家长摘要”的儿童试玩闭环。该切片已经转为历史验证和兼容基线，不再代表新 MVP 的完整目标链。
 
 范围：
 
@@ -104,12 +104,40 @@
 
 验收标准：
 
-- 玩家能完成 `Welcome Box` 微序章，并完成 4 个连续正式 MVP 前台事件：`First Trip`、`Walk With Mina`、`Room Helper`、`Bird Watch`
+- 玩家能完成新 home-first 链：`Welcome Box`、`Room Starter`、`Pet Hello`、`Home Pet Care`、`First Trip`，并继续兼容后续 `Walk With Mina`、`Room Helper`、`Bird Watch`
 - 每个事件完成后有奖励反馈
 - 至少 1 个场景在事件完成后发生可见变化
 - 退出重进后能保留进度
 - 家长摘要能显示词汇记录和表达记录
 - 前台不再把主流程写成课时或复习题
+
+兼容边界：
+
+- `First Trip`、`Walk With Mina`、`Room Helper`、`Bird Watch` 仍是当前 runtime 和历史报告里可见的后续验证链。
+- `parent_bonus_confirmed_home_prologue_v001` 是当前 Parent Bonus 确认 flag；`parent_bonus_confirmed_mvp_0_2` 继续作为历史确认 flag 保存和读取，用于防重复。
+- 新实现不得删除 `g4_u1_school_tour`、`g4_u1_tidy_classroom`、`g4_u1_garden_bird` 或 legacy `review_challenge_*` 报告合同。
+
+### 3.3 新 MVP P0：Letters, Home, My First Pet
+
+目标：把第一个正式目标链改为 home-first 生活冒险序章：
+
+`Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip`
+
+范围：
+
+- `Welcome Box` 继续复用 `prologue_letter_box`。
+- `Room Starter` 新增 `prologue_room_starter`，通过 home room targets 建立 `bed / bag / book / door`。
+- `Pet Hello` 新增 `prologue_pet_hello`，通过 `GameState.pet_name` / `set_pet_name()` 建立宠物身份。
+- `Home Pet Care` 新增 `prologue_home_pet_care`，必须复用 `GameState.care_for_pet(action_id)`。
+- `First Trip` 继续复用 `prologue_go_to_school`，完成后路由到内部兼容 `campus_gate` / 前台 `school_arrival`。
+
+验收标准：
+
+- 新 MVP 文档和 quest data 使用生活事件标题，不使用 school app、lesson panel、word list drill、review test、L1/L2/L3。
+- 新增 home targets 来自 `data/maps/scene_click_targets_v001.json`，不新增 `PLACE_RECTS` / `SCENE_TARGET_RECTS` 风格脚本常量。
+- `Home Pet Care` 的 feed / clean / play / rest 首轮反馈走现有 pet state，不创建平行宠物存档。
+- 前三步给到足够 coins，保证 `feed` 的 `2 coins` 成本不会卡死首轮体验。
+- 完成 `First Trip` 后写入 `az_full_unlocked_after_prologue`，A-Z 首访锚点进入正式可点击状态；首访后可进入全量 A-Z `Memory Spark` 回访提取。
 
 ## 4. 推荐项目结构
 
@@ -164,6 +192,10 @@ SutdyGame-godot/
       g4_u1_garden_bird.json
 	    dialogues/
 	      mina_letter_box_intro.json
+	      mina_room_starter_intro.json
+	      mina_pet_hello_intro.json
+	      mina_home_pet_care_intro.json
+	      mina_first_trip_handoff.json
 	      mina_home_intro.json
       mina_intro.json
       leo_room_intro.json
@@ -182,8 +214,8 @@ SutdyGame-godot/
 当前实现补充：
 
 - `PlaceCard` 的首访奖励与 starter 购买行为已抽到 `scripts/systems/place_card_controller.gd`
-- `Memory Spark` 前台体验的 pilot gating / defs / 完成回写已抽到内部 `scripts/systems/memory_spark_controller.gd`
-- `Welcome Box -> First Trip -> Walk With Mina -> Room Helper -> Bird Watch -> Story Show / ParentSummary` 这条主流程编排已开始从 `main.gd` 抽到 `scripts/systems/main_flow_controller.gd`（`main_flow_controller.gd`）
+- `Memory Spark` 前台体验的 gating / full A-Z defs / 完成回写已抽到内部 `scripts/systems/memory_spark_controller.gd`
+- `Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip -> Walk With Mina -> Room Helper -> Bird Watch -> Story Show / ParentSummary` 这条主流程编排已开始从 `main.gd` 抽到 `scripts/systems/main_flow_controller.gd`（`main_flow_controller.gd`）
 - `world_overview` 的 place/anchor/home 交互编排已开始从 `main.gd` 抽到 `scripts/systems/world_interaction_controller.gd`（`world_interaction_controller.gd`）
 - 当前 `main.gd` 仍保留少量兼容字段与信号接线；后续继续减债时优先扩 controller，而不是把新主流程分支继续塞回 `main.gd`
 
@@ -250,7 +282,7 @@ SutdyGame-godot/
 - 复用 `GameState` 现有 `coins`、`parent_bonus`、`pet_name`、`pet_state` 和 `care_for_pet(action_id)`。
 - 当前动作开放 `feed`、`clean`、`play`、`rest/sleep`。
 - `feed` 消耗 `2 coins`；`clean`、`play`、`rest/sleep` 不消耗 `coins`。
-- 交互发生在 `HomeLayer`，不打断 `Welcome Box -> First Trip -> Walk With Mina` 主链。
+- 交互发生在 `HomeLayer`。当前 runtime 中它是 `Pet Hello -> Home Pet Care -> First Trip` 之间的正式生活事件，并继续复用现有宠物状态和 home feedback。
 - `HomeLayer` 保留程序搭建的可见宠物角、宠物名、Rest 按钮和 `HomeBackgroundSlot`，后续 home 背景图接入时只替换背景层，不删除交互层。
 
 验收：
@@ -291,7 +323,7 @@ SutdyGame-godot/
 - 点击动作后启动 `town_bookshop_find_book`，前台标题为 `Bookshop Helper`，不使用课时、测试或词表口径。
 - 委托仍发生在 `world_overview`，目标是再次点击 `bookshop`，形成“看见地点 -> 接委托 -> 回到地点完成”的最小 town loop。
 - 完成后记录词汇 `bookshop`、`book`、`read`，记录句型 `Find a book.`、`Read at the bookshop.`，发放 `Bookshop Leafmark` 并额外给 `+1 coin`。
-- `town_bookshop_find_book` 是自由探索支线，不加入 Parent Bonus 当前 4 个正式 MVP Quest 门槛。
+- `town_bookshop_find_book` 是自由探索支线，不加入 Parent Bonus 当前 home-first Quest 门槛。
 
 验收：
 
@@ -404,11 +436,11 @@ SutdyGame-godot/
 
 - 把首版 `memory_anchor` 从“只播三句对话”升级成“首访编码、回访提取”的轻 progression。
 - 首访仍复用 `anchor_*.json` 对话，只额外写入 `anchor_seen_<id>` 标记。
-- 回访时仅对试点 anchors 打开 `Memory Spark` 小卡，不接入 `Quest Diary`，不污染主线 Quest 完成状态；Debug/报告层的 legacy `completed_tasks` 兼容字段也不得被 Memory Spark 写入。
+- 回访时对全量 26 个 frozen A-Z anchors 打开 `Memory Spark` 小卡，不接入 `Quest Diary`，不污染主线 Quest 完成状态；Debug/报告层的 legacy `completed_tasks` 兼容字段也不得被 Memory Spark 写入。
 - `Memory Spark` 前台使用 `picture clue / memory word / What comes back?` 的记忆宫殿口吻，不做填空题或词表测验包装，也不暴露 `anchor` / `recall` 机制词。
-- 首版试点仅覆盖 `anchor_b_bear`、`anchor_g_gate`、`anchor_h_hat`、`anchor_o_orange`、`anchor_t_taxi`、`anchor_w_watch`，其余 anchors 仍保留纯对话路径。
+- 历史试点样本 `anchor_b_bear`、`anchor_g_gate`、`anchor_h_hat`、`anchor_o_orange`、`anchor_t_taxi`、`anchor_w_watch` 继续作为回归样本；当前 `memory_spark_defs` 覆盖完整 26 个 frozen A-Z anchors。
 - A-Z 可点击开放由 `az_unlock_mode` 控制，不再由 `default_visible` 或 `world_enabled_mode: pilot_recall` 隐式决定。
-- 序章完成前只开放 starter anchors；序章完成后写入 `az_full_unlocked_after_prologue`，全部 26 个 A-Z anchors 可点击。
+- 序章完成前只开放 starter anchors；序章完成后写入 `az_full_unlocked_after_prologue`，全部 26 个 A-Z anchors 可点击，并可在首访后进入 `Memory Spark` 回访。
 - Memory Spark 成功后写入 legacy `anchor_recall_done_<id>` 存档 flag，并把少量 `coins`、`learned_words`、`learned_patterns` 回流到现有 `GameState` / `ParentSummary`。
 - 当前实现上，Memory Spark 的 gating、defs 构建、完成奖励与状态回写已从 `main.gd` 抽到内部 `MemorySparkController`；`main.gd` 继续保留 `memory_spark_defs` 镜像字段，仅用于兼容当前测试与可视化校验。
 
@@ -501,7 +533,7 @@ SutdyGame-godot/
 
 验收：
 
-- 结束第 4 个正式 MVP 事件 `Bird Watch` 后能自动进入回顾活动
+- 历史 runtime gate 中，结束第 4 个正式 `MVP 0.2` 事件 `Bird Watch` 后能自动进入回顾活动
 - 朗读计时仍有效
 - 家长摘要前置门槛不变
 
@@ -513,8 +545,8 @@ SutdyGame-godot/
 - 家长层可以继续使用“词汇记录/表达记录/建议回顾”这类解释口径
 - 但摘要里显示的任务名改成新的生活事件名
 - 当前 runtime 已接入 `Parent Bonus +2` 家长确认按钮。
-- `Parent Bonus` 确认需要完成 4 个当前 MVP 事件和 25 题 `Story Show`。
-- 确认后写入 `parent_bonus_confirmed_mvp_0_2`，并保持与 `Coins` 分离。
+- 当前 runtime 的 Parent Bonus gate 已迁移为完成 `Welcome Box / Room Starter / Pet Hello / Home Pet Care / First Trip` 和 25 题 `Story Show`。
+- 确认后写入 `parent_bonus_confirmed_home_prologue_v001`；旧 `parent_bonus_confirmed_mvp_0_2` 仍可读并防止重复发放，同时保持与 `Coins` 分离。
 - `ParentSummary` 通过 `GameState.get_parent_summary_state()` 读取家长层数据；`debug_snapshot()` 只保留给报告、诊断和 legacy fixture，不作为家长 UI 主数据 API。
 - 重复点击或读档后再次进入摘要，不应重复发放 `Parent Bonus`。
 
@@ -524,26 +556,78 @@ SutdyGame-godot/
 - 摘要能同时说明玩法事件和语言收获
 - 家长摘要可显示 `Parent Bonus` 当前值，并一次性确认发放 `+2`
 
-## 6. 当前垂直切片重述
+## 6. 新 MVP 垂直切片规格
 
-当前 MVP 主线不再对外称作“L1/L2/L3 课堂链”，而重述为 `Welcome Box` 微序章 + 4 个正式 MVP 前台事件的生活事件链。`Welcome Box` 是 home-first 起手，不计入 Parent Bonus 正式 gate；`First Trip`、`Walk With Mina`、`Room Helper`、`Bird Watch` 是当前正式 gate。
+新 MVP P0 主线不再对外称作“L1/L2/L3 课堂链”，也不继续把历史 `MVP 0.2` 的 school-side gate 当作当前产品目标。当前实现工作应围绕：
 
-| 技术 ID | 前台事件名 | 场景 | 核心玩法 | 保留的语言承接 |
-|---|---|---|---|---|
-| `prologue_letter_box` | `Welcome Box` | `home` | 点击/对话 | letter / box / open |
-| `prologue_go_to_school` | `First Trip` | `home` -> `school_arrival` | 点击/路线起步 | home / school / go |
-| `g4_u1_school_tour` | `Walk With Mina` | `campus_gate` / school 核心区 | 场景点击 | classroom / library / playground |
-| `g4_u1_tidy_classroom` | `Room Helper` | `classroom` | 拖拽放置 | book / bag / pencil / shelf / desk |
-| `g4_u1_garden_bird` | `Bird Watch` | `garden` | 场景点击 | garden / tree / flower / bird |
+`Welcome Box -> Room Starter -> Pet Hello -> Home Pet Care -> First Trip`
 
-回顾活动不前台称 `Review Challenge`，而称：
+### 6.1 P0 home prologue quest data 合同
 
-- `Story Show`
+| 技术 ID | 前台事件名 | Scene / type | Targets / actions | Reward | Completion routing |
+|---|---|---|---|---|---|
+| `prologue_letter_box` | `Welcome Box` | `home` / `click_target` | `home_letter_box` | `welcome_box_star` / `Welcome Box Star` / `reward_coins: 1` | 写入 `prologue_letter_box_done`；下一步 `prologue_room_starter` |
+| `prologue_room_starter` | `Room Starter` | `home` / `click_target` 或轻量 `drag_place` | `home_book`、`home_bag`、`home_bed`、`home_door` | `room_starter_sticker` / `Room Starter Sticker` / `reward_coins: 1` | 写入 `prologue_room_starter_done`；下一步 `prologue_pet_hello` |
+| `prologue_pet_hello` | `Pet Hello` | `home` / `click_target` + naming UI | `home_pet_corner` | `pet_name_tag` / `Pet Name Tag` / `reward_coins: 1` | 复用 `GameState.pet_name` / `set_pet_name()`；写入 `prologue_pet_hello_done`；下一步 `prologue_home_pet_care` |
+| `prologue_home_pet_care` | `Home Pet Care` | `home` / pet actions | `feed`、`clean`、`play`、`rest/sleep` | `pet_care_heart` / `Pet Care Heart` / `reward_coins: 2` | 复用 `GameState.care_for_pet(action_id)`；写入 `prologue_home_pet_care_done`；下一步 `prologue_go_to_school` |
+| `prologue_go_to_school` | `First Trip` | `world_overview` / `click_target` | `home`、`sunshine_school` | `first_trip_ticket` / `First Trip Ticket` / `reward_coins: 1` | 完成后进入内部兼容 `campus_gate` / 前台 `school_arrival`；写入 `prologue_go_to_school_done` 与 `az_full_unlocked_after_prologue`；触发 `mina_school_arrival_intro`；下一步兼容 `g4_u1_school_tour` |
 
-如果后续要进一步贴合旅行与展演方向，可再升级成：
+实现要求：
 
-- `Story Show Prep`
-- `Travel Show Prep`
+- `prologue_letter_box` 和 `prologue_go_to_school` 是已有兼容 ID，继续保留。
+- 新增 `prologue_room_starter`、`prologue_pet_hello`、`prologue_home_pet_care` 时，quest data 必须提供 `title`、`prompt`、`vocabulary`、`patterns`、`targets`、`reward_id`、`reward_name`、`reward_coins`、`completion`。
+- Quest startup 继续从 `scene_id`、`type`、`start_focus_hotspot` 读取；Quest completion 继续从 `completion` 对象读取，不在 `MainFlowController.handle_quest_started()` 或 `handle_quest_completed()` 里新增 quest-id match 分支。
+- 新增 home targets 必须写入 `data/maps/scene_click_targets_v001.json`，不新增脚本 rect 常量。
+- `Home Pet Care` 的重复动作继续遵守现有成本：`feed` 消耗 `2 coins`；`clean`、`play`、`rest/sleep` 不消耗 `coins`。
+
+### 6.2 历史 MVP 0.2 兼容链
+
+历史 `MVP 0.2` runtime 仍可能保留以下链路，用于旧存档、旧报告、现有测试和过渡验收：
+
+| 技术 ID | 前台事件名 | 兼容用途 |
+|---|---|---|
+| `prologue_go_to_school` | `First Trip` | 新 MVP 仍复用的 First Trip |
+| `g4_u1_school_tour` | `Walk With Mina` | 旧 formal gate / school arrival 后续事件 |
+| `g4_u1_tidy_classroom` | `Room Helper` | 旧 formal gate / classroom 整理事件 |
+| `g4_u1_garden_bird` | `Bird Watch` | 旧 formal gate / garden 观察事件 |
+| `mvp_0_2_review_challenge` | `Story Show` | legacy report ID；儿童前台继续显示 `Story Show` |
+
+该链路只能作为历史验证和兼容说明，不作为新 MVP P0 范围边界。
+
+### 6.3 P1 town / transport 实施规格
+
+P1 继续扩展非学校生活地点，不把 school 变成产品唯一脸面。
+
+| 类型 | Place | ID / flag | 前台动作 | Words / patterns | Side effects |
+|---|---|---|---|---|---|
+| town commission | `post_office` | `town_post_office_small_parcel` | `Help Carry a Parcel` | `post`, `parcel`, `stamp`; `Take the parcel.` | PlaceCard 启动 Quest Diary；完成写 `town_post_office_small_parcel_done`；奖励 `Parcel Stamp` / `+1 coin` |
+| town commission | `restaurant` | `town_restaurant_snack_order` | `Help Choose a Snack` | `snack`, `juice`, `rice`; `Choose a snack.` | PlaceCard 启动 Quest Diary；完成写 `town_restaurant_snack_order_done`；奖励 `Snack Star` / `+1 coin` |
+| town commission | `cinema` | `town_cinema_show_poster` | `Help Make a Poster` | `show`, `poster`, `ticket`; `Put up the poster.` | PlaceCard 启动 Quest Diary；完成写 `town_cinema_show_poster_done`；奖励 `Poster Spark` / `+1 coin` |
+| transport action | `bus_station` | `travel_route_town_edge` | `Choose Town Route` | `bus`, `route`, `town`; `Take the bus to town.` | 已落地 starter slice；成功后 `+1 coin`，聚焦 town-edge |
+| transport action | `taxi` | `travel_route_town_road` | `Find Town Road` | `taxi`, `road`, `stop`; `Take a taxi to the road.` | 写轻量 story flag；`+1 coin`；不建路线背包 |
+| transport action | `railway_station` | `travel_route_train_stop` | `Choose Train Stop` | `train`, `station`, `stop`; `Take the train to the stop.` | 写轻量 story flag；`+1 coin`；不建时刻表系统 |
+
+实现要求：
+
+- PlaceCard 静态 copy 和按钮声明继续放在 hotspot data；经济、item ownership、travel flag、Quest Diary 启动副作用继续留在 `PlaceCardController`、`WorldInteractionController` 和 `GameState`。
+- P1 town/transport 不加入当前 Parent Bonus gate。
+- 每个新切片新增独立 flow 测试，先跑单测，再跑 smoke。
+
+### 6.4 P2 Parent Bonus gate 迁移规格
+
+当前 runtime 已接入 `Parent Bonus +2` 家长确认按钮；gate 已从历史 4 个 `MVP 0.2` formal events 迁移到 home-first 事件组与 `Story Show`。
+
+新 home-first MVP runtime 稳定后，gate 迁移为：
+
+`prologue_letter_box / prologue_room_starter / prologue_pet_hello / prologue_home_pet_care / prologue_go_to_school + Story Show`
+
+实现要求：
+
+- 新确认 flag 为 `parent_bonus_confirmed_home_prologue_v001`。
+- 旧 `parent_bonus_confirmed_mvp_0_2` 继续可读，可用于旧报告和防重复。
+- 如果旧 flag 已确认，不因新 gate 自动重复发放同一阶段 `Parent Bonus +2`；如需新奖励，必须另定版本化奖励 ID。
+- `Coins` 和 `Parent Bonus` 继续分离；`Explorer Cape` 继续只花 `Parent Bonus`，不花 `coins`。
+- ParentSummary 使用 `GameState.get_parent_summary_state()` 或明确 getter，不把 `debug_snapshot()` 当产品 UI 主数据 API。
 
 ## 7. 数据与命名策略
 

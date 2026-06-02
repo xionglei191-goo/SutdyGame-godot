@@ -22,6 +22,8 @@ Prompt set maintained on 2026-06-02. Generated/runtime status is tracked below s
 
 Runtime note: `HomeLayer/HomeBackgroundSlot` is connected to `map_home_interior_bg_v001.png`. The world overview still has a separate visible home starting area; do not describe that map area as the generated home interior.
 
+Focused P0.5 refinement prompt: `assets/source_prompts/maps/home_pet_corner_refinement_v001.md`. That record is for future HomeLayer pet-corner polish only; it is not a request to replace the `world_overview` home starting area.
+
 ## Prompts
 
 ### World Overview

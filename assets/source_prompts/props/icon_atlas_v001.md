@@ -1,6 +1,12 @@
 # Life-Adventure Prop, Reward, and UI Icon Prompt v001
 
-Prompt set maintained on 2026-06-01. This file is both the icon-generation prompt and the asset status list; not every prompt target has been generated or connected to runtime.
+Prompt set maintained on 2026-06-02. This file is both the broad icon-generation prompt and an asset status list; not every prompt target has been generated or connected to runtime.
+
+For the new MVP P0.5/P0.7/P1.7 slice, prefer the focused prompt records before regenerating broad atlas art:
+
+- `assets/source_prompts/props/home_pet_care_props_v001.md`
+- `assets/source_prompts/props/reward_place_card_ui_prompts_v001.md`
+- `assets/source_prompts/maps/home_pet_corner_refinement_v001.md`
 
 ## Files
 
@@ -22,6 +28,12 @@ Prompt set maintained on 2026-06-01. This file is both the icon-generation promp
 - `assets/generated/ui/ui_quest_diary_ornament_v001.png`
 - `assets/generated/ui/ui_memory_spark_ornament_v001.png`
 - `assets/generated/ui/ui_reward_sparkle_v001.png`
+- `assets/generated/props/home/prop_pet_bowl_v001.png`
+- `assets/generated/props/home/prop_pet_food_v001.png`
+- `assets/generated/props/home/prop_pet_toy_v001.png`
+- `assets/generated/props/home/prop_soap_v001.png`
+- `assets/generated/rewards/reward_first_trip_ticket_v001.png`
+- `assets/generated/ui/ui_place_card_ornament_v001.png`
 
 ### Generated Backup / School-Cluster Support
 
@@ -31,21 +43,16 @@ Prompt set maintained on 2026-06-01. This file is both the icon-generation promp
 
 ### Pending Generation
 
-- `assets/generated/props/home/prop_pet_bowl_v001.png`
-- `assets/generated/props/home/prop_pet_food_v001.png`
-- `assets/generated/props/home/prop_pet_toy_v001.png` (pet ball / starter play toy)
-- `assets/generated/props/home/prop_soap_v001.png`
 - `assets/generated/props/town/prop_place_card_visit_v001.png`
 - `assets/generated/props/town/prop_shop_bag_v001.png`
 - `assets/generated/props/town/prop_ticket_v001.png`
-- `assets/generated/rewards/reward_first_trip_ticket_v001.png`
-- `assets/generated/ui/ui_place_card_ornament_v001.png`
 
 ### Runtime Status Notes
 
 - Runtime currently uses the room icons `prop_book_v001.png`, `prop_pencil_v001.png`, and `prop_schoolbag_blue_v001.png` in `DragPlaceGame`.
-- `first_trip_ticket` currently reuses `reward_adventure_star_piece_v001.png`; the standalone ticket reward icon is pending.
+- `first_trip_ticket` now uses standalone `reward_first_trip_ticket_v001.png` through `data/rewards/reward_icons_v001.json`.
 - School, garden, desk/shelf, and UI ornament PNGs are generated asset-library items, but are not proof of direct `TownMap.tscn` or UI scene wiring.
+- The generated pet-care, First Trip Ticket, and PlaceCard ornament assets must remain original: no external IP, logos, brands, trademarks, readable packaging, real transit marks, or store/school logos.
 
 ## Prompt
 

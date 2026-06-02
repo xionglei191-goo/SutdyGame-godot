@@ -19,7 +19,12 @@ const SUPPORTED_PLACE_CARD_ACTION_IDS := [
 	"buy_explorer_cape",
 	"buy_star_rug",
 	"choose_town_route",
-	"help_find_book"
+	"find_town_road",
+	"choose_train_stop",
+	"help_find_book",
+	"help_carry_parcel",
+	"help_choose_snack",
+	"help_make_poster"
 ]
 const SUPPORTED_PLACE_CARD_VISIBLE_WHEN := [
 	"always",
@@ -27,12 +32,21 @@ const SUPPORTED_PLACE_CARD_VISIBLE_WHEN := [
 	"missing_pet_ball",
 	"missing_explorer_cape",
 	"missing_star_rug",
-	"missing_town_route"
+	"missing_town_route",
+	"missing_town_road",
+	"missing_train_stop"
 ]
 const PLACE_CARD_ACTION_CONTRACTS := {
+	"post_office": {
+		"help_carry_parcel": {
+			"visible_when": "quest_not_completed:town_post_office_small_parcel",
+			"start_quest_id": "town_post_office_small_parcel"
+		}
+	},
 	"supermarket": {
 		"buy_pet_bowl": {
 			"visible_when": "missing_pet_bowl",
+			"game_state_action": "buy_pet_bowl",
 			"success_status_text": true,
 			"home_feedback": true
 		}
@@ -40,6 +54,7 @@ const PLACE_CARD_ACTION_CONTRACTS := {
 	"pet_shop": {
 		"buy_pet_ball": {
 			"visible_when": "missing_pet_ball",
+			"game_state_action": "buy_pet_ball",
 			"success_status_text": true,
 			"home_feedback": true
 		}
@@ -47,6 +62,7 @@ const PLACE_CARD_ACTION_CONTRACTS := {
 	"clothes_shop": {
 		"buy_explorer_cape": {
 			"visible_when": "missing_explorer_cape",
+			"game_state_action": "buy_explorer_cape",
 			"success_status_text": true,
 			"home_feedback": true
 		}
@@ -54,20 +70,51 @@ const PLACE_CARD_ACTION_CONTRACTS := {
 	"general_store": {
 		"buy_star_rug": {
 			"visible_when": "missing_star_rug",
+			"game_state_action": "buy_star_rug",
 			"success_status_text": true,
 			"home_feedback": true
+		}
+	},
+	"restaurant": {
+		"help_choose_snack": {
+			"visible_when": "quest_not_completed:town_restaurant_snack_order",
+			"start_quest_id": "town_restaurant_snack_order"
+		}
+	},
+	"cinema": {
+		"help_make_poster": {
+			"visible_when": "quest_not_completed:town_cinema_show_poster",
+			"start_quest_id": "town_cinema_show_poster"
 		}
 	},
 	"bus_station": {
 		"choose_town_route": {
 			"visible_when": "missing_town_route",
+			"game_state_action": "choose_town_route",
+			"success_status_text": true,
+			"success_focus_hotspot": true
+		}
+	},
+	"taxi": {
+		"find_town_road": {
+			"visible_when": "missing_town_road",
+			"game_state_action": "find_town_road",
+			"success_status_text": true,
+			"success_focus_hotspot": true
+		}
+	},
+	"railway_station": {
+		"choose_train_stop": {
+			"visible_when": "missing_train_stop",
+			"game_state_action": "choose_train_stop",
 			"success_status_text": true,
 			"success_focus_hotspot": true
 		}
 	},
 	"bookshop": {
 		"help_find_book": {
-			"visible_when": "quest_not_completed:town_bookshop_find_book"
+			"visible_when": "quest_not_completed:town_bookshop_find_book",
+			"start_quest_id": "town_bookshop_find_book"
 		}
 	}
 }
@@ -143,6 +190,8 @@ func _assert_quest_file(path: String) -> void:
 			_assert_click_target_contract(quest, scene_id, quest_id)
 		"drag_place":
 			_assert_drag_place_contract(quest, scene_id, quest_id)
+		"pet_care":
+			_assert_pet_care_contract(quest, scene_id, quest_id)
 		_:
 			_assert(false, "quest type should be supported: %s -> %s" % [quest_id, quest_type])
 
@@ -172,6 +221,14 @@ func _assert_completion_contract(quest: Dictionary, quest_id: String) -> void:
 				_assert(not str(flag_value).is_empty(), "quest completion story flag should be non-empty: %s" % quest_id)
 	if completion.has("dialogue_id"):
 		_assert(not str(completion.get("dialogue_id", "")).is_empty(), "quest completion dialogue_id should be non-empty: %s" % quest_id)
+	if completion.has("pet_name"):
+		_assert(scene_id == "home", "quest completion pet_name should only be used by home quests: %s" % quest_id)
+		_assert(not str(completion.get("pet_name", "")).strip_edges().is_empty(), "quest completion pet_name should be non-empty: %s" % quest_id)
+	if completion.has("focus_hotspot"):
+		var focus_hotspot := str(completion.get("focus_hotspot", ""))
+		_assert(not focus_hotspot.is_empty(), "quest completion focus_hotspot should be non-empty: %s" % quest_id)
+		_assert(scene_id == "world_overview", "quest completion focus_hotspot should only be used on world_overview completions: %s" % quest_id)
+		_assert(_world_hotspot_ids().has(focus_hotspot), "quest completion focus_hotspot should resolve to a world hotspot: %s -> %s" % [quest_id, focus_hotspot])
 
 
 func _assert_click_target_contract(quest: Dictionary, scene_id: String, quest_id: String) -> void:
@@ -196,6 +253,15 @@ func _assert_drag_place_contract(quest: Dictionary, scene_id: String, quest_id: 
 	for target_value: Variant in targets:
 		var target_id := str(target_value)
 		_assert(placement_targets.has(target_id), "drag quest target should have a placement target: %s -> %s" % [quest_id, target_id])
+
+
+func _assert_pet_care_contract(quest: Dictionary, scene_id: String, quest_id: String) -> void:
+	_assert(scene_id == "home", "pet care quest should run in home: %s -> %s" % [quest_id, scene_id])
+	var correct_action := str(quest.get("correct_action", ""))
+	_assert(not correct_action.is_empty(), "pet care quest correct_action should be present: %s" % quest_id)
+	var targets: Array = quest.get("targets", [])
+	_assert(targets.has(correct_action), "pet care quest correct_action should be listed in targets: %s -> %s" % [quest_id, correct_action])
+	_assert(["feed", "clean", "play", "rest", "sleep"].has(correct_action), "pet care quest correct_action should be supported by GameState.care_for_pet: %s -> %s" % [quest_id, correct_action])
 
 
 func _allowed_targets_for_scene(scene_id: String) -> Array[String]:
@@ -298,6 +364,11 @@ func _assert_world_place_actions() -> void:
 					var visible_when := str(place_card_action.get("visible_when", ""))
 					_assert(not visible_when.is_empty(), "place_card action visible_when should be present: %s -> %s" % [hotspot_id, action_id])
 					_assert_place_card_action_contract(hotspot_id, action_id, visible_when, place_card_action)
+					var game_state_action := str(place_card_action.get("game_state_action", ""))
+					var start_quest_id := str(place_card_action.get("start_quest_id", ""))
+					_assert(not game_state_action.is_empty() or not start_quest_id.is_empty(), "place_card action should declare game_state_action or start_quest_id: %s -> %s" % [hotspot_id, action_id])
+					_assert(game_state_action.is_empty() or root.get_node("GameState").has_method(game_state_action), "place_card game_state_action should resolve to GameState method: %s -> %s" % [hotspot_id, game_state_action])
+					_assert(start_quest_id.is_empty() or FileAccess.file_exists("%s/%s.json" % [QUEST_DIR, start_quest_id]), "place_card start_quest_id should point to an existing quest: %s -> %s" % [hotspot_id, start_quest_id])
 					if visible_when.begins_with("quest_not_completed:"):
 						var quest_id := visible_when.trim_prefix("quest_not_completed:")
 						_assert(FileAccess.file_exists("%s/%s.json" % [QUEST_DIR, quest_id]), "place_card quest visibility should point to an existing quest: %s -> %s" % [hotspot_id, visible_when])
@@ -328,6 +399,12 @@ func _assert_place_card_action_contract(hotspot_id: String, action_id: String, v
 		_assert(not str(action.get("home_feedback", "")).is_empty(), "place_card action should declare home_feedback: %s -> %s" % [hotspot_id, action_id])
 	if bool(action_contract.get("success_focus_hotspot", false)):
 		_assert(not str(action.get("success_focus_hotspot", "")).is_empty(), "place_card action should declare success_focus_hotspot: %s -> %s" % [hotspot_id, action_id])
+	var expected_game_state_action := str(action_contract.get("game_state_action", ""))
+	if not expected_game_state_action.is_empty():
+		_assert(str(action.get("game_state_action", "")) == expected_game_state_action, "place_card action should declare the expected GameState action: %s -> %s" % [hotspot_id, action_id])
+	var expected_start_quest_id := str(action_contract.get("start_quest_id", ""))
+	if not expected_start_quest_id.is_empty():
+		_assert(str(action.get("start_quest_id", "")) == expected_start_quest_id, "place_card action should declare the expected start_quest_id: %s -> %s" % [hotspot_id, action_id])
 
 
 func _read_world_hotspot_data() -> Variant:

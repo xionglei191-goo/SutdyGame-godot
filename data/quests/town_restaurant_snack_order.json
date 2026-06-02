@@ -1,0 +1,31 @@
+{
+  "id": "town_restaurant_snack_order",
+  "title": "Snack Stop",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help choose a snack at the restaurant.",
+  "vocabulary": ["snack", "juice", "rice"],
+  "patterns": [
+    "Choose a snack.",
+    "I want juice, please."
+  ],
+  "targets": ["restaurant"],
+  "target_labels": {
+    "restaurant": "restaurant"
+  },
+  "correct_target": "restaurant",
+  "wrong_target_text": "Look for the restaurant and the snack sign.",
+  "success_text": "Nice choice! The snack is ready.",
+  "reward_id": "snack_star",
+  "reward_name": "Snack Star",
+  "reward_coins": 1,
+  "start_focus_hotspot": "restaurant",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_restaurant_snack_order_done"],
+    "focus_hotspot": "restaurant"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the restaurant to choose a snack."
+}

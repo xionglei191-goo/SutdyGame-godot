@@ -6,6 +6,7 @@ signal action_requested(place_id: String, action_id: String)
 @onready var blocker: Control = $Blocker
 @onready var panel: Panel = $Panel
 @onready var title_label: Label = $Panel/MarginContainer/VBoxContainer/TitleLabel
+@onready var ornament_texture: TextureRect = $Panel/MarginContainer/VBoxContainer/OrnamentTexture
 @onready var place_label: Label = $Panel/MarginContainer/VBoxContainer/PlaceLabel
 @onready var hint_label: Label = $Panel/MarginContainer/VBoxContainer/HintLabel
 @onready var reward_label: Label = $Panel/MarginContainer/VBoxContainer/RewardLabel
@@ -24,9 +25,9 @@ func _ready() -> void:
 		action_button.pressed.connect(_on_action_button_pressed)
 
 
-func show_place(id: String, display_name: String, is_first_visit: bool, hint_text: String = "", primary_action: Dictionary = {}) -> void:
+func show_place(id: String, display_name: String, is_first_visit: bool, hint_text: String = "", primary_action: Dictionary = {}, card_title: String = "PlaceCard") -> void:
 	place_id = id
-	title_label.text = "Town Visit"
+	title_label.text = card_title
 	place_label.text = display_name
 	hint_label.text = hint_text if not hint_text.is_empty() else "You visited a new place."
 	reward_label.text = "+1 coin" if is_first_visit else "Already visited"

@@ -1,0 +1,31 @@
+{
+  "id": "town_post_office_small_parcel",
+  "title": "Parcel Helper",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help carry a small parcel at the post office.",
+  "vocabulary": ["post", "parcel", "stamp"],
+  "patterns": [
+    "Take the parcel.",
+    "The stamp is on the parcel."
+  ],
+  "targets": ["post_office"],
+  "target_labels": {
+    "post_office": "post office"
+  },
+  "correct_target": "post_office",
+  "wrong_target_text": "Look for the post office and the little parcel.",
+  "success_text": "Thank you! The parcel is safe.",
+  "reward_id": "parcel_stamp",
+  "reward_name": "Parcel Stamp",
+  "reward_coins": 1,
+  "start_focus_hotspot": "post_office",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_post_office_small_parcel_done"],
+    "focus_hotspot": "post_office"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the post office to help with the parcel."
+}

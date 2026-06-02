@@ -53,6 +53,26 @@ func _initialize() -> void:
 
 	place_card.visible = false
 	town_map.set_click_input_enabled(true)
+	click_game.target_clicked.emit("taxi")
+	await process_frame
+	game_state.mark_story_flag(game_state.TOWN_ROAD_FLAG)
+	var taxi_coins_before: int = game_state.coins
+	world_interaction_controller.handle_place_card_action("taxi", "find_town_road")
+	await process_frame
+	_assert(game_state.coins == taxi_coins_before, "hidden taxi road action should not repeat reward through direct signal")
+
+	place_card.visible = false
+	town_map.set_click_input_enabled(true)
+	click_game.target_clicked.emit("railway_station")
+	await process_frame
+	game_state.mark_story_flag(game_state.TRAIN_STOP_FLAG)
+	var train_coins_before: int = game_state.coins
+	world_interaction_controller.handle_place_card_action("railway_station", "choose_train_stop")
+	await process_frame
+	_assert(game_state.coins == train_coins_before, "hidden train stop action should not repeat reward through direct signal")
+
+	place_card.visible = false
+	town_map.set_click_input_enabled(true)
 	click_game.target_clicked.emit("bookshop")
 	await process_frame
 	game_state.complete_quest("town_bookshop_find_book")
@@ -62,6 +82,17 @@ func _initialize() -> void:
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	_assert(not quest_diary.active, "completed bookshop action should not restart Quest Diary through direct signal")
 	_assert(game_state.get_completed_quests().size() == quest_completed_count, "completed bookshop action should not duplicate quest state")
+
+	place_card.visible = false
+	town_map.set_click_input_enabled(true)
+	click_game.target_clicked.emit("post_office")
+	await process_frame
+	game_state.complete_quest("town_post_office_small_parcel")
+	var parcel_quest_count: int = game_state.get_completed_quests().size()
+	world_interaction_controller.handle_place_card_action("post_office", "help_carry_parcel")
+	await process_frame
+	_assert(not quest_diary.active, "completed parcel action should not restart Quest Diary through direct signal")
+	_assert(game_state.get_completed_quests().size() == parcel_quest_count, "completed parcel action should not duplicate quest state")
 
 	print("mvp_0_2_place_card_action_authorization passed.")
 	main.queue_free()

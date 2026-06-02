@@ -74,6 +74,26 @@ static func collect_pilot_recall_anchor_ids(hotspots: Array[Dictionary]) -> Arra
 	return anchor_ids
 
 
+static func is_memory_spark_anchor(hotspot: Dictionary) -> bool:
+	if str(hotspot.get("kind", "")) != "memory_anchor":
+		return false
+	if str(hotspot.get("world_enabled_mode", "")).strip_edges() == WORLD_ENABLED_MODE_DISABLED:
+		return false
+	return str(hotspot.get("az_unlock_mode", AZ_UNLOCK_MODE_AFTER_PROLOGUE)).strip_edges() != AZ_UNLOCK_MODE_DISABLED
+
+
+static func collect_memory_spark_anchor_ids(hotspots: Array[Dictionary]) -> Array[String]:
+	var anchor_ids: Array[String] = []
+	for hotspot: Dictionary in hotspots:
+		if not is_memory_spark_anchor(hotspot):
+			continue
+		var hotspot_id := str(hotspot.get("id", ""))
+		if hotspot_id.is_empty() or anchor_ids.has(hotspot_id):
+			continue
+		anchor_ids.append(hotspot_id)
+	return anchor_ids
+
+
 static func is_world_place_card_hotspot(hotspot: Dictionary) -> bool:
 	if str(hotspot.get("kind", "")) != "place":
 		return false
