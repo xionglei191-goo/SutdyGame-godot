@@ -1,0 +1,31 @@
+{
+  "id": "prologue_letter_box",
+  "title": "Welcome Box",
+  "scene_id": "home",
+  "type": "click_target",
+  "prompt": "Open Mina's welcome box.",
+  "vocabulary": ["apple", "book", "bag", "home"],
+  "patterns": [
+    "A is for Apple.",
+    "This is my bag.",
+    "Open the welcome box."
+  ],
+  "targets": ["home_letter_box"],
+  "target_labels": {
+    "home_letter_box": "welcome box"
+  },
+  "correct_target": "home_letter_box",
+  "wrong_target_text": "Look for the welcome box at home.",
+  "success_text": "Great! The welcome box is open.",
+  "reward_id": "welcome_box_star",
+  "reward_name": "Welcome Box Star",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["prologue_letter_box_done"]
+  },
+  "next_quest": "prologue_go_to_school",
+  "start_feedback": "Tap the Welcome Box at home."
+}

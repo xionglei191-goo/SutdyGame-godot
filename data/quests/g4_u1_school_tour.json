@@ -1,0 +1,30 @@
+{
+  "id": "g4_u1_school_tour",
+  "title": "Walk With Mina",
+  "scene_id": "campus_gate",
+  "type": "click_target",
+  "prompt": "Find Mina's story stop.",
+  "vocabulary": ["classroom", "library", "playground"],
+  "patterns": [
+    "This is our classroom.",
+    "That is the playground.",
+    "This is the library."
+  ],
+  "targets": ["classroom", "library", "playground"],
+  "target_labels": {
+    "classroom": "classroom",
+    "library": "library",
+    "playground": "playground"
+  },
+  "correct_target": "library",
+  "wrong_target_text": "Not this stop. Follow Mina's story clue.",
+  "success_text": "Great! You found Mina's story stop.",
+  "reward_id": "school_star_piece",
+  "reward_name": "Adventure Star",
+  "reward_coins": 2,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "classroom"
+  },
+  "next_quest": "g4_u1_tidy_classroom"
+}

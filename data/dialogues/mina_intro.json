@@ -1,0 +1,26 @@
+{
+  "id": "mina_intro",
+  "speaker": "Mina",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Hi! Welcome to our town path."
+    },
+    {
+      "speaker": "Mina",
+      "text": "This room is one story stop."
+    },
+    {
+      "speaker": "Mina",
+      "text": "That outdoor place is for play."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Can you help me find my story stop?"
+    },
+    {
+      "speaker": "Mina",
+      "text": "Then Leo will set up the story room."
+    }
+  ]
+}

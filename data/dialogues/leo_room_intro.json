@@ -1,0 +1,26 @@
+{
+  "id": "leo_room_intro",
+  "speaker": "Leo",
+  "lines": [
+    {
+      "speaker": "Leo",
+      "text": "Hello! This is our story room."
+    },
+    {
+      "speaker": "Leo",
+      "text": "The room is a little messy today."
+    },
+    {
+      "speaker": "Leo",
+      "text": "Please help me set it up."
+    },
+    {
+      "speaker": "Leo",
+      "text": "Put each thing in the right place."
+    },
+    {
+      "speaker": "Leo",
+      "text": "Then Nora will meet us in the garden."
+    }
+  ]
+}

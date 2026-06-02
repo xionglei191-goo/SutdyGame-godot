@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3 uid="uid://study_player"]
+
+[ext_resource type="Script" path="res://scripts/actors/player_controller.gd" id="1_player_controller"]
+[ext_resource type="Texture2D" path="res://assets/generated/characters/player/char_player_walk_v001.png" id="2_player_sprite"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 20.0
+
+[sub_resource type="Gradient" id="Gradient_player"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.3, 0.55, 1, 1, 0.78, 0.9, 1, 1)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player_controller")
+
+[node name="ExplorerCape" type="Polygon2D" parent="."]
+visible = false
+z_index = -1
+color = Color(0.58, 0.2, 0.76, 0.92)
+polygon = PackedVector2Array(-20, -12, 20, -12, 34, 34, 0, 52, -34, 34)
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_player_sprite")
+scale = Vector2(0.32, 0.32)
+
+[node name="Body" type="Polygon2D" parent="."]
+visible = false
+color = Color(0.22, 0.49, 0.95, 1)
+polygon = PackedVector2Array(0, -28, 22, -8, 18, 25, -18, 25, -22, -8)
+
+[node name="Face" type="ColorRect" parent="."]
+visible = false
+offset_left = -12.0
+offset_top = -20.0
+offset_right = 12.0
+offset_bottom = 4.0
+color = Color(1, 0.87, 0.7, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -30.0
+offset_top = 28.0
+offset_right = 31.0
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 16
+text = "You"
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+position_smoothing_enabled = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_player")

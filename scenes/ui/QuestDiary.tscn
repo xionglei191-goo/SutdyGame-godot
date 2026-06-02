@@ -1,0 +1,77 @@
+[gd_scene load_steps=3 format=3 uid="uid://study_quest_diary"]
+
+[ext_resource type="Script" path="res://scripts/systems/quest_diary.gd" id="1_quest_diary"]
+[ext_resource type="Texture2D" path="res://assets/generated/ui/ui_quest_diary_ornament_v001.png" id="2_ornament"]
+
+[node name="QuestDiary" type="CanvasLayer"]
+script = ExtResource("1_quest_diary")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 458.0
+offset_bottom = 258.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="OrnamentTexture" type="TextureRect" parent="Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = ExtResource("2_ornament")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Quest Diary"
+
+[node name="EventLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Walk With Mina"
+autowrap_mode = 3
+
+[node name="StatusLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quest open"
+autowrap_mode = 3
+
+[node name="PromptLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Follow the story clue."
+autowrap_mode = 3
+
+[node name="WordsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quest clues: classroom, library, playground"
+autowrap_mode = 3
+
+[node name="RewardLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Keepsake: Adventure Star"
+autowrap_mode = 3
+
+[node name="FeedbackLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Tap a place on the map."
+autowrap_mode = 3

@@ -1,0 +1,18 @@
+{
+  "id": "nora_garden_intro",
+  "speaker": "Nora",
+  "lines": [
+    {
+      "speaker": "Nora",
+      "text": "Welcome to Nora's town garden."
+    },
+    {
+      "speaker": "Nora",
+      "text": "I see a tree and flowers."
+    },
+    {
+      "speaker": "Nora",
+      "text": "Listen! A bird is here. Can you find the bird?"
+    }
+  ]
+}

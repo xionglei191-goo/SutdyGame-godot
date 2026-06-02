@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=3 uid="uid://study_main"]
+
+[ext_resource type="Script" path="res://scripts/main/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/maps/TownMap.tscn" id="2_town_map"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DialogueBox.tscn" id="3_dialogue_box"]
+[ext_resource type="PackedScene" path="res://scenes/ui/QuestDiary.tscn" id="4_quest_diary"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RewardPopup.tscn" id="5_reward_popup"]
+[ext_resource type="PackedScene" path="res://scenes/minigames/DragPlaceGame.tscn" id="6_drag_place_game"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ParentSummary.tscn" id="7_parent_summary"]
+[ext_resource type="PackedScene" path="res://scenes/ui/StoryShow.tscn" id="8_story_show"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PlaceCard.tscn" id="9_place_card"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MemorySparkCard.tscn" id="10_memory_spark_card"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="TownMap" parent="." instance=ExtResource("2_town_map")]
+
+[node name="QuestDiary" parent="." instance=ExtResource("4_quest_diary")]
+
+[node name="DragPlaceGame" parent="." instance=ExtResource("6_drag_place_game")]
+visible = false
+
+[node name="DialogueBox" parent="." instance=ExtResource("3_dialogue_box")]
+
+[node name="RewardPopup" parent="." instance=ExtResource("5_reward_popup")]
+
+[node name="StoryShow" parent="." instance=ExtResource("8_story_show")]
+visible = false
+
+[node name="ParentSummary" parent="." instance=ExtResource("7_parent_summary")]
+visible = false
+
+[node name="PlaceCard" parent="." instance=ExtResource("9_place_card")]
+visible = false
+
+[node name="MemorySparkCard" parent="." instance=ExtResource("10_memory_spark_card")]
+visible = false

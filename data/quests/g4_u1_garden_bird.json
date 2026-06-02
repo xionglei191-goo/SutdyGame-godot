@@ -1,0 +1,31 @@
+{
+  "id": "g4_u1_garden_bird",
+  "title": "Bird Watch",
+  "scene_id": "garden",
+  "type": "click_target",
+  "prompt": "Find the bird in the garden.",
+  "vocabulary": ["garden", "tree", "flower", "bird"],
+  "patterns": [
+    "The bird is in the tree.",
+    "I see flowers in the garden.",
+    "Where is the bird?"
+  ],
+  "targets": ["tree", "flower", "bench", "bird"],
+  "target_labels": {
+    "tree": "tree",
+    "flower": "flower",
+    "bench": "bench",
+    "bird": "bird"
+  },
+  "correct_target": "bird",
+  "wrong_target_text": "Look carefully. Find the bird.",
+  "success_text": "Good eyes! You found the bird.",
+  "reward_id": "garden_leaf_piece",
+  "reward_name": "Garden Leaf Charm",
+  "reward_coins": 3,
+  "start_focus_hotspot": "",
+  "completion": {
+    "action": "open_review_or_summary"
+  },
+  "next_quest": ""
+}

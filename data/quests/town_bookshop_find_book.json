@@ -1,0 +1,29 @@
+{
+  "id": "town_bookshop_find_book",
+  "title": "Bookshop Helper",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help the reading bear find a book.",
+  "vocabulary": ["bookshop", "book", "read"],
+  "patterns": [
+    "Find a book.",
+    "Read at the bookshop."
+  ],
+  "targets": ["bookshop"],
+  "target_labels": {
+    "bookshop": "bookshop"
+  },
+  "correct_target": "bookshop",
+  "wrong_target_text": "Look near the reading bear and the books.",
+  "success_text": "Nice! The story book is found.",
+  "reward_id": "bookshop_leafmark",
+  "reward_name": "Bookshop Leafmark",
+  "reward_coins": 1,
+  "start_focus_hotspot": "bookshop",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the bookshop again to find the story book."
+}

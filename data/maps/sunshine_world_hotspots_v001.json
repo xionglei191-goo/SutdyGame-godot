@@ -1,0 +1,1363 @@
+{
+  "map_id": "sunshine_world_overview",
+  "version": "v001",
+  "canvas_size": {
+    "width": 2560,
+    "height": 1440
+  },
+  "default_scene": "world_overview",
+  "label_mode": "english_visible",
+  "route_mode": "clockwise_az_memory_path",
+  "route_origin": "home",
+  "opening_anchor_id": "home",
+  "hotspots": [
+    {
+      "id": "sunshine_school",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "Sunshine School",
+      "rect": {
+        "x": 720,
+        "y": 120,
+        "w": 960,
+        "h": 700
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "campus_gate",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "campus_gate"
+      },
+      "memory_anchor_id": "anchor_a_apple",
+      "quest_targets": []
+    },
+    {
+      "id": "home",
+      "kind": "place",
+      "zone": "home_core",
+      "label": "home",
+      "rect": {
+        "x": 110,
+        "y": 210,
+        "w": 450,
+        "h": 330
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_card",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "home"
+      },
+      "memory_anchor_id": "",
+      "quest_targets": []
+    },
+    {
+      "id": "classroom",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "classroom",
+      "rect": {
+        "x": 845,
+        "y": 275,
+        "w": 300,
+        "h": 245
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "classroom",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "classroom"
+      },
+      "memory_anchor_id": "anchor_c_clock",
+      "quest_targets": [
+        "g4_u1_school_tour"
+      ]
+    },
+    {
+      "id": "library",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "library",
+      "rect": {
+        "x": 1255,
+        "y": 275,
+        "w": 300,
+        "h": 245
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "classroom",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "classroom"
+      },
+      "memory_anchor_id": "anchor_b_bear",
+      "quest_targets": [
+        "g4_u1_school_tour"
+      ]
+    },
+    {
+      "id": "music_room",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "music room",
+      "rect": {
+        "x": 1095,
+        "y": 555,
+        "w": 205,
+        "h": 165
+      },
+      "priority": 100,
+      "default_visible": true,
+      "world_enabled_mode": "disabled",
+      "interaction_mode": "scene_or_card",
+      "child_scene_link": "",
+      "memory_anchor_id": "anchor_r_robot",
+      "quest_targets": []
+    },
+    {
+      "id": "art_room",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "art room",
+      "rect": {
+        "x": 845,
+        "y": 555,
+        "w": 205,
+        "h": 165
+      },
+      "priority": 100,
+      "default_visible": true,
+      "world_enabled_mode": "disabled",
+      "interaction_mode": "scene_or_card",
+      "child_scene_link": "",
+      "memory_anchor_id": "",
+      "quest_targets": []
+    },
+    {
+      "id": "playground",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "playground",
+      "rect": {
+        "x": 1325,
+        "y": 540,
+        "w": 295,
+        "h": 215
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "campus_gate",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "campus_gate"
+      },
+      "memory_anchor_id": "anchor_e_elephant",
+      "quest_targets": [
+        "g4_u1_school_tour"
+      ]
+    },
+    {
+      "id": "canteen",
+      "kind": "place",
+      "zone": "school_core",
+      "label": "canteen",
+      "rect": {
+        "x": 845,
+        "y": 355,
+        "w": 205,
+        "h": 150
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "campus_gate"
+      },
+      "memory_anchor_id": "",
+      "quest_targets": []
+    },
+    {
+      "id": "post_office",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "post office",
+      "rect": {
+        "x": 410,
+        "y": 845,
+        "w": 300,
+        "h": 250
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Send letters and packages.",
+      "memory_anchor_id": "anchor_g_gate",
+      "quest_targets": []
+    },
+    {
+      "id": "hospital",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "hospital",
+      "rect": {
+        "x": 1770,
+        "y": 820,
+        "w": 270,
+        "h": 300
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Help, care, and heal.",
+      "memory_anchor_id": "",
+      "quest_targets": []
+    },
+    {
+      "id": "supermarket",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "supermarket",
+      "rect": {
+        "x": 145,
+        "y": 1135,
+        "w": 325,
+        "h": 210
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Buy food and daily things.",
+      "place_card_actions": [
+        {
+          "id": "buy_pet_bowl",
+          "label": "Buy Pet Bowl (3)",
+          "visible_when": "missing_pet_bowl",
+          "success_status_text": "The pet bowl is ready at home.",
+          "home_feedback": "The pet bowl is ready at home."
+        }
+      ],
+      "memory_anchor_id": "anchor_h_hat",
+      "quest_targets": []
+    },
+    {
+      "id": "pet_shop",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "pet shop",
+      "rect": {
+        "x": 500,
+        "y": 1160,
+        "w": 220,
+        "h": 180
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Buy toys and care things for your pet.",
+      "place_card_actions": [
+        {
+          "id": "buy_pet_ball",
+          "label": "Buy Pet Ball (2)",
+          "visible_when": "missing_pet_ball",
+          "success_status_text": "The pet ball is ready at home.",
+          "home_feedback": "The pet ball is ready at home."
+        }
+      ],
+      "memory_anchor_id": "anchor_n_net",
+      "quest_targets": []
+    },
+    {
+      "id": "clothes_shop",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "clothes shop",
+      "rect": {
+        "x": 760,
+        "y": 1170,
+        "w": 250,
+        "h": 175
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Choose clothes, colors, and a brave look.",
+      "place_card_actions": [
+        {
+          "id": "buy_explorer_cape",
+          "label": "Buy Explorer Cape (1 Parent Bonus)",
+          "visible_when": "missing_explorer_cape",
+          "success_status_text": "The explorer cape is ready at home.",
+          "home_feedback": "The explorer cape is ready at home."
+        }
+      ],
+      "memory_anchor_id": "anchor_j_jacket",
+      "quest_targets": []
+    },
+    {
+      "id": "general_store",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "general store",
+      "rect": {
+        "x": 1040,
+        "y": 1170,
+        "w": 250,
+        "h": 175
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Choose cozy things for your room.",
+      "place_card_actions": [
+        {
+          "id": "buy_star_rug",
+          "label": "Buy Star Rug (4)",
+          "visible_when": "missing_star_rug",
+          "success_status_text": "The star rug is ready at home.",
+          "home_feedback": "The star rug is ready at home."
+        }
+      ],
+      "memory_anchor_id": "",
+      "quest_targets": []
+    },
+    {
+      "id": "bookshop",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "bookshop",
+      "rect": {
+        "x": 720,
+        "y": 875,
+        "w": 265,
+        "h": 235
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Books, read, and find a story.",
+      "place_card_actions": [
+        {
+          "id": "help_find_book",
+          "label": "Help Find a Book",
+          "visible_when": "quest_not_completed:town_bookshop_find_book"
+        }
+      ],
+      "memory_anchor_id": "anchor_b_bear",
+      "quest_targets": []
+    },
+    {
+      "id": "restaurant",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "restaurant",
+      "rect": {
+        "x": 1455,
+        "y": 880,
+        "w": 300,
+        "h": 230
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Eat, drink, and say hello.",
+      "memory_anchor_id": "anchor_o_orange",
+      "quest_targets": []
+    },
+    {
+      "id": "park",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "park",
+      "rect": {
+        "x": 1030,
+        "y": 860,
+        "w": 320,
+        "h": 300
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "garden",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "garden"
+      },
+      "memory_anchor_id": "anchor_s_sun",
+      "quest_targets": []
+    },
+    {
+      "id": "cinema",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "cinema",
+      "rect": {
+        "x": 2040,
+        "y": 930,
+        "w": 270,
+        "h": 220
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Watch, listen, and enjoy.",
+      "memory_anchor_id": "anchor_q_queen",
+      "quest_targets": []
+    },
+    {
+      "id": "bus_station",
+      "kind": "place",
+      "zone": "outskirts_transport",
+      "label": "bus station",
+      "rect": {
+        "x": 78,
+        "y": 820,
+        "w": 300,
+        "h": 255
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Go, ride, and wait.",
+      "place_card_actions": [
+        {
+          "id": "choose_town_route",
+          "label": "Choose Town Route",
+          "visible_when": "missing_town_route",
+          "success_status_text": "Town route marked: +1 coin.",
+          "success_focus_hotspot": "bus_station"
+        }
+      ],
+      "memory_anchor_id": "anchor_t_taxi",
+      "quest_targets": []
+    },
+    {
+      "id": "railway_station",
+      "kind": "place",
+      "zone": "outskirts_transport",
+      "label": "railway station",
+      "rect": {
+        "x": 1665,
+        "y": 1170,
+        "w": 470,
+        "h": 230
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Train, ticket, and travel.",
+      "memory_anchor_id": "anchor_w_watch",
+      "quest_targets": []
+    },
+    {
+      "id": "airport",
+      "kind": "place",
+      "zone": "outskirts_transport",
+      "label": "airport",
+      "rect": {
+        "x": 2080,
+        "y": 180,
+        "w": 335,
+        "h": 270
+      },
+      "priority": 100,
+      "default_visible": true,
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Fly, travel, and explore.",
+      "memory_anchor_id": "anchor_x_x_mark_box",
+      "quest_targets": []
+    },
+    {
+      "id": "tree",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "tree",
+      "rect": {
+        "x": 1110,
+        "y": 705,
+        "w": 150,
+        "h": 250
+      },
+      "priority": 100,
+      "default_visible": false,
+      "world_enabled_mode": "quest_only",
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "garden",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "garden"
+      },
+      "memory_anchor_id": "anchor_m_monkey",
+      "quest_targets": [
+        "g4_u1_garden_bird"
+      ]
+    },
+    {
+      "id": "flower",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "flower",
+      "rect": {
+        "x": 1070,
+        "y": 1050,
+        "w": 118,
+        "h": 86
+      },
+      "priority": 100,
+      "default_visible": false,
+      "world_enabled_mode": "quest_only",
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "garden",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "garden"
+      },
+      "memory_anchor_id": "",
+      "quest_targets": [
+        "g4_u1_garden_bird"
+      ]
+    },
+    {
+      "id": "bench",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "bench",
+      "rect": {
+        "x": 1160,
+        "y": 1018,
+        "w": 145,
+        "h": 72
+      },
+      "priority": 100,
+      "default_visible": false,
+      "world_enabled_mode": "quest_only",
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "garden",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "garden"
+      },
+      "memory_anchor_id": "",
+      "quest_targets": [
+        "g4_u1_garden_bird"
+      ]
+    },
+    {
+      "id": "bird",
+      "kind": "place",
+      "zone": "community_ring",
+      "label": "bird",
+      "rect": {
+        "x": 1200,
+        "y": 668,
+        "w": 70,
+        "h": 48
+      },
+      "priority": 100,
+      "default_visible": false,
+      "world_enabled_mode": "quest_only",
+      "interaction_mode": "scene_or_quest",
+      "child_scene_link": "garden",
+      "world_place_action": {
+        "action": "scene",
+        "scene_id": "garden"
+      },
+      "memory_anchor_id": "",
+      "quest_targets": [
+        "g4_u1_garden_bird"
+      ]
+    },
+    {
+      "id": "anchor_a_apple",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "A",
+      "keyword": "Apple",
+      "label": "Apple",
+      "rect": {
+        "x": 1125,
+        "y": 350,
+        "w": 190,
+        "h": 190
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "sunshine_school",
+      "route_order": 1,
+      "vocabulary_cluster": [
+        "apple",
+        "red",
+        "fruit",
+        "school"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_c_clock",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "C",
+      "keyword": "Clock",
+      "label": "Clock",
+      "rect": {
+        "x": 1100,
+        "y": 60,
+        "w": 160,
+        "h": 270
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "sunshine_school",
+      "route_order": 2,
+      "vocabulary_cluster": [
+        "clock",
+        "time",
+        "morning",
+        "school"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_d_dog",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "D",
+      "keyword": "Dog",
+      "label": "Dog",
+      "rect": {
+        "x": 675,
+        "y": 620,
+        "w": 110,
+        "h": 106
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "sunshine_school",
+      "route_order": 3,
+      "vocabulary_cluster": [
+        "dog",
+        "gate",
+        "friend",
+        "school"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_e_elephant",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "E",
+      "keyword": "Elephant",
+      "label": "Elephant",
+      "rect": {
+        "x": 1280,
+        "y": 555,
+        "w": 185,
+        "h": 195
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "playground",
+      "route_order": 4,
+      "vocabulary_cluster": [
+        "elephant",
+        "playground",
+        "slide",
+        "big"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_k_kite",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "K",
+      "keyword": "Kite",
+      "label": "Kite",
+      "rect": {
+        "x": 1270,
+        "y": 8,
+        "w": 130,
+        "h": 110
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "playground",
+      "route_order": 5,
+      "vocabulary_cluster": [
+        "kite",
+        "sky",
+        "fly",
+        "school"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_r_robot",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "R",
+      "keyword": "Robot",
+      "label": "Robot",
+      "rect": {
+        "x": 1075,
+        "y": 548,
+        "w": 118,
+        "h": 118
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "classroom",
+      "place_link": "music_room",
+      "route_order": 6,
+      "vocabulary_cluster": [
+        "robot",
+        "computer",
+        "school",
+        "guide"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_b_bear",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "B",
+      "keyword": "Bear",
+      "label": "Bear",
+      "rect": {
+        "x": 720,
+        "y": 915,
+        "w": 118,
+        "h": 112
+      },
+      "priority": 60,
+      "default_visible": false,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "bookshop",
+      "route_order": 7,
+      "vocabulary_cluster": [
+        "bear",
+        "book",
+        "read",
+        "library"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_l_lion",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "L",
+      "keyword": "Lion",
+      "label": "Lion",
+      "rect": {
+        "x": 930,
+        "y": 760,
+        "w": 126,
+        "h": 112
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "bookshop",
+      "route_order": 8,
+      "vocabulary_cluster": [
+        "lion",
+        "bookshop",
+        "fountain",
+        "animal"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_f_fox",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "F",
+      "keyword": "Fox",
+      "label": "Fox",
+      "rect": {
+        "x": 930,
+        "y": 930,
+        "w": 108,
+        "h": 92
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 9,
+      "vocabulary_cluster": [
+        "fox",
+        "garden",
+        "park",
+        "animal"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_g_gate",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "G",
+      "keyword": "Gate",
+      "label": "Gate",
+      "rect": {
+        "x": 8,
+        "y": 700,
+        "w": 120,
+        "h": 110
+      },
+      "priority": 60,
+      "default_visible": true,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "post_office",
+      "route_order": 10,
+      "vocabulary_cluster": [
+        "gate",
+        "street",
+        "enter",
+        "town"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_h_hat",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "H",
+      "keyword": "Hat",
+      "label": "Hat",
+      "rect": {
+        "x": 148,
+        "y": 1248,
+        "w": 108,
+        "h": 108
+      },
+      "priority": 60,
+      "default_visible": false,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "supermarket",
+      "route_order": 11,
+      "vocabulary_cluster": [
+        "hat",
+        "shop",
+        "street",
+        "clothes"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_i_ice_cream",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "I",
+      "keyword": "Ice cream",
+      "label": "Ice cream",
+      "rect": {
+        "x": 1040,
+        "y": 884,
+        "w": 88,
+        "h": 118
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 12,
+      "vocabulary_cluster": [
+        "ice cream",
+        "park",
+        "sweet",
+        "cart"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_j_jacket",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "J",
+      "keyword": "Jacket",
+      "label": "Jacket",
+      "rect": {
+        "x": 388,
+        "y": 1268,
+        "w": 98,
+        "h": 96
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "supermarket",
+      "route_order": 13,
+      "vocabulary_cluster": [
+        "jacket",
+        "shop",
+        "clothes",
+        "window"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_m_monkey",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "M",
+      "keyword": "Monkey",
+      "label": "Monkey",
+      "rect": {
+        "x": 1085,
+        "y": 620,
+        "w": 118,
+        "h": 120
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 14,
+      "vocabulary_cluster": [
+        "monkey",
+        "tree",
+        "park",
+        "jump"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_o_orange",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "O",
+      "keyword": "Orange",
+      "label": "Orange",
+      "rect": {
+        "x": 1602,
+        "y": 930,
+        "w": 104,
+        "h": 98
+      },
+      "priority": 60,
+      "default_visible": false,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "restaurant",
+      "route_order": 15,
+      "vocabulary_cluster": [
+        "orange",
+        "juice",
+        "drink",
+        "restaurant"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_p_panda",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "P",
+      "keyword": "Panda",
+      "label": "Panda",
+      "rect": {
+        "x": 845,
+        "y": 860,
+        "w": 108,
+        "h": 110
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "bookshop",
+      "route_order": 16,
+      "vocabulary_cluster": [
+        "panda",
+        "book",
+        "cute",
+        "town"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_q_queen",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "Q",
+      "keyword": "Queen",
+      "label": "Queen",
+      "rect": {
+        "x": 2050,
+        "y": 980,
+        "w": 102,
+        "h": 108
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "cinema",
+      "route_order": 17,
+      "vocabulary_cluster": [
+        "queen",
+        "theatre",
+        "show",
+        "stage"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_v_violin",
+      "kind": "memory_anchor",
+      "zone": "community_ring",
+      "letter": "V",
+      "keyword": "Violin",
+      "label": "Violin",
+      "rect": {
+        "x": 2320,
+        "y": 955,
+        "w": 92,
+        "h": 102
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "cinema",
+      "route_order": 18,
+      "vocabulary_cluster": [
+        "violin",
+        "music",
+        "show",
+        "theatre"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_n_net",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "N",
+      "keyword": "Net",
+      "label": "Net",
+      "rect": {
+        "x": 545,
+        "y": 1190,
+        "w": 105,
+        "h": 86
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 19,
+      "vocabulary_cluster": [
+        "net",
+        "pool",
+        "sports",
+        "play"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_s_sun",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "S",
+      "keyword": "Sun",
+      "label": "Sun",
+      "rect": {
+        "x": 965,
+        "y": 850,
+        "w": 146,
+        "h": 126
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 20,
+      "vocabulary_cluster": [
+        "sun",
+        "weather",
+        "park",
+        "sky"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_t_taxi",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "T",
+      "keyword": "Taxi",
+      "label": "Taxi",
+      "rect": {
+        "x": 390,
+        "y": 920,
+        "w": 175,
+        "h": 120
+      },
+      "priority": 60,
+      "default_visible": true,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "bus_station",
+      "route_order": 21,
+      "vocabulary_cluster": [
+        "taxi",
+        "street",
+        "station",
+        "go"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_w_watch",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "W",
+      "keyword": "Watch",
+      "label": "Watch",
+      "rect": {
+        "x": 1820,
+        "y": 1085,
+        "w": 180,
+        "h": 180
+      },
+      "priority": 60,
+      "default_visible": true,
+      "world_enabled_mode": "pilot_recall",
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "railway_station",
+      "route_order": 22,
+      "vocabulary_cluster": [
+        "watch",
+        "time",
+        "train",
+        "station"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_x_x_mark_box",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "X",
+      "keyword": "X-mark Box",
+      "label": "X-mark Box",
+      "rect": {
+        "x": 2145,
+        "y": 430,
+        "w": 170,
+        "h": 175
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "airport",
+      "route_order": 23,
+      "vocabulary_cluster": [
+        "box",
+        "airport",
+        "cargo",
+        "mystery"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_u_umbrella",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "U",
+      "keyword": "Umbrella",
+      "label": "Umbrella",
+      "rect": {
+        "x": 2260,
+        "y": 1115,
+        "w": 180,
+        "h": 245
+      },
+      "priority": 60,
+      "default_visible": true,
+      "az_unlock_mode": "starter",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "",
+      "place_link": "airport",
+      "route_order": 24,
+      "vocabulary_cluster": [
+        "umbrella",
+        "edge",
+        "travel",
+        "rain"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_z_zebra",
+      "kind": "memory_anchor",
+      "zone": "outskirts_transport",
+      "letter": "Z",
+      "keyword": "Zebra",
+      "label": "Zebra",
+      "rect": {
+        "x": 1490,
+        "y": 930,
+        "w": 120,
+        "h": 98
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "garden",
+      "place_link": "park",
+      "route_order": 25,
+      "vocabulary_cluster": [
+        "zebra",
+        "animal",
+        "stripe",
+        "crossing"
+      ],
+      "quest_targets": []
+    },
+    {
+      "id": "anchor_y_yo_yo",
+      "kind": "memory_anchor",
+      "zone": "school_core",
+      "letter": "Y",
+      "keyword": "Yo-yo",
+      "label": "Yo-yo",
+      "rect": {
+        "x": 300,
+        "y": 330,
+        "w": 90,
+        "h": 90
+      },
+      "priority": 60,
+      "default_visible": false,
+      "az_unlock_mode": "after_prologue",
+      "interaction_mode": "memory_card",
+      "child_scene_link": "campus_gate",
+      "place_link": "home",
+      "route_order": 26,
+      "vocabulary_cluster": [
+        "yo-yo",
+        "play",
+        "school",
+        "fun"
+      ],
+      "quest_targets": []
+    }
+  ]
+}

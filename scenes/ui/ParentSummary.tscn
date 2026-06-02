@@ -1,0 +1,168 @@
+[gd_scene load_steps=2 format=3 uid="uid://study_parent_summary"]
+
+[ext_resource type="Script" path="res://scripts/systems/parent_summary.gd" id="1_parent_summary"]
+
+[node name="ParentSummary" type="CanvasLayer"]
+script = ExtResource("1_parent_summary")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 720.0
+offset_bottom = 700.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "家长摘要"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContentVBox" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 8
+
+[node name="CompletedLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "完成事件数"
+
+[node name="CompletedValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "0"
+
+[node name="RewardsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "获得奖励"
+
+[node name="RewardsValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "-"
+autowrap_mode = 3
+
+[node name="PlaytimeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "试玩用时"
+
+[node name="PlaytimeValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "00:00"
+
+[node name="ParentBonusLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Parent Bonus"
+
+[node name="ParentBonusValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "0"
+autowrap_mode = 3
+
+[node name="QuestsTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "今日完成"
+
+[node name="QuestsValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "-"
+autowrap_mode = 3
+
+[node name="WordsTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "词汇记录"
+
+[node name="WordsValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "-"
+autowrap_mode = 3
+
+[node name="PatternsTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "表达记录"
+
+[node name="PatternsValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "-"
+autowrap_mode = 3
+
+[node name="ReviewTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "建议回访"
+
+[node name="ReviewValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "先完成 Walk With Mina，寻找 story stop。"
+autowrap_mode = 3
+
+[node name="TimelineTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "试玩节点"
+
+[node name="TimelineValue" type="Label" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer/ContentVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "-"
+autowrap_mode = 3
+
+[node name="FinishReadingButton" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "完成摘要阅读"
+
+[node name="ParentBonusButton" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "完成 Story Show 后可发放 Parent Bonus"
+
+[node name="ExportReportButton" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "导出计时报告"
+
+[node name="ReportStatusValue" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ""
+autowrap_mode = 3

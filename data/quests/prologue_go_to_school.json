@@ -1,0 +1,36 @@
+{
+  "id": "prologue_go_to_school",
+  "title": "First Trip",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Start Mina's first trip.",
+  "vocabulary": ["home", "school", "go"],
+  "patterns": [
+    "This is my home.",
+    "Let's start the first trip.",
+    "Go with Mina."
+  ],
+  "targets": ["home", "sunshine_school"],
+  "target_labels": {
+    "home": "home",
+    "sunshine_school": "Sunshine School"
+  },
+  "correct_target": "sunshine_school",
+  "wrong_target_text": "Start from home, then follow Mina's path.",
+  "success_text": "Nice! You reached Mina's next stop.",
+  "reward_id": "first_trip_ticket",
+  "reward_name": "First Trip Ticket",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "campus_gate",
+    "npc_prompts_visible": true,
+    "story_flags": [
+      "prologue_go_to_school_done",
+      "az_full_unlocked_after_prologue"
+    ],
+    "dialogue_id": "mina_school_arrival_intro"
+  },
+  "next_quest": "g4_u1_school_tour",
+  "start_feedback": "Tap Mina's next stop on the world map."
+}

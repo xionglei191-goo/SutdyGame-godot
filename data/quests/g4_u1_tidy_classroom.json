@@ -1,0 +1,37 @@
+{
+  "id": "g4_u1_tidy_classroom",
+  "title": "Room Helper",
+  "scene_id": "classroom",
+  "type": "drag_place",
+  "prompt": "Help Leo set up the story room.",
+  "vocabulary": ["book", "bag", "pencil", "desk", "shelf"],
+  "patterns": [
+    "Put the book on the shelf.",
+    "Put the bag under the desk.",
+    "Put the pencil on the desk."
+  ],
+  "targets": ["book", "bag", "pencil"],
+  "target_labels": {
+    "book": "book",
+    "bag": "bag",
+    "pencil": "pencil",
+    "shelf": "shelf",
+    "desk": "desk",
+    "under_desk": "under the desk"
+  },
+  "placement_targets": {
+    "book": "shelf",
+    "bag": "under_desk",
+    "pencil": "desk"
+  },
+  "wrong_target_text": "Try again. Follow the room clue.",
+  "success_text": "Nice work! Leo's story room is ready.",
+  "reward_id": "tidy_badge_piece",
+  "reward_name": "Room Helper Badge",
+  "reward_coins": 2,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "garden"
+  },
+  "next_quest": "g4_u1_garden_bird"
+}
