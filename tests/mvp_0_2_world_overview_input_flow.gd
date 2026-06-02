@@ -120,14 +120,21 @@ func _initialize() -> void:
 	_assert(quest_diary.prompt_label.text == "Start Mina's first trip.", "First Trip should keep adventure wording")
 	town_map.show_scene("world_overview")
 	await process_frame
+	click_game.target_clicked.emit("home")
+	await process_frame
+	_assert(town_map.get_active_scene() == "home", "First Trip should still allow returning home from the world map")
+	_assert(quest_diary.active, "returning home during First Trip should keep the quest open")
+	_assert(quest_diary.quest_id == "prologue_go_to_school", "returning home during First Trip should preserve the active quest")
+	town_map.show_scene("world_overview")
+	await process_frame
 	player.position += Vector2(320.0, 180.0)
 	camera.force_update_scroll()
 	var moved_camera_rect: Rect2 = town_map.get_world_overview_camera_rect()
 	_assert(moved_camera_rect.position != initial_camera_rect.position, "camera rect should move when the player moves across the world overview")
 
-	click_game.target_clicked.emit("sunshine_school")
+	click_game.target_clicked.emit("classroom")
 	await process_frame
-	_assert(not quest_diary.active, "prologue quest should complete on school arrival")
+	_assert(not quest_diary.active, "prologue quest should complete on school arrival from a school-core hotspot")
 	_assert(town_map.get_active_scene() == "campus_gate", "school arrival should route to campus gate after prologue completion")
 	_assert(game_state.has_story_flag("az_full_unlocked_after_prologue"), "school arrival should unlock the full A-Z memory palace")
 	_assert(main_dialogue_box.visible, "school arrival should open Mina arrival dialogue")

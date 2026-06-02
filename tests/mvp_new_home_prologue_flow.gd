@@ -99,6 +99,7 @@ func _assert_new_home_prologue_data_contract() -> void:
 	var home_target_ids := _home_target_ids_from_data()
 	for target_id: String in REQUIRED_HOME_TARGETS:
 		_expect(home_target_ids.has(target_id), "home click target should be declared in scene_click_targets data: %s" % target_id)
+	_assert_home_room_starter_target_alignment()
 
 	var world_hotspot_ids := _world_hotspot_ids()
 	for step: Dictionary in NEW_PROLOGUE_STEPS:
@@ -190,6 +191,7 @@ func _run_runtime_flow() -> void:
 
 	_assert(town_map.get_active_scene() == "home", "new MVP flow should still start at HomeLayer")
 	_assert_runtime_home_target_provider(town_map)
+	_assert(not _pet_panel(town_map).visible, "fresh home start should keep My Pet panel hidden until Pet Hello")
 	_assert_no_child_visible_banned_copy(_child_visible_roots(main), "fresh home start")
 
 	for step: Dictionary in NEW_PROLOGUE_STEPS:
@@ -213,6 +215,7 @@ func _complete_step(main: Node, step: Dictionary) -> void:
 	var expected_type := str(step.get("type", ""))
 	var correct_target := str(step.get("target", ""))
 	var correct_action := str(step.get("action", ""))
+	var player: CharacterBody2D = town_map.get_node("Player")
 
 	if expected_scene_id == "home":
 		town_map.show_scene("home")
@@ -220,12 +223,21 @@ func _complete_step(main: Node, step: Dictionary) -> void:
 		town_map.show_scene(expected_scene_id)
 	await process_frame
 
+	var preserved_position := Vector2(420.0, 525.0)
+	if expected_scene_id == "world_overview":
+		preserved_position = Vector2(980.0, 780.0)
+	player.position = preserved_position
 	quest_diary.start_quest(quest_id)
 	await process_frame
+	_assert(player.position == preserved_position, "starting a quest in the current scene should not reset player position: %s" % quest_id)
 	_assert(quest_diary.active, "Quest Diary should open for %s" % quest_id)
 	_assert(quest_diary.quest_id == quest_id, "Quest Diary should track %s" % quest_id)
 	_assert(quest_diary.event_label.text == expected_title, "Quest Diary should show child-facing event title for %s" % quest_id)
 	_assert_no_child_visible_banned_copy(_child_visible_roots(main), "Quest Diary active for %s" % quest_id)
+	if ["prologue_letter_box", "prologue_room_starter", PET_HELLO_QUEST_ID].has(quest_id):
+		_assert(not _pet_panel(town_map).visible, "My Pet panel should not cover early home quest: %s" % quest_id)
+	if quest_id == HOME_PET_CARE_QUEST_ID:
+		_assert(_pet_panel(town_map).visible, "Home Pet Care should show the My Pet panel")
 
 	if expected_type == "pet_care":
 		await _exercise_pet_care_buttons(town_map, game_state, quest_id, correct_action)
@@ -237,13 +249,17 @@ func _complete_step(main: Node, step: Dictionary) -> void:
 		_assert(quest_diary.active, "Quest Diary should remain active after wrong target for %s" % quest_id)
 		quest_diary.check_target(correct_target)
 	await process_frame
+	if expected_scene_id == "home":
+		_assert(player.position == preserved_position, "completing a home quest should not reset player position: %s" % quest_id)
 	_assert(completed_quests.has(quest_id), "correct target should complete %s" % quest_id)
 	_assert(game_state.has_completed_quest(quest_id), "GameState should save completed quest %s" % quest_id)
 	if quest_id == PET_HELLO_QUEST_ID:
 		var expected_pet_name := _expected_pet_name()
 		_assert(game_state.get_pet_name() == expected_pet_name, "Pet Hello should save the starter pet name")
+		_assert(_pet_panel(town_map).visible, "Pet Hello completion should unlock the My Pet panel")
 		_assert(_pet_name_label(town_map).text == expected_pet_name, "Pet Hello should make the starter pet name visible at home")
 		_assert(_pet_corner_label(town_map).text == "%s's corner" % expected_pet_name, "Pet Hello should update the visible pet corner name")
+		await _assert_pet_panel_can_close_and_reopen(town_map)
 
 
 func _exercise_pet_care_buttons(town_map: Node, game_state: Node, quest_id: String, correct_action: String) -> void:
@@ -296,6 +312,18 @@ func _assert_runtime_home_target_provider(town_map: Node) -> void:
 		_assert(home_rects.has(target_id), "runtime home target provider should expose data target: %s" % target_id)
 		var rect: Rect2 = home_rects[target_id]
 		_assert(rect.size.x > 0.0 and rect.size.y > 0.0, "runtime home target rect should be clickable: %s" % target_id)
+	_assert((home_rects["home_bag"] as Rect2).has_point(Vector2(1165.0, 590.0)), "runtime home_bag target should cover the visible blue trip bag")
+	_assert((home_rects["home_book"] as Rect2).has_point(Vector2(540.0, 505.0)), "runtime home_book target should cover the visible book card")
+
+
+func _assert_home_room_starter_target_alignment() -> void:
+	var rects := _home_target_rects_from_data()
+	_expect(rects.has("home_bag"), "home_bag target should be present for Room Starter")
+	_expect(rects.has("home_book"), "home_book target should be present for Room Starter")
+	if rects.has("home_bag"):
+		_expect((rects["home_bag"] as Rect2).has_point(Vector2(1165.0, 590.0)), "home_bag target should cover the visible blue trip bag center")
+	if rects.has("home_book"):
+		_expect((rects["home_book"] as Rect2).has_point(Vector2(540.0, 505.0)), "home_book target should cover the visible book card center")
 
 
 func _assert_quest_child_copy_allowed(quest: Dictionary, quest_id: String) -> void:
@@ -388,10 +416,18 @@ func _child_visible_roots(main: Node) -> Array[Node]:
 
 
 func _home_target_ids_from_data() -> Array[String]:
+	var rects := _home_target_rects_from_data()
+	var ids: Array[String] = []
+	for target_id: Variant in rects.keys():
+		ids.append(str(target_id))
+	return ids
+
+
+func _home_target_rects_from_data() -> Dictionary:
 	var data := _read_json_dict(SCENE_CLICK_TARGETS_PATH)
 	var scenes: Dictionary = data.get("scenes", {})
 	var home: Dictionary = scenes.get("home", {})
-	var ids: Array[String] = []
+	var rects: Dictionary = {}
 	for target_value: Variant in home.get("targets", []):
 		if typeof(target_value) != TYPE_DICTIONARY:
 			_expect(false, "home scene target entry should be a dictionary")
@@ -401,8 +437,12 @@ func _home_target_ids_from_data() -> Array[String]:
 		var rect: Dictionary = target.get("rect", {})
 		_expect(not target_id.is_empty(), "home scene target id should be present")
 		_expect(_rect_fields_valid(rect), "home scene target rect should be valid: %s" % target_id)
-		ids.append(target_id)
-	return ids
+		if not target_id.is_empty() and _rect_fields_valid(rect):
+			rects[target_id] = Rect2(
+				Vector2(float(rect.get("x", 0.0)), float(rect.get("y", 0.0))),
+				Vector2(float(rect.get("w", 0.0)), float(rect.get("h", 0.0)))
+			)
+	return rects
 
 
 func _world_hotspot_ids() -> Array[String]:
@@ -489,6 +529,48 @@ func _supported_pet_care_actions() -> Array[String]:
 
 func _pet_name_label(town_map: Node) -> Label:
 	return town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
+
+
+func _pet_panel(town_map: Node) -> Panel:
+	return town_map.get_node("HomeLayer/PetPanel")
+
+
+func _assert_pet_panel_can_close_and_reopen(town_map: Node) -> void:
+	var pet_panel := _pet_panel(town_map)
+	var close_button: Button = town_map.get_node("HomeLayer/PetPanel/CloseButton")
+	var open_button: Button = town_map.get_node("HomeLayer/PetCorner/OpenPetPanelButton")
+	_assert(pet_panel.visible, "My Pet panel should start open after Pet Hello")
+	var close_point := _control_screen_center(close_button)
+	_assert(town_map._screen_point_in_button(close_button, close_point), "Close button screen center should be hittable")
+	await _send_mouse_click(town_map, close_point)
+	await process_frame
+	_assert(not pet_panel.visible, "My Pet close button should hide the panel")
+	_assert(open_button.visible, "Care button should appear after closing My Pet")
+	await _send_mouse_click(town_map, _control_screen_center(open_button))
+	await process_frame
+	_assert(pet_panel.visible, "Care button should reopen My Pet")
+	_assert(not open_button.visible, "Care button should hide while My Pet is open")
+
+
+func _send_mouse_click(input_target: Node, position: Vector2) -> void:
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	press.position = position
+	press.global_position = position
+	input_target._input(press)
+	await process_frame
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = position
+	release.global_position = position
+	input_target._input(release)
+	await process_frame
+
+
+func _control_screen_center(control: Control) -> Vector2:
+	return control.get_global_transform_with_canvas() * (control.size * 0.5)
 
 
 func _pet_corner_label(town_map: Node) -> Label:

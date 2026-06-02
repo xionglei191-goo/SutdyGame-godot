@@ -35,6 +35,14 @@ func configure(
 
 func handle_place_clicked(target_id: String) -> void:
 	if quest_diary.active:
+		if _should_route_active_quest_home(target_id):
+			town_map.show_scene("home")
+			town_map.set_click_input_enabled(false)
+			town_map.set_quest_active(true)
+			town_map.set_current_quest_id(quest_diary.quest_id)
+			if refresh_home_pet_ui_callback.is_valid():
+				refresh_home_pet_ui_callback.call()
+			return
 		quest_diary.check_target(target_id)
 		return
 	var resolution := _resolve_world_overview_target(target_id)
@@ -118,6 +126,14 @@ func handle_place_card_action(place_id: String, action_id: String) -> void:
 		_start_place_card_quest(start_quest_id, str(current_action.get("success_focus_hotspot", place_id)))
 		return
 	PlaceCardController.handle_action(place_card, place_id, action_id, refresh_home_pet_ui_callback)
+
+
+func _should_route_active_quest_home(target_id: String) -> bool:
+	return (
+		target_id == "home"
+		and town_map.get_active_scene() == "world_overview"
+		and quest_diary.quest_id == WorldOverviewRules.PROLOGUE_QUEST_ID
+	)
 
 
 func _resolve_world_overview_target(target_id: String) -> Dictionary:

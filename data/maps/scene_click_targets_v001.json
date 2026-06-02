@@ -5,8 +5,8 @@
     "home": {
       "targets": [
         { "id": "home_letter_box", "rect": { "x": 485, "y": 455, "w": 230, "h": 180 } },
-        { "id": "home_book", "rect": { "x": 608, "y": 480, "w": 90, "h": 90 } },
-        { "id": "home_bag", "rect": { "x": 500, "y": 485, "w": 110, "h": 105 } },
+        { "id": "home_book", "rect": { "x": 500, "y": 460, "w": 95, "h": 110 } },
+        { "id": "home_bag", "rect": { "x": 1110, "y": 500, "w": 120, "h": 170 } },
         { "id": "home_bed", "rect": { "x": 855, "y": 385, "w": 250, "h": 165 } },
         { "id": "home_door", "rect": { "x": 610, "y": 215, "w": 150, "h": 245 } },
         { "id": "home_kitchen", "rect": { "x": 70, "y": 155, "w": 330, "h": 225 } },

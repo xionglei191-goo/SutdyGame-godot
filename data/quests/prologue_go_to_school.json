@@ -13,7 +13,21 @@
   "targets": ["home", "sunshine_school"],
   "target_labels": {
     "home": "home",
-    "sunshine_school": "Sunshine School"
+    "sunshine_school": "Sunshine School",
+    "classroom": "Sunshine School",
+    "library": "Sunshine School",
+    "playground": "Sunshine School",
+    "canteen": "Sunshine School",
+    "music_room": "Sunshine School",
+    "art_room": "Sunshine School"
+  },
+  "target_aliases": {
+    "classroom": "sunshine_school",
+    "library": "sunshine_school",
+    "playground": "sunshine_school",
+    "canteen": "sunshine_school",
+    "music_room": "sunshine_school",
+    "art_room": "sunshine_school"
   },
   "correct_target": "sunshine_school",
   "wrong_target_text": "Start from home, then follow Mina's path.",

@@ -203,6 +203,14 @@ theme_override_font_sizes/font_size = 18
 text = "Sunny's corner"
 horizontal_alignment = 1
 
+[node name="OpenPetPanelButton" type="Button" parent="HomeLayer/PetCorner"]
+visible = false
+offset_left = 154.0
+offset_top = 20.0
+offset_right = 254.0
+offset_bottom = 66.0
+text = "Care"
+
 [node name="WelcomeBox" type="Node2D" parent="HomeLayer"]
 position = Vector2(596, 548)
 
@@ -315,7 +323,7 @@ offset_left = 760.0
 offset_top = 150.0
 offset_right = 1210.0
 offset_bottom = 600.0
-mouse_filter = 2
+mouse_filter = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="HomeLayer/PetPanel" unique_id=188001121]
 layout_mode = 1
@@ -372,8 +380,9 @@ text = "Pet state"
 
 [node name="PetStateValue" type="Label" parent="HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid" unique_id=188001128]
 layout_mode = 2
+custom_minimum_size = Vector2(270, 0)
 theme_override_font_sizes/font_size = 18
-text = "Hunger 62 / Clean 58 / Mood 66 / Bond 10"
+text = "H 62 / C 58 / M 66 / B 10"
 autowrap_mode = 3
 
 [node name="PetItemLabel" type="Label" parent="HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid" unique_id=188001135]
@@ -383,6 +392,7 @@ text = "Pet item"
 
 [node name="PetItemValue" type="Label" parent="HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid" unique_id=188001136]
 layout_mode = 2
+custom_minimum_size = Vector2(270, 0)
 theme_override_font_sizes/font_size = 18
 text = "No pet bowl yet"
 autowrap_mode = 3
@@ -394,6 +404,7 @@ text = "Outfit"
 
 [node name="OutfitValue" type="Label" parent="HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid"]
 layout_mode = 2
+custom_minimum_size = Vector2(270, 0)
 theme_override_font_sizes/font_size = 18
 text = "Everyday outfit"
 autowrap_mode = 3
@@ -405,6 +416,7 @@ text = "Room decor"
 
 [node name="RoomDecorValue" type="Label" parent="HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid"]
 layout_mode = 2
+custom_minimum_size = Vector2(270, 0)
 theme_override_font_sizes/font_size = 18
 text = "Cozy room"
 autowrap_mode = 3
@@ -439,6 +451,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Take care of your pet here. Visit the supermarket for a pet bowl."
 autowrap_mode = 3
+
+[node name="CloseButton" type="Button" parent="HomeLayer/PetPanel"]
+offset_left = 356.0
+offset_top = 10.0
+offset_right = 438.0
+offset_bottom = 48.0
+text = "Close"
 
 [node name="ReturnButton" type="Button" parent="HomeLayer" unique_id=188001134]
 offset_left = 62.0

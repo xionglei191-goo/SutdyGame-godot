@@ -82,7 +82,9 @@ func check_target(target_id: String) -> void:
 		_set_feedback("Talk to Mina first.")
 		return
 	var correct_target: String = str(current_quest.get("correct_target", ""))
-	if target_id == correct_target:
+	var target_aliases: Dictionary = current_quest.get("target_aliases", {})
+	var resolved_target := str(target_aliases.get(target_id, target_id))
+	if resolved_target == correct_target:
 		_complete_current_task()
 	else:
 		var target_labels: Dictionary = current_quest.get("target_labels", {})
