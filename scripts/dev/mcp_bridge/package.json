@@ -1,0 +1,17 @@
+{
+  "name": "study-game-godot-mcp-bridge",
+  "version": "1.0.0",
+  "description": "Custom 100% free MCP Server Bridge connecting Desktop IDEs (Cursor/Claude) with the Godot 4 Editor",
+  "main": "mcp_godot_bridge.js",
+  "scripts": {
+    "start": "node mcp_godot_bridge.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1",
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,6 +1,12 @@
 # Godot-specific excludes
 .godot/
 
+# Local dependency installs
+scripts/dev/mcp_bridge/node_modules/
+
+# Temporary working directories
+tmp/
+
 # Log files
 *.log
 

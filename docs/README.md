@@ -9,6 +9,7 @@
 ## 开发
 
 - `development/Godot开发任务拆解_v0.1.md`：当前 runtime 实现真相与开发拆解。
+- `development/Godot_MCP_服务说明.md`：Godot MCP 插件、bridge、验证流程与 schema 维护说明。
 - `development/MVP_0_2_*`、`development/Prototype_0_1_*`：历史试玩、验收与验证证据，不作为当前产品/工程基线。
 
 ## 素材
