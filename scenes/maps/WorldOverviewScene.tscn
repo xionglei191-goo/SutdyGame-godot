@@ -1,14 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://world_overview_scene_split"]
+[gd_scene format=3 uid="uid://bqdon1loma3t0"]
 
-[ext_resource type="Script" path="res://scripts/maps/world_overview_scene.gd" id="1_world_overview_scene"]
-[ext_resource type="Script" path="res://scripts/maps/world_layer_map_renderer.gd" id="2_layer_map_renderer"]
+[ext_resource type="Script" uid="uid://co3jiqnne4cuc" path="res://scripts/maps/world_overview_scene.gd" id="1_world_overview_scene"]
+[ext_resource type="Script" uid="uid://h4ju0hldj0wa" path="res://scripts/maps/world_layer_map_renderer.gd" id="2_layer_map_renderer"]
 [ext_resource type="PackedScene" path="res://scenes/minigames/SceneClickGame.tscn" id="4_click_game"]
-[ext_resource type="Texture2D" path="res://assets/generated/maps/world/map_sunshine_world_overview_v007_square.png" id="8_world_overview_bg"]
+[ext_resource type="Texture2D" uid="uid://d2fccd3yliddi" path="res://assets/generated/maps/world/map_sunshine_world_overview_v007_square.png" id="8_world_overview_bg"]
 
-[node name="WorldOverviewScene" type="Node2D"]
+[node name="WorldOverviewScene" type="Node2D" unique_id=173987076]
 script = ExtResource("1_world_overview_scene")
 
-[node name="LayerMap" type="Node2D" parent="."]
+[node name="LayerMap" type="Node2D" parent="." unique_id=512992054]
 z_index = -20
 script = ExtResource("2_layer_map_renderer")
 
