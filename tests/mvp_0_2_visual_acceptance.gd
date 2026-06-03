@@ -28,6 +28,7 @@ func _initialize() -> void:
 	_assert_memory_spark_layout(main.get_node("MemorySparkCard"))
 	_assert_memory_spark_data_is_derived_from_hotspots(main)
 	_assert_world_hotspot_enablement_baseline(town_map)
+	_assert_world_overview_layer_map(town_map)
 	_assert_quest_diary_layout(main.get_node("QuestDiary"))
 	_assert_parent_summary_layout(main.get_node("ParentSummary"))
 	_assert_home_pet_layout(main.get_node("SceneHost"))
@@ -679,7 +680,7 @@ func _assert_generated_assets_present() -> void:
 
 
 func _assert_world_overview_assets_present() -> void:
-	var world_overview_path := "res://assets/generated/maps/world/map_sunshine_world_overview_v001.png"
+	var world_overview_path := "res://assets/generated/maps/world/map_sunshine_world_overview_v007_square.png"
 	_assert(FileAccess.file_exists(world_overview_path), "world overview asset should exist: %s" % world_overview_path)
 	var world_texture := load(world_overview_path)
 	_assert(world_texture != null, "world overview texture should load: %s" % world_overview_path)
@@ -687,7 +688,7 @@ func _assert_world_overview_assets_present() -> void:
 	var world_image: Image = (world_texture as Texture2D).get_image()
 	_assert(world_image != null, "world overview texture should expose image data")
 	_assert(world_image.get_width() == 2560, "world overview image should be 2560 pixels wide")
-	_assert(world_image.get_height() == 1440, "world overview image should be 1440 pixels tall")
+	_assert(world_image.get_height() == 2560, "world overview image should be 2560 pixels tall")
 	for path in [
 		"res://assets/generated/maps/world/map_sunshine_world_az_label_v001.png",
 		"res://assets/generated/maps/world/map_sunshine_world_az_label_showcase_v001.png"
@@ -696,6 +697,20 @@ func _assert_world_overview_assets_present() -> void:
 		var file := FileAccess.open(path, FileAccess.READ)
 		_assert(file != null, "world overview asset should be readable: %s" % path)
 		_assert(file.get_length() > 0, "world overview asset should be non-empty: %s" % path)
+
+
+func _assert_world_overview_layer_map(town_map: Node) -> void:
+	var world_scene: Node = town_map.get_scene_root("world_overview")
+	_assert(world_scene.has_node("LayerMap"), "world overview should render through a layer map node")
+	_assert(world_scene.has_node("ReferenceBackground"), "world overview should keep the generated overview as a hidden reference")
+	var layer_map: Node = world_scene.get_node("LayerMap")
+	var reference_background: Sprite2D = world_scene.get_node("ReferenceBackground")
+	_assert(reference_background.texture != null, "hidden world overview reference background should keep its fallback texture")
+	_assert(not reference_background.visible, "generated world overview background should be hidden after layer-map migration")
+	_assert(layer_map.has_method("has_loaded_layer_map"), "layer map renderer should expose load status")
+	_assert(layer_map.has_loaded_layer_map(), "layer map renderer should load its data source")
+	_assert(layer_map.get_layer_map_id() == "sunshine_world_layer_map", "layer map renderer should load the current world map layer data")
+	_assert(layer_map.get_layer_canvas_size() == Vector2(2560.0, 2560.0), "layer map should preserve the current world overview logic size")
 
 
 func _assert_memory_spark_data_is_derived_from_hotspots(main: Node) -> void:

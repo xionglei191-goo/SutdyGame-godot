@@ -216,7 +216,7 @@ char_player_walk_down_v001.png
 char_mina_portrait_happy_v001.png
 
 场景：
-map_sunshine_world_overview_v001.png
+map_sunshine_world_overview_v007_square.png
 map_home_interior_bg_v001.png
 map_school_arrival_bg_v001.png
 map_classroom_bg_v001.png
@@ -322,7 +322,7 @@ existing IP, logo, trademark, brand name, celebrity, realistic adult fashion, ma
 |---|---|---|
 | 角色立绘 | 1024x1024 或 1024x1536 | 对话和角色页 |
 | 地图精灵 | 256x256 单方向 | 后续可切动画 |
-| 场景背景 | 2560x1440 | 世界总览主图基线；局部场景可按需求导出 |
+| 场景背景 | 2560x2560 | 当前世界总览主图方形基线；局部场景可按需求导出 |
 | 道具图标 | 512x512 | 导入后缩放 |
 | UI 面板 | 1024x512 | 可九宫格切分 |
 | 奖励图标 | 512x512 | 弹窗和收藏 |

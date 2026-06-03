@@ -25,11 +25,11 @@ func _initialize() -> void:
 	town_map.set_click_input_enabled(true)
 	await process_frame
 	_assert(click_game.has_method("get_world_canvas_size"), "click game should expose world overview canvas size")
-	_assert(click_game.get_world_canvas_size() == Vector2(2560.0, 1440.0), "world overview should use 2560x1440 logic size")
+	_assert(click_game.get_world_canvas_size() == Vector2(2560.0, 2560.0), "world overview should use 2560x2560 logic size")
 	_assert(town_map.has_method("get_world_overview_spawn_position"), "town map should expose world overview spawn position")
 	_assert(player.position == town_map.get_world_overview_spawn_position(), "player should spawn at the home-to-school starting focus point")
 	_assert(camera.limit_right == 2560, "camera should clamp to world overview width")
-	_assert(camera.limit_bottom == 1440, "camera should clamp to world overview height")
+	_assert(camera.limit_bottom == 2560, "camera should clamp to world overview height")
 	_assert(town_map.has_method("get_world_overview_camera_rect"), "town map should expose current world overview camera rect")
 	var initial_camera_rect: Rect2 = town_map.get_world_overview_camera_rect()
 	var home_rect: Rect2 = click_game.get_hotspot_rect("home")

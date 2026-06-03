@@ -38,7 +38,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 ### 2.1.1 World Overview 输入基线
 
 - 新开局默认显示 `HomeLayer`，以 `Welcome Box` 作为 home-first opener。
-- `world_overview` 逻辑尺寸为 `2560x1440`，运行时视口仍保持 `1280x720`。
+- `world_overview` 逻辑尺寸为 `2560x2560`，运行时视口仍保持 `1280x720`。
 - 打开世界地图后，world overview 起步镜头同时覆盖 `home` 和 `Sunshine School`，以 `home + school` 同屏的 world overview 起步构图进入地图。
 - 世界地图起步镜头同时覆盖 `home` 和 `Sunshine School`。
 - 世界地图起步镜头应让 `home + Sunshine School + town road` 的关系同时成立；school 核心簇视觉归组，但不能成为唯一主视觉。
@@ -278,7 +278,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 
 总览图相关生成资产也纳入存在性检查：
 
-- `map_sunshine_world_overview_v001.png`
+- `map_sunshine_world_overview_v007_square.png`
 - `map_sunshine_world_az_label_v001.png`
 - `map_sunshine_world_az_label_showcase_v001.png`
 

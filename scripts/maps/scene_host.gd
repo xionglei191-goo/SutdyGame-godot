@@ -8,7 +8,7 @@ signal home_pet_action_requested(action_id: String)
 signal home_room_explore_requested(quest_id: String)
 
 const STANDARD_SCENE_SIZE := Vector2(1280.0, 720.0)
-const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 1440.0)
+const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 2560.0)
 const VIEWPORT_SIZE := Vector2(1280.0, 720.0)
 const HOME_DIALOGUE_SEQUENCE := [
 	{"quest_id": "prologue_letter_box", "dialogue_id": "mina_letter_box_intro"},

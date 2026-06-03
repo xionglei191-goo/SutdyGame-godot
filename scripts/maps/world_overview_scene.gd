@@ -3,9 +3,10 @@ extends Node2D
 signal target_clicked(target_id: String)
 signal memory_anchor_clicked(anchor_id: String)
 
-const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 1440.0)
+const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 2560.0)
 
 @onready var click_game: Node = $ClickGame
+@onready var layer_map: Node2D = $LayerMap
 
 
 func _ready() -> void:
@@ -68,3 +69,13 @@ func get_all_world_hotspots() -> Array[Dictionary]:
 	if "_world_map_hotspots" in click_game:
 		return click_game._world_map_hotspots
 	return []
+
+
+func has_layer_map() -> bool:
+	return layer_map != null and layer_map.has_method("has_loaded_layer_map") and layer_map.has_loaded_layer_map()
+
+
+func get_layer_map_id() -> String:
+	if layer_map != null and layer_map.has_method("get_layer_map_id"):
+		return layer_map.get_layer_map_id()
+	return ""

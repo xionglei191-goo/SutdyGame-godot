@@ -22,7 +22,7 @@
 
 运行时边界补充：
 
-1. 当前 runtime 使用 `map_sunshine_world_overview_v001.png` 作为 `world_overview` 底图。
+1. 当前 runtime 使用 `map_sunshine_world_overview_v007_square.png` 作为 `world_overview` 底图。
 2. `map_sunshine_world_az_label_v001.png` 只用于工程对位、热点校验和教学审阅，不接 runtime。
 3. `map_sunshine_world_az_label_showcase_v001.png` 只用于展示审阅，不接 runtime。
 4. 当前主图交互不只承载地点点击，还必须兼容：
@@ -656,7 +656,7 @@
 ### 13.2 文件命名建议
 
 ```text
-map_sunshine_world_overview_v001.png
+map_sunshine_world_overview_v007_square.png
 map_sunshine_school_core_v001.png
 map_sunshine_community_ring_v001.png
 map_sunshine_outskirts_transport_v001.png
@@ -674,10 +674,10 @@ map_sunshine_world_hotspots_v001.json
 用于主图生成的底稿建议至少准备：
 
 - 运行时基准：`1280x720`
-- 主图源图真值：`2560x1440`
-- 如需额外宣传或后续裁切，可在 `2560x1440` 基础上继续上采样留档
+- 当前方形主图源图真值：`2560x2560`
+- 如需额外宣传或后续裁切，可在 `2560x2560` 基础上继续上采样留档
 
-运行时底图、展示图和工程/参考标注图都应从同一张 `2560x1440` 源图导出。如果后续要做镜头缩放和局部裁切，建议始终从该源图出发。
+运行时底图当前以 `map_sunshine_world_overview_v007_square.png` 为准；展示图和工程/参考标注图仍可保留旧版横图标注用途，不接 runtime。如果后续要做镜头缩放和局部裁切，建议始终从当前方形源图出发。
 
 ## 14. AI 出图执行建议
 

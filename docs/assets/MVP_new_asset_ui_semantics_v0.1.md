@@ -13,7 +13,7 @@
 ## HomeLayer 与 world_overview 的边界
 
 - `HomeLayer` 是真实室内起点，当前背景是 `assets/generated/maps/home/map_home_interior_bg_v001.png`，已接入 `HomeLayer/HomeBackgroundSlot`。
-- `world_overview` 上的 home 起点属于 `assets/generated/maps/world/map_sunshine_world_overview_v001.png` 的大地图区域，用于拖动探索、A-Z anchors、PlaceCard 和地点路由。
+- `world_overview` 上的 home 起点属于 `assets/generated/maps/world/map_sunshine_world_overview_v007_square.png` 的大地图区域，用于拖动探索、A-Z anchors、PlaceCard 和地点路由。
 - Home pet corner refinement 只修订 `HomeLayer` 室内，不替换 `world_overview` 的 home 起点。
 - 文档、prompt 和验收描述里不要把 `HomeLayer` interior background 与 `world_overview` home starting area 混写成同一个资产。
 

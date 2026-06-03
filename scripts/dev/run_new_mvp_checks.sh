@@ -45,12 +45,24 @@ run() {
 run "$GODOT_BIN" --headless --path . --check-only --quit
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_quest_data_integrity.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_game_state_pet_care.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_game_state_owned_items.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_home_pet_care_input_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_home_room_explore_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_pet_visual_state_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_new_home_prologue_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_parent_bonus_gate_migration.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_supermarket_pet_bowl_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_pet_shop_pet_ball_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_clothes_shop_parent_bonus_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_general_store_room_decor_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_non_school_place_card_matrix.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_place_card_visibility_data.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_place_card_action_authorization.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_town_commission_expansion_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_town_chapter1_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_transport_town_route_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_memory_spark_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_az_unlock_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_visual_acceptance.gd
 
 echo

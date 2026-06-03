@@ -17,7 +17,7 @@
 - [x] 输出局部裁切图提示词。
 - [x] 输出包含 A-Z 记忆宫殿锚点的主图提示词版本。
 - [x] 确认统一风格关键词与禁用词。
-- [x] 确认首版横图比例、运行时分辨率和 `2560x1440` 源图基线。
+- [x] 确认当前 runtime 使用 `2560x2560` 方形世界地图基线。
 
 ## 3. 资产生成
 
@@ -54,7 +54,7 @@
 - [x] A-Z 锚点版首图构图表：`docs/assets/Sunshine_Town_And_The_World_A-Z锚点版首图构图表_v0.1.md`
 - [x] 主图生成用中英文提示词：`assets/source_prompts/maps/map_sunshine_world_v001.md`
 - [x] Godot 热点数据草案：`data/maps/sunshine_world_hotspots_v001.json`
-- [x] 世界总览图资源：`assets/generated/maps/world/map_sunshine_world_overview_v001.png`（当前 runtime 底图基线）
+- [x] 世界总览图资源：`assets/generated/maps/world/map_sunshine_world_overview_v007_square.png`（当前 runtime 底图基线）
 - [x] A-Z 工程标注图资源：`assets/generated/maps/world/map_sunshine_world_az_label_v001.png`（工程/参考图，不接 runtime）
 - [x] A-Z 展示标注图资源：`assets/generated/maps/world/map_sunshine_world_az_label_showcase_v001.png`（展示审阅图，不接 runtime）
 - [x] 总览图输入流测试：`tests/mvp_0_2_world_overview_input_flow.gd`

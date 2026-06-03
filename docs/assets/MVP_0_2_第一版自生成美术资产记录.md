@@ -15,7 +15,7 @@
 ## 接入范围
 
 - 地图背景：world overview 中的 home + school 起步区、正式 `HomeLayer` 室内背景、school arrival、教室、花园已生成并接入。
-- `HomeLayer` 室内背景和 `world_overview` 上的 home 起点是两个不同 runtime 视觉层：`HomeLayer/HomeBackgroundSlot` 使用 `assets/generated/maps/home/map_home_interior_bg_v001.png`；`world_overview` 的 home 起点仍属于 `assets/generated/maps/world/map_sunshine_world_overview_v001.png` 的大地图区域，不能把二者互相描述为同一张背景。
+- `HomeLayer` 室内背景和 `world_overview` 上的 home 起点是两个不同 runtime 视觉层：`HomeLayer/HomeBackgroundSlot` 使用 `assets/generated/maps/home/map_home_interior_bg_v001.png`；`world_overview` 的 home 起点仍属于 `assets/generated/maps/world/map_sunshine_world_overview_v007_square.png` 的大地图区域，不能把二者互相描述为同一张背景。
 - 角色精灵：玩家、Mina、Leo、Nora。
 - 任务道具：book、pencil、bag 已用于当前整理房间交互；desk、shelf、school/garden 图标已入库但当前作为备用资产。
 - 奖励图标：Adventure Star、First Trip Ticket、Room Helper Badge、Garden Leaf Charm 已生成；`first_trip_ticket` 运行时通过 `data/rewards/reward_icons_v001.json` 使用独立 ticket 图标。
@@ -33,7 +33,7 @@
 | 风格统一 | 通过 | pastel toy-town / magical school 风格一致 |
 | 适龄性 | 通过 | 角色为适龄儿童，服装健康 |
 | 版权边界 | 通过 | 未使用现有 IP、品牌、Logo、商标名 |
-| 可用性 | 通过 | 已接入素材可支撑当前 runtime；`map_sunshine_world_overview_v001.png` 为 `2560x1440` 源图基线。部分已入库图标仍是备用资产，若干宠物/小镇图标仍待生成。 |
+| 可用性 | 通过 | 已接入素材可支撑当前 runtime；`map_sunshine_world_overview_v007_square.png` 为 `2560x2560` 方形底图基线。部分已入库图标仍是备用资产，若干宠物/小镇图标仍待生成。 |
 
 ## Godot 接入
 
@@ -51,7 +51,7 @@
 | 切片 | 目标文件或视觉对象 | 状态 | 当前 runtime / 占位说明 | prompt / 规划记录 |
 |---|---|---|---|---|
 | HomeLayer 背景基线 | `assets/generated/maps/home/map_home_interior_bg_v001.png` | `generated`, `connected` | 正式 `HomeLayer/HomeBackgroundSlot` 背景；不是 `world_overview` home 起点区域。 | `assets/source_prompts/maps/map_backgrounds_v001.md` |
-| world_overview home 起点 | `assets/generated/maps/world/map_sunshine_world_overview_v001.png` 内的 home 区域 | `generated`, `connected` | 大地图起步区，供拖动总览、A-Z 锚点和地点路由使用；不是 HomeLayer 室内背景。 | `assets/source_prompts/maps/map_sunshine_world_v001.md` |
+| world_overview home 起点 | `assets/generated/maps/world/map_sunshine_world_overview_v007_square.png` 内的 home 区域 | `generated`, `connected` | 大地图起步区，供拖动总览、A-Z 锚点和地点路由使用；不是 HomeLayer 室内背景。 | `assets/source_prompts/maps/map_sunshine_world_overview_v007_square.md` |
 | Home pet corner refinements | `map_home_interior_bg_v002.png` 或等价后续 home pet corner 修订 | `pending` | 当前 home 已有背景和可见宠物角；细化宠物垫、碗位、玩具收纳、清洁反馈仍待美术和接入。 | `assets/source_prompts/maps/home_pet_corner_refinement_v001.md` |
 | Pet care prop | `assets/generated/props/home/prop_pet_bowl_v001.png` | `generated`, `connected` | `HomeLayer/PetCorner/PetBowl` 已接入正式碗贴图。 | `assets/source_prompts/props/home_pet_care_props_v001.md` |
 | Pet care prop | `assets/generated/props/home/prop_pet_food_v001.png` | `generated`, `connected` | `HomeLayer/PetCorner/PetFood` 已接入正式食物贴图。 | `assets/source_prompts/props/home_pet_care_props_v001.md` |
