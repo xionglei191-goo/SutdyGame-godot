@@ -1,0 +1,15 @@
+{
+  "id": "mina_home_room_explore_b_intro",
+  "speaker": "Mina",
+  "starts_quest": "home_room_explore_b",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Town is outside, but home is our first place."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's look out the window."
+    }
+  ]
+}

@@ -39,6 +39,7 @@ func _initialize() -> void:
 	var scene_click_game := _read_text("res://scripts/minigames/scene_click_game.gd")
 	var town_map_script := _read_text("res://scripts/maps/town_map.gd")
 	var game_state_script := _read_text("res://scripts/core/game_state.gd")
+	var game_state_persistence_script := _read_text("res://scripts/systems/game_state_persistence.gd")
 
 	_assert_current_readme(readme_text)
 	_assert_current_docs_readme(docs_readme)
@@ -68,7 +69,7 @@ func _initialize() -> void:
 	_assert_current_quest_diary_script(quest_diary_script)
 	_assert_current_scene_click_game(scene_click_game)
 	_assert_current_town_map_script(town_map_script)
-	_assert_current_game_state_script(game_state_script)
+	_assert_current_game_state_script(game_state_script, game_state_persistence_script)
 	_assert_current_anchor_dialogue_speakers()
 	_assert_current_check_script(check_script)
 	_assert_current_manual_playtest_script(manual_playtest_script)
@@ -230,11 +231,12 @@ func _assert_current_town_map_script(text: String) -> void:
 	_assert_contains(text, "Legacy compatibility wrapper. New code should call set_current_quest_id().", "TownMap should mark set_current_lesson_id as legacy wrapper")
 
 
-func _assert_current_game_state_script(text: String) -> void:
+func _assert_current_game_state_script(text: String, persistence_text: String) -> void:
 	_assert_contains(text, "Legacy task_completed signal mirrors quest_completed", "GameState should mark task_completed signal as legacy mirror")
 	_assert_contains(text, "New runtime systems should use quest_completed.", "GameState should direct new systems to quest_completed")
 	_assert_contains(text, "_emit_legacy_task_completed", "GameState should route legacy task_completed through a wrapper")
-	_assert_contains(text, "_completed_tasks_legacy_snapshot", "GameState should derive completed_tasks only for legacy debug/report output")
+	_assert_contains(text, "return _persistence().debug_snapshot()", "GameState should delegate debug snapshot construction to persistence")
+	_assert_contains(persistence_text, "\"completed_tasks\": game_state.completed_quests.duplicate()", "GameState persistence should derive completed_tasks only for legacy debug/report output")
 	_assert_not_contains(text, "var completed_tasks", "GameState should not keep a separate in-memory completed_tasks mirror")
 	_assert_not_contains(text, "_sync_completed_tasks_legacy", "GameState should not maintain completed_tasks through sync writes")
 	_assert_contains(text, "func has_completed_task(task_id: String) -> bool:", "GameState should keep has_completed_task as an explicit compatibility helper while old report contracts exist")

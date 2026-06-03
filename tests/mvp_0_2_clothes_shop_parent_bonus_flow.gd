@@ -61,8 +61,11 @@ func _initialize() -> void:
 	_assert(explorer_cape.visible, "explorer cape should remain visible after routing home")
 	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
 	var outfit_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
+	var decor_slot_cape: Sprite2D = town_map.get_node("HomeLayer/DecorSlot_Cape")
 	_assert(pet_item_value.text != "Explorer cape ready", "explorer cape should not pollute pet item status")
 	_assert(outfit_value.text == "Explorer cape ready", "home outfit status should show the purchased explorer cape")
+	_assert(decor_slot_cape.visible, "buying the explorer cape should show the cape display at home")
+	_assert(decor_slot_cape.texture != null and decor_slot_cape.texture.resource_path == "res://assets/generated/props/home/prop_explorer_cape_display_v001.png", "cape display should use generated home decor art")
 
 	var save_path := "user://mvp_0_2_clothes_shop_save.json"
 	_assert(game_state.save_game(save_path), "clothes shop save should succeed")
@@ -71,6 +74,8 @@ func _initialize() -> void:
 	_assert(game_state.has_explorer_cape(), "load should restore explorer cape ownership")
 	_assert(game_state.parent_bonus == 0, "load should restore spent Parent Bonus balance")
 	_assert(game_state.coins == 6, "load should restore coins separately from Parent Bonus")
+	await process_frame
+	_assert(decor_slot_cape.visible, "load should restore visible explorer cape display")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
 
 	print("mvp_0_2_clothes_shop_parent_bonus_flow passed.")

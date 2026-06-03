@@ -1,0 +1,31 @@
+{
+  "id": "town_hospital_bandage_helper",
+  "title": "Bandage Helper",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help Mina bring a clean bandage at the hospital.",
+  "vocabulary": ["hospital", "hello", "help", "bandage"],
+  "patterns": [
+    "Hello, can I help?",
+    "Use a clean bandage."
+  ],
+  "targets": ["hospital"],
+  "target_labels": {
+    "hospital": "hospital"
+  },
+  "correct_target": "hospital",
+  "wrong_target_text": "Look for the hospital and the care sign.",
+  "success_text": "Thank you! The clean bandage is ready.",
+  "reward_id": "bandage_care_badge",
+  "reward_name": "Bandage Care Badge",
+  "reward_coins": 1,
+  "start_focus_hotspot": "hospital",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_hospital_bandage_helper_done"],
+    "focus_hotspot": "hospital"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the hospital to bring the bandage."
+}

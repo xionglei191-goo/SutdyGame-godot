@@ -1,6 +1,7 @@
 extends SceneTree
 
 const QUEST_DIR := "res://data/quests"
+const DIALOGUE_DIR := "res://data/dialogues"
 const SCENE_CLICK_TARGETS_PATH := "res://data/maps/scene_click_targets_v001.json"
 const SUPPORTED_SCENE_IDS := [
 	"home",
@@ -24,7 +25,12 @@ const SUPPORTED_PLACE_CARD_ACTION_IDS := [
 	"help_find_book",
 	"help_carry_parcel",
 	"help_choose_snack",
-	"help_make_poster"
+	"help_make_poster",
+	"help_with_bandage",
+	"check_travel_weather",
+	"check_train_time",
+	"find_music_sound",
+	"pick_art_color"
 ]
 const SUPPORTED_PLACE_CARD_VISIBLE_WHEN := [
 	"always",
@@ -36,11 +42,26 @@ const SUPPORTED_PLACE_CARD_VISIBLE_WHEN := [
 	"missing_town_road",
 	"missing_train_stop"
 ]
+const SUPPORTED_WORLD_ENABLED_MODES := [
+	"",
+	"disabled",
+	"quest_only",
+	"pilot_recall",
+	"after_prologue"
+]
 const PLACE_CARD_ACTION_CONTRACTS := {
 	"post_office": {
 		"help_carry_parcel": {
 			"visible_when": "quest_not_completed:town_post_office_small_parcel",
 			"start_quest_id": "town_post_office_small_parcel"
+		}
+	},
+	"hospital": {
+		"help_with_bandage": {
+			"visible_when": "quest_not_completed:town_hospital_bandage_helper",
+			"start_dialogue_id": "mina_hospital_bandage_intro",
+			"start_quest_id": "town_hospital_bandage_helper",
+			"success_focus_hotspot": true
 		}
 	},
 	"supermarket": {
@@ -109,12 +130,42 @@ const PLACE_CARD_ACTION_CONTRACTS := {
 			"game_state_action": "choose_train_stop",
 			"success_status_text": true,
 			"success_focus_hotspot": true
+		},
+		"check_train_time": {
+			"visible_when": "quest_not_completed:town_railway_time_stop",
+			"start_dialogue_id": "mina_railway_time_intro",
+			"start_quest_id": "town_railway_time_stop",
+			"success_focus_hotspot": true
+		}
+	},
+	"airport": {
+		"check_travel_weather": {
+			"visible_when": "quest_not_completed:town_airport_weather_check",
+			"start_dialogue_id": "mina_airport_weather_intro",
+			"start_quest_id": "town_airport_weather_check",
+			"success_focus_hotspot": true
 		}
 	},
 	"bookshop": {
 		"help_find_book": {
 			"visible_when": "quest_not_completed:town_bookshop_find_book",
 			"start_quest_id": "town_bookshop_find_book"
+		}
+	},
+	"music_room": {
+		"find_music_sound": {
+			"visible_when": "quest_not_completed:school_music_room_sound_find",
+			"start_dialogue_id": "mina_music_room_sound_intro",
+			"start_quest_id": "school_music_room_sound_find",
+			"success_focus_hotspot": true
+		}
+	},
+	"art_room": {
+		"pick_art_color": {
+			"visible_when": "quest_not_completed:school_art_room_color_pick",
+			"start_dialogue_id": "mina_art_room_color_intro",
+			"start_quest_id": "school_art_room_color_pick",
+			"success_focus_hotspot": true
 		}
 	}
 }
@@ -178,6 +229,10 @@ func _assert_quest_file(path: String) -> void:
 	_assert(typeof(quest.get("reward_coins")) == TYPE_FLOAT, "quest reward_coins should be a JSON number: %s" % path)
 	_assert(float(quest.get("reward_coins", -1.0)) == int(quest.get("reward_coins", -1)), "quest reward_coins should be an integer: %s" % path)
 	_assert(int(quest.get("reward_coins", -1)) >= 0, "quest reward_coins should be non-negative: %s" % path)
+	if quest.has("repeatable"):
+		_assert(typeof(quest.get("repeatable")) == TYPE_BOOL, "quest repeatable should be bool: %s" % path)
+		if bool(quest.get("repeatable", false)):
+			_assert(not str(quest.get("reward_once_story_flag", "")).is_empty(), "repeatable quest should declare reward_once_story_flag: %s" % path)
 	_assert(quest.has("start_focus_hotspot"), "quest start_focus_hotspot should be present: %s" % path)
 	var start_focus_hotspot := str(quest.get("start_focus_hotspot", ""))
 	if not start_focus_hotspot.is_empty():
@@ -333,7 +388,9 @@ func _assert_world_place_actions() -> void:
 		var hotspot := hotspot_value as Dictionary
 		if str(hotspot.get("kind", "")) != "place":
 			continue
-		if str(hotspot.get("world_enabled_mode", "")) == "disabled":
+		var world_enabled_mode := str(hotspot.get("world_enabled_mode", ""))
+		_assert(SUPPORTED_WORLD_ENABLED_MODES.has(world_enabled_mode), "world_enabled_mode should be supported: %s -> %s" % [str(hotspot.get("id", "")), world_enabled_mode])
+		if world_enabled_mode == "disabled":
 			continue
 		var hotspot_id := str(hotspot.get("id", ""))
 		_assert(hotspot.has("world_place_action"), "world place hotspot should declare world_place_action: %s" % hotspot_id)
@@ -366,9 +423,13 @@ func _assert_world_place_actions() -> void:
 					_assert_place_card_action_contract(hotspot_id, action_id, visible_when, place_card_action)
 					var game_state_action := str(place_card_action.get("game_state_action", ""))
 					var start_quest_id := str(place_card_action.get("start_quest_id", ""))
+					var start_dialogue_id := str(place_card_action.get("start_dialogue_id", ""))
 					_assert(not game_state_action.is_empty() or not start_quest_id.is_empty(), "place_card action should declare game_state_action or start_quest_id: %s -> %s" % [hotspot_id, action_id])
 					_assert(game_state_action.is_empty() or root.get_node("GameState").has_method(game_state_action), "place_card game_state_action should resolve to GameState method: %s -> %s" % [hotspot_id, game_state_action])
 					_assert(start_quest_id.is_empty() or FileAccess.file_exists("%s/%s.json" % [QUEST_DIR, start_quest_id]), "place_card start_quest_id should point to an existing quest: %s -> %s" % [hotspot_id, start_quest_id])
+					if not start_dialogue_id.is_empty():
+						_assert(FileAccess.file_exists("%s/%s.json" % [DIALOGUE_DIR, start_dialogue_id]), "place_card start_dialogue_id should point to an existing dialogue: %s -> %s" % [hotspot_id, start_dialogue_id])
+						_assert(_dialogue_starts_quest(start_dialogue_id) == start_quest_id, "place_card dialogue starts_quest should match start_quest_id: %s -> %s" % [hotspot_id, action_id])
 					if visible_when.begins_with("quest_not_completed:"):
 						var quest_id := visible_when.trim_prefix("quest_not_completed:")
 						_assert(FileAccess.file_exists("%s/%s.json" % [QUEST_DIR, quest_id]), "place_card quest visibility should point to an existing quest: %s -> %s" % [hotspot_id, visible_when])
@@ -405,6 +466,9 @@ func _assert_place_card_action_contract(hotspot_id: String, action_id: String, v
 	var expected_start_quest_id := str(action_contract.get("start_quest_id", ""))
 	if not expected_start_quest_id.is_empty():
 		_assert(str(action.get("start_quest_id", "")) == expected_start_quest_id, "place_card action should declare the expected start_quest_id: %s -> %s" % [hotspot_id, action_id])
+	var expected_start_dialogue_id := str(action_contract.get("start_dialogue_id", ""))
+	if not expected_start_dialogue_id.is_empty():
+		_assert(str(action.get("start_dialogue_id", "")) == expected_start_dialogue_id, "place_card action should declare the expected start_dialogue_id: %s -> %s" % [hotspot_id, action_id])
 
 
 func _read_world_hotspot_data() -> Variant:
@@ -427,6 +491,11 @@ func _read_json_dict(path: String) -> Dictionary:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
 	return parsed as Dictionary
+
+
+func _dialogue_starts_quest(dialogue_id: String) -> String:
+	var dialogue := _read_json_dict("%s/%s.json" % [DIALOGUE_DIR, dialogue_id])
+	return str(dialogue.get("starts_quest", ""))
 
 
 func _assert(condition: bool, message: String) -> void:

@@ -1,0 +1,15 @@
+{
+  "id": "mina_art_room_color_intro",
+  "speaker": "Mina",
+  "starts_quest": "school_art_room_color_pick",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "The art room is full of happy colors."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's pick one for our town story."
+    }
+  ]
+}

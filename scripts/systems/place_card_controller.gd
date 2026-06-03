@@ -144,6 +144,7 @@ static func _place_card_action_result(action: Dictionary) -> Dictionary:
 		"id": action_id,
 		"label": str(action.get("label", action_id)),
 		"game_state_action": str(action.get("game_state_action", "")),
+		"start_dialogue_id": str(action.get("start_dialogue_id", "")),
 		"start_quest_id": str(action.get("start_quest_id", "")),
 		"success_status_text": str(action.get("success_status_text", "")),
 		"home_feedback": str(action.get("home_feedback", "")),

@@ -1,0 +1,15 @@
+{
+  "id": "mina_music_room_sound_intro",
+  "speaker": "Mina",
+  "starts_quest": "school_music_room_sound_find",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "A bright sound is hiding in the music room."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's listen and find it."
+    }
+  ]
+}

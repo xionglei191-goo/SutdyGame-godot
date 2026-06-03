@@ -4,6 +4,7 @@ class_name WorldOverviewRules
 const WORLD_ENABLED_MODE_DISABLED := "disabled"
 const WORLD_ENABLED_MODE_QUEST_ONLY := "quest_only"
 const WORLD_ENABLED_MODE_PILOT_RECALL := "pilot_recall"
+const WORLD_ENABLED_MODE_AFTER_PROLOGUE := "after_prologue"
 const AZ_UNLOCK_MODE_STARTER := "starter"
 const AZ_UNLOCK_MODE_AFTER_PROLOGUE := "after_prologue"
 const AZ_UNLOCK_MODE_DISABLED := "disabled"
@@ -30,6 +31,8 @@ static func is_hotspot_enabled(hotspot: Dictionary, current_quest_id: String, az
 			return false
 		WORLD_ENABLED_MODE_QUEST_ONLY:
 			return hotspot_matches_quest(hotspot, current_quest_id)
+		WORLD_ENABLED_MODE_AFTER_PROLOGUE:
+			return az_full_unlocked
 	if str(hotspot.get("kind", "")) == "memory_anchor":
 		return is_memory_anchor_unlocked(hotspot, az_full_unlocked)
 	if hotspot_matches_quest(hotspot, current_quest_id):

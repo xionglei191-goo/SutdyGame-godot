@@ -1,0 +1,15 @@
+{
+  "id": "mina_hospital_bandage_intro",
+  "speaker": "Mina",
+  "starts_quest": "town_hospital_bandage_helper",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "Hello! The hospital helper needs a clean bandage."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's bring it with care."
+    }
+  ]
+}

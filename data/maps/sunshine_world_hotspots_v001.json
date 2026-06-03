@@ -115,12 +115,28 @@
         "h": 165
       },
       "priority": 100,
-      "default_visible": true,
-      "world_enabled_mode": "disabled",
+      "default_visible": false,
+      "world_enabled_mode": "after_prologue",
       "interaction_mode": "scene_or_card",
       "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Listen, sing, and find a bright sound.",
+      "place_card_actions": [
+        {
+          "id": "find_music_sound",
+          "label": "Find Music Sound",
+          "start_dialogue_id": "mina_music_room_sound_intro",
+          "start_quest_id": "school_music_room_sound_find",
+          "visible_when": "quest_not_completed:school_music_room_sound_find",
+          "success_focus_hotspot": "music_room"
+        }
+      ],
       "memory_anchor_id": "anchor_r_robot",
-      "quest_targets": []
+      "quest_targets": [
+        "school_music_room_sound_find"
+      ]
     },
     {
       "id": "art_room",
@@ -134,12 +150,28 @@
         "h": 165
       },
       "priority": 100,
-      "default_visible": true,
-      "world_enabled_mode": "disabled",
+      "default_visible": false,
+      "world_enabled_mode": "after_prologue",
       "interaction_mode": "scene_or_card",
       "child_scene_link": "",
+      "world_place_action": {
+        "action": "place_card"
+      },
+      "place_card_hint": "Paint, choose, and share a happy color.",
+      "place_card_actions": [
+        {
+          "id": "pick_art_color",
+          "label": "Pick Art Color",
+          "start_dialogue_id": "mina_art_room_color_intro",
+          "start_quest_id": "school_art_room_color_pick",
+          "visible_when": "quest_not_completed:school_art_room_color_pick",
+          "success_focus_hotspot": "art_room"
+        }
+      ],
       "memory_anchor_id": "",
-      "quest_targets": []
+      "quest_targets": [
+        "school_art_room_color_pick"
+      ]
     },
     {
       "id": "playground",
@@ -237,8 +269,20 @@
         "action": "place_card"
       },
       "place_card_hint": "Help, care, and heal.",
+      "place_card_actions": [
+        {
+          "id": "help_with_bandage",
+          "label": "Help With a Bandage",
+          "start_dialogue_id": "mina_hospital_bandage_intro",
+          "start_quest_id": "town_hospital_bandage_helper",
+          "visible_when": "quest_not_completed:town_hospital_bandage_helper",
+          "success_focus_hotspot": "hospital"
+        }
+      ],
       "memory_anchor_id": "",
-      "quest_targets": []
+      "quest_targets": [
+        "town_hospital_bandage_helper"
+      ]
     },
     {
       "id": "supermarket",
@@ -573,10 +617,20 @@
           "visible_when": "missing_train_stop",
           "success_status_text": "Train stop marked: +1 coin.",
           "success_focus_hotspot": "railway_station"
+        },
+        {
+          "id": "check_train_time",
+          "label": "Check Train Time",
+          "start_dialogue_id": "mina_railway_time_intro",
+          "start_quest_id": "town_railway_time_stop",
+          "visible_when": "quest_not_completed:town_railway_time_stop",
+          "success_focus_hotspot": "railway_station"
         }
       ],
       "memory_anchor_id": "anchor_w_watch",
-      "quest_targets": []
+      "quest_targets": [
+        "town_railway_time_stop"
+      ]
     },
     {
       "id": "airport",
@@ -597,8 +651,20 @@
         "action": "place_card"
       },
       "place_card_hint": "Fly, travel, and explore.",
+      "place_card_actions": [
+        {
+          "id": "check_travel_weather",
+          "label": "Check Travel Weather",
+          "start_dialogue_id": "mina_airport_weather_intro",
+          "start_quest_id": "town_airport_weather_check",
+          "visible_when": "quest_not_completed:town_airport_weather_check",
+          "success_focus_hotspot": "airport"
+        }
+      ],
       "memory_anchor_id": "anchor_x_x_mark_box",
-      "quest_targets": []
+      "quest_targets": [
+        "town_airport_weather_check"
+      ]
     },
     {
       "id": "tree",

@@ -71,6 +71,8 @@ func handle_home_pet_action(action_id: String) -> void:
 		return
 	var result: Dictionary = GameState.care_for_pet(action_id)
 	if bool(result.get("success", false)):
+		if town_map.has_method("play_home_pet_action_feedback"):
+			town_map.play_home_pet_action_feedback(action_id)
 		if quest_diary.active and quest_diary.has_method("complete_pet_care_action"):
 			quest_diary.complete_pet_care_action(action_id)
 		GameState.save_game()
@@ -121,6 +123,10 @@ func handle_place_card_action(place_id: String, action_id: String) -> void:
 		if place_card.has_method("set_status"):
 			place_card.set_status("That action is not ready.")
 		return
+	var start_dialogue_id := str(current_action.get("start_dialogue_id", ""))
+	if not start_dialogue_id.is_empty():
+		_start_place_card_dialogue(start_dialogue_id, str(current_action.get("success_focus_hotspot", place_id)))
+		return
 	var start_quest_id := str(current_action.get("start_quest_id", ""))
 	if not start_quest_id.is_empty():
 		_start_place_card_quest(start_quest_id, str(current_action.get("success_focus_hotspot", place_id)))
@@ -164,3 +170,17 @@ func _start_place_card_quest(quest_id: String, focus_hotspot: String = "") -> vo
 	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
 		town_map.focus_world_hotspot(focus_hotspot)
 	quest_diary.start_quest(quest_id)
+
+
+func _start_place_card_dialogue(dialogue_id: String, focus_hotspot: String = "") -> void:
+	if place_card != null:
+		place_card.visible = false
+	if hide_active_overlays_callback.is_valid():
+		hide_active_overlays_callback.call()
+	town_map.show_scene("world_overview")
+	town_map.set_click_input_enabled(false)
+	town_map.set_quest_active(false)
+	town_map.set_current_quest_id("")
+	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
+		town_map.focus_world_hotspot(focus_hotspot)
+	dialogue_box.start_dialogue(dialogue_id)

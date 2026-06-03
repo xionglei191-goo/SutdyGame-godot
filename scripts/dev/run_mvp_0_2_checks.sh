@@ -132,13 +132,16 @@ run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_real_docs_pending_fi
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_input_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_game_state_pet_care.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_game_state_owned_items.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_pet_visual_state_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_home_pet_care_input_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_home_room_explore_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_place_card_visit_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_non_school_place_card_matrix.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_place_card_visibility_data.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_place_card_action_authorization.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_bookshop_commission_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_town_commission_expansion_flow.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_town_chapter1_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_transport_town_route_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_supermarket_pet_bowl_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_pet_shop_pet_ball_flow.gd
@@ -147,6 +150,7 @@ run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_general_store_room_d
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_memory_spark_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_az_unlock_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_world_hotspot_enablement.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_music_art_room_unlock_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_new_home_prologue_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_parent_bonus_gate_migration.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_world_overview_input_flow.gd

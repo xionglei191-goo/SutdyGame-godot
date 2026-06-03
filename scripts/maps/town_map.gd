@@ -5,7 +5,10 @@ signal place_clicked(target_id: String)
 signal memory_anchor_clicked(anchor_id: String)
 signal npc_interaction_requested(dialogue_id: String)
 signal home_pet_action_requested(action_id: String)
+signal home_room_explore_requested(quest_id: String)
 
+const PetVisualController = preload("res://scripts/systems/pet_visual_controller.gd")
+const HomeDecorRenderer = preload("res://scripts/systems/home_decor_renderer.gd")
 const STANDARD_SCENE_SIZE := Vector2(1280.0, 720.0)
 const DEFAULT_WORLD_OVERVIEW_SIZE := Vector2(2560.0, 1440.0)
 const VIEWPORT_SIZE := Vector2(1280.0, 720.0)
@@ -34,6 +37,14 @@ const HOME_PET_CARE_QUEST_ID := "prologue_home_pet_care"
 @onready var home_return_button: Button = $HomeLayer/ReturnButton
 @onready var home_pet_close_button: Button = $HomeLayer/PetPanel/CloseButton
 @onready var home_pet_open_button: Button = $HomeLayer/PetCorner/OpenPetPanelButton
+@onready var pet_state_display: Sprite2D = $HomeLayer/PetCorner/PetStateDisplay
+@onready var decor_slot_rug: Sprite2D = $HomeLayer/DecorSlot_Rug
+@onready var decor_slot_cape: Sprite2D = $HomeLayer/DecorSlot_Cape
+@onready var room_explore_button: Button = $HomeLayer/RoomExploreButton
+@onready var room_explore_panel: Panel = $HomeLayer/RoomExplorePanel
+@onready var room_explore_light_button: Button = $HomeLayer/RoomExplorePanel/MarginContainer/VBoxContainer/RoomLightButton
+@onready var room_explore_window_button: Button = $HomeLayer/RoomExplorePanel/MarginContainer/VBoxContainer/WindowWatchButton
+@onready var room_explore_close_button: Button = $HomeLayer/RoomExplorePanel/CloseButton
 @onready var click_game = $ClickGame
 @onready var player: CharacterBody2D = $Player
 @onready var world_camera: Camera2D = $Player/Camera2D
@@ -45,18 +56,32 @@ var active_scene_id := "home"
 var _world_pan_dragging := false
 var _world_pan_active_pointer := MOUSE_BUTTON_RIGHT
 var _home_pet_panel_manually_closed := false
+var _pet_visual_controller := PetVisualController.new()
+var _home_decor_renderer := HomeDecorRenderer.new()
 
 
 func _ready() -> void:
 	_connect_npc(mina)
 	_connect_npc(leo)
 	_connect_npc(nora)
+	_pet_visual_controller.configure(pet_state_display, GameState.get_pet_state())
+	_home_decor_renderer.configure(decor_slot_rug, decor_slot_cape)
+	if GameState.has_signal("owned_items_changed") and not GameState.owned_items_changed.is_connected(_home_decor_renderer.refresh):
+		GameState.owned_items_changed.connect(_home_decor_renderer.refresh)
 	if home_return_button != null and not home_return_button.pressed.is_connected(_on_home_return_pressed):
 		home_return_button.pressed.connect(_on_home_return_pressed)
 	if home_pet_close_button != null and not home_pet_close_button.pressed.is_connected(_on_home_pet_close_pressed):
 		home_pet_close_button.pressed.connect(_on_home_pet_close_pressed)
 	if home_pet_open_button != null and not home_pet_open_button.pressed.is_connected(_on_home_pet_open_pressed):
 		home_pet_open_button.pressed.connect(_on_home_pet_open_pressed)
+	if room_explore_button != null and not room_explore_button.pressed.is_connected(_on_room_explore_open_pressed):
+		room_explore_button.pressed.connect(_on_room_explore_open_pressed)
+	if room_explore_light_button != null and not room_explore_light_button.pressed.is_connected(_on_room_explore_light_pressed):
+		room_explore_light_button.pressed.connect(_on_room_explore_light_pressed)
+	if room_explore_window_button != null and not room_explore_window_button.pressed.is_connected(_on_room_explore_window_pressed):
+		room_explore_window_button.pressed.connect(_on_room_explore_window_pressed)
+	if room_explore_close_button != null and not room_explore_close_button.pressed.is_connected(_on_room_explore_close_pressed):
+		room_explore_close_button.pressed.connect(_on_room_explore_close_pressed)
 	if has_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton"):
 		var feed_button: Button = $HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton
 		if not feed_button.pressed.is_connected(_on_home_pet_feed_pressed):
@@ -75,6 +100,8 @@ func _ready() -> void:
 			rest_button.pressed.connect(_on_home_pet_rest_pressed)
 	if home_pet_panel != null:
 		home_pet_panel.visible = false
+	if room_explore_panel != null:
+		room_explore_panel.visible = false
 	click_game.target_clicked.connect(func(target_id: String) -> void:
 		place_clicked.emit(target_id)
 	)
@@ -132,6 +159,11 @@ func show_scene(scene_id: String) -> void:
 		_configure_scene_geometry(get_world_overview_size())
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else get_world_overview_spawn_position()
+		if home_pet_panel != null:
+			home_pet_panel.visible = false
+		if room_explore_panel != null:
+			room_explore_panel.visible = false
+		_refresh_home_room_explore_visibility()
 		_set_npc_active(mina, false)
 		_set_npc_active(leo, false)
 		_set_npc_active(nora, false)
@@ -146,12 +178,16 @@ func show_scene(scene_id: String) -> void:
 		_set_npc_active(leo, false)
 		_set_npc_active(nora, false)
 		_refresh_home_pet_panel_visibility()
+		_refresh_home_room_explore_visibility()
 	elif scene_id == "campus_gate":
 		_configure_scene_geometry(STANDARD_SCENE_SIZE)
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(640, 420)
 		if home_pet_panel != null:
 			home_pet_panel.visible = false
+		if room_explore_panel != null:
+			room_explore_panel.visible = false
+		_refresh_home_room_explore_visibility()
 		_set_npc_active(mina, true)
 		if mina.has_method("set_dialogue_id"):
 			mina.set_dialogue_id("mina_intro")
@@ -164,6 +200,9 @@ func show_scene(scene_id: String) -> void:
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(310, 520)
 		if home_pet_panel != null:
 			home_pet_panel.visible = false
+		if room_explore_panel != null:
+			room_explore_panel.visible = false
+		_refresh_home_room_explore_visibility()
 		_set_npc_active(mina, false)
 		_set_npc_active(leo, true)
 		leo.position = Vector2(530, 318)
@@ -174,6 +213,9 @@ func show_scene(scene_id: String) -> void:
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(300, 560)
 		if home_pet_panel != null:
 			home_pet_panel.visible = false
+		if room_explore_panel != null:
+			room_explore_panel.visible = false
+		_refresh_home_room_explore_visibility()
 		_set_npc_active(mina, false)
 		_set_npc_active(nora, true)
 		nora.position = Vector2(735, 320)
@@ -358,6 +400,32 @@ func _on_home_pet_rest_pressed() -> void:
 	home_pet_action_requested.emit("rest")
 
 
+func _on_room_explore_open_pressed() -> void:
+	if active_scene_id != "home":
+		return
+	if room_explore_panel != null:
+		room_explore_panel.visible = true
+
+
+func _on_room_explore_close_pressed() -> void:
+	if room_explore_panel != null:
+		room_explore_panel.visible = false
+
+
+func _on_room_explore_light_pressed() -> void:
+	_start_home_room_explore("home_room_explore_a")
+
+
+func _on_room_explore_window_pressed() -> void:
+	_start_home_room_explore("home_room_explore_b")
+
+
+func _start_home_room_explore(quest_id: String) -> void:
+	if room_explore_panel != null:
+		room_explore_panel.visible = false
+	home_room_explore_requested.emit(quest_id)
+
+
 func update_home_pet_ui(
 	coins: int,
 	pet_state: Dictionary,
@@ -390,8 +458,15 @@ func update_home_pet_ui(
 		home_room_decor_label.text = room_decor_status_text
 	if home_pet_feedback_label != null and not feedback.is_empty():
 		home_pet_feedback_label.text = feedback
+	_pet_visual_controller.apply_pet_state(pet_state)
+	_home_decor_renderer.refresh()
 	if active_scene_id == "home":
 		_refresh_home_pet_panel_visibility()
+		_refresh_home_room_explore_visibility()
+
+
+func play_home_pet_action_feedback(action_id: String) -> void:
+	_pet_visual_controller.play_action_feedback(action_id)
 
 
 func _next_home_dialogue_id() -> String:
@@ -409,6 +484,13 @@ func _refresh_home_pet_panel_visibility() -> void:
 		home_pet_panel.visible = active_scene_id == "home" and should_show
 	if home_pet_open_button != null:
 		home_pet_open_button.visible = active_scene_id == "home" and unlocked and not should_show
+
+
+func _refresh_home_room_explore_visibility() -> void:
+	if room_explore_button != null:
+		room_explore_button.visible = active_scene_id == "home"
+	if active_scene_id != "home" and room_explore_panel != null:
+		room_explore_panel.visible = false
 
 
 func _is_home_pet_panel_unlocked() -> bool:

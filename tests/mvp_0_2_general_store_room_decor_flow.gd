@@ -51,9 +51,12 @@ func _initialize() -> void:
 	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
 	var outfit_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
 	var room_decor_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
+	var decor_slot_rug: Sprite2D = town_map.get_node("HomeLayer/DecorSlot_Rug")
 	_assert(pet_item_value.text != "Star rug ready", "star rug should not pollute pet item status")
 	_assert(outfit_value.text != "Star rug ready", "star rug should not pollute outfit status")
 	_assert(room_decor_value.text == "Star rug ready", "home room decor status should show the purchased star rug")
+	_assert(decor_slot_rug.visible, "buying the star rug should show the rug in HomeLayer")
+	_assert(decor_slot_rug.texture != null and decor_slot_rug.texture.resource_path == "res://assets/generated/props/home/prop_star_rug_placed_v001.png", "star rug slot should use generated placed rug art")
 
 	var save_path := "user://mvp_0_2_general_store_save.json"
 	_assert(game_state.save_game(save_path), "general store save should succeed")
@@ -62,6 +65,8 @@ func _initialize() -> void:
 	_assert(game_state.has_star_rug(), "load should restore star rug ownership")
 	_assert(game_state.coins == 2, "load should restore coins after the star rug purchase")
 	_assert(game_state.parent_bonus == 0, "load should keep Parent Bonus separate from room decor")
+	await process_frame
+	_assert(decor_slot_rug.visible, "load should restore visible star rug decor")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
 
 	print("mvp_0_2_general_store_room_decor_flow passed.")

@@ -16,11 +16,13 @@ const MATRIX_PLACE_IDS := [
 
 const EXPECTED_ACTIONS := {
 	"post_office": "help_carry_parcel",
+	"hospital": "help_with_bandage",
 	"restaurant": "help_choose_snack",
 	"cinema": "help_make_poster",
 	"bus_station": "choose_town_route",
 	"taxi": "find_town_road",
-	"railway_station": "choose_train_stop"
+	"railway_station": "choose_train_stop",
+	"airport": "check_travel_weather"
 }
 
 

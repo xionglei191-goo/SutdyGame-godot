@@ -1,0 +1,34 @@
+{
+  "id": "home_room_explore_a",
+  "title": "Room Light",
+  "scene_id": "home",
+  "type": "click_target",
+  "repeatable": true,
+  "reward_once_story_flag": "home_room_explore_a_reward_claimed",
+  "prompt": "Find the warm lamp in your room.",
+  "vocabulary": ["room", "lamp", "light"],
+  "patterns": [
+    "This is my lamp.",
+    "The light is warm."
+  ],
+  "targets": ["home_lamp", "home_clock", "home_window"],
+  "target_labels": {
+    "home_lamp": "lamp",
+    "home_clock": "clock",
+    "home_window": "window"
+  },
+  "correct_target": "home_lamp",
+  "wrong_target_text": "This is the %s. Look for the warm lamp.",
+  "success_text": "Nice! The lamp makes the room cozy.",
+  "reward_id": "room_light_spark",
+  "reward_name": "Room Light Spark",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["home_room_explore_a_done"]
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the warm lamp in your room."
+}

@@ -1,0 +1,34 @@
+{
+  "id": "home_room_explore_b",
+  "title": "Window Watch",
+  "scene_id": "home",
+  "type": "click_target",
+  "repeatable": true,
+  "reward_once_story_flag": "home_room_explore_b_reward_claimed",
+  "prompt": "Find the window and peek toward town.",
+  "vocabulary": ["window", "town", "look"],
+  "patterns": [
+    "Look out the window.",
+    "I can see the town."
+  ],
+  "targets": ["home_window", "home_clock", "home_lamp"],
+  "target_labels": {
+    "home_window": "window",
+    "home_clock": "clock",
+    "home_lamp": "lamp"
+  },
+  "correct_target": "home_window",
+  "wrong_target_text": "This is the %s. Look for the window.",
+  "success_text": "Great look! The town is waiting outside.",
+  "reward_id": "window_town_spark",
+  "reward_name": "Window Town Spark",
+  "reward_coins": 1,
+  "start_focus_hotspot": "",
+  "completion": {
+    "scene_id": "home",
+    "npc_prompts_visible": true,
+    "story_flags": ["home_room_explore_b_done"]
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the window and look toward town."
+}

@@ -1,0 +1,31 @@
+{
+  "id": "town_airport_weather_check",
+  "title": "Weather Sticker",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help check the travel weather at the airport.",
+  "vocabulary": ["airport", "travel", "weather", "sunny"],
+  "patterns": [
+    "How is the weather?",
+    "It is sunny today."
+  ],
+  "targets": ["airport"],
+  "target_labels": {
+    "airport": "airport"
+  },
+  "correct_target": "airport",
+  "wrong_target_text": "Look for the airport and the travel sticker.",
+  "success_text": "Sunny! The weather sticker is ready.",
+  "reward_id": "weather_sticker",
+  "reward_name": "Weather Sticker",
+  "reward_coins": 1,
+  "start_focus_hotspot": "airport",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_airport_weather_check_done"],
+    "focus_hotspot": "airport"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the airport to check the travel weather."
+}

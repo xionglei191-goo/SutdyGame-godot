@@ -248,8 +248,12 @@ func _rect_from_target(target: Dictionary) -> Rect2:
 
 
 func _is_world_hotspot_enabled(hotspot: Dictionary) -> bool:
+	var after_prologue_unlocked := (
+		GameState.has_story_flag(WorldOverviewRules.STORY_FLAG_AZ_FULL_UNLOCKED)
+		or GameState.has_completed_quest(WorldOverviewRules.PROLOGUE_QUEST_ID)
+	)
 	return WorldOverviewRules.is_hotspot_enabled(
 		hotspot,
 		current_quest_id,
-		GameState.has_story_flag(WorldOverviewRules.STORY_FLAG_AZ_FULL_UNLOCKED)
+		after_prologue_unlocked
 	)

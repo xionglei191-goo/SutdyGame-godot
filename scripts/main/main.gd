@@ -38,6 +38,8 @@ func _ready() -> void:
 	town_map.place_clicked.connect(_on_place_clicked)
 	town_map.memory_anchor_clicked.connect(_on_memory_anchor_clicked)
 	town_map.home_pet_action_requested.connect(_on_home_pet_action)
+	if town_map.has_signal("home_room_explore_requested"):
+		town_map.home_room_explore_requested.connect(_on_home_room_explore_requested)
 	if place_card.has_signal("closed") and not place_card.closed.is_connected(_on_place_card_closed):
 		place_card.closed.connect(_on_place_card_closed)
 	if place_card.has_signal("action_requested") and not place_card.action_requested.is_connected(_on_place_card_action_requested):
@@ -153,6 +155,11 @@ func _on_place_clicked(target_id: String) -> void:
 
 func _on_home_pet_action(action_id: String) -> void:
 	world_interaction_controller.handle_home_pet_action(action_id)
+
+
+func _on_home_room_explore_requested(quest_id: String) -> void:
+	_hide_active_overlays()
+	quest_diary.start_quest(quest_id)
 
 
 func _on_place_card_closed() -> void:

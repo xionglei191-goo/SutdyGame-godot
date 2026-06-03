@@ -83,6 +83,10 @@ const DEFAULT_PET_STATE := {
 	"bond": 10,
 	"rest": 70
 }
+const PET_CARE_MANAGER_SCRIPT := preload("res://scripts/systems/pet_care_manager.gd")
+const STARTER_ACTION_ENGINE_SCRIPT := preload("res://scripts/systems/starter_action_engine.gd")
+const PLAYTEST_REPORTER_SCRIPT := preload("res://scripts/systems/playtest_reporter.gd")
+const GAME_STATE_PERSISTENCE_SCRIPT := preload("res://scripts/systems/game_state_persistence.gd")
 
 var completed_quests: Array[String] = []
 var rewards: Array[String] = []
@@ -99,7 +103,10 @@ var playtest_started_at_msec: int = -1
 var playtest_elapsed_msec: int = 0
 var playtest_completed: bool = false
 var playtest_events: Array[Dictionary] = []
-var _starter_actions_cache: Dictionary = {}
+var _pet_care_manager
+var _starter_action_engine
+var _playtest_reporter
+var _persistence_manager
 
 
 func complete_task(task_id: String, words: Array = [], patterns: Array = []) -> void:
@@ -198,73 +205,19 @@ func has_confirmed_parent_bonus() -> bool:
 
 
 func get_pet_state() -> Dictionary:
-	return pet_state.duplicate(true)
+	return _pet_care().get_pet_state()
 
 
 func get_pet_name() -> String:
-	return pet_name
+	return _pet_care().get_pet_name()
 
 
 func set_pet_name(value: String) -> void:
-	var cleaned := value.strip_edges()
-	if cleaned.is_empty():
-		cleaned = DEFAULT_PET_NAME
-	if pet_name == cleaned:
-		return
-	pet_name = cleaned
-	pet_name_changed.emit(pet_name)
+	_pet_care().set_pet_name(value, DEFAULT_PET_NAME)
 
 
 func care_for_pet(action_id: String) -> Dictionary:
-	var action := str(action_id).strip_edges().to_lower()
-	var result := {
-		"success": false,
-		"message": "Your pet is waiting.",
-		"coins_spent": 0,
-		"pet_state": get_pet_state()
-	}
-	match action:
-		"feed":
-			if not spend_coins(2):
-				result["message"] = "You need 2 coins for pet food."
-				return result
-			_adjust_pet_stat("hunger", 22)
-			_adjust_pet_stat("mood", 6)
-			_adjust_pet_stat("bond", 2)
-			result["success"] = true
-			if has_pet_bowl():
-				result["message"] = "Your pet enjoyed a snack in the new bowl."
-			else:
-				result["message"] = "Your pet enjoyed a snack."
-			result["coins_spent"] = 2
-		"clean":
-			_adjust_pet_stat("cleanliness", 24)
-			_adjust_pet_stat("mood", 4)
-			_adjust_pet_stat("bond", 1)
-			result["success"] = true
-			result["message"] = "Your pet feels fresh and clean."
-		"play":
-			_adjust_pet_stat("mood", 20)
-			_adjust_pet_stat("hunger", -4)
-			_adjust_pet_stat("bond", 3)
-			result["success"] = true
-			if has_pet_ball():
-				result["message"] = "Your pet had fun with the new ball."
-			else:
-				result["message"] = "Your pet had fun playing with you."
-		"rest", "sleep":
-			_adjust_pet_stat("rest", 20)
-			_adjust_pet_stat("mood", 12)
-			_adjust_pet_stat("hunger", -2)
-			_adjust_pet_stat("bond", 1)
-			result["success"] = true
-			result["message"] = "%s had a cozy rest." % pet_name
-		_:
-			result["message"] = "That pet action is not ready."
-			return result
-	result["pet_state"] = get_pet_state()
-	pet_state_changed.emit(get_pet_state())
-	return result
+	return _pet_care().care_for_pet(action_id, DEFAULT_PET_STATE)
 
 
 func add_learned_word(word: String) -> void:
@@ -345,7 +298,7 @@ func mark_story_flag(flag_id: String) -> void:
 	if not story_flags.has(flag_id):
 		story_flags.append(flag_id)
 		story_flags_changed.emit(story_flags.duplicate())
-	_sync_owned_item_from_legacy_flag(flag_id)
+	_persistence().sync_owned_item_from_legacy_flag(flag_id)
 
 
 func has_story_flag(flag_id: String) -> bool:
@@ -451,136 +404,39 @@ func get_room_decor_status_text() -> String:
 
 
 func start_playtest_timer(force_restart: bool = false) -> void:
-	if playtest_completed and not force_restart:
-		return
-	if playtest_started_at_msec >= 0 and not force_restart:
-		return
-	if force_restart:
-		playtest_elapsed_msec = 0
-		playtest_completed = false
-		playtest_events.clear()
-	playtest_started_at_msec = Time.get_ticks_msec()
-	record_playtest_event("playtest_started", "试玩开始")
+	_playtest().start_timer(force_restart)
 
 
 func finish_playtest_timer() -> void:
-	if playtest_completed:
-		return
-	if playtest_started_at_msec >= 0:
-		playtest_elapsed_msec += max(1, Time.get_ticks_msec() - playtest_started_at_msec)
-	playtest_started_at_msec = -1
-	playtest_completed = true
-	record_playtest_event("playtest_completed", "试玩完成")
+	_playtest().finish_timer()
 
 
 func get_playtest_elapsed_msec() -> int:
-	if playtest_started_at_msec < 0:
-		return playtest_elapsed_msec
-	return playtest_elapsed_msec + max(0, Time.get_ticks_msec() - playtest_started_at_msec)
+	return _playtest().get_elapsed_msec()
 
 
 func get_playtest_elapsed_seconds() -> int:
-	return int(round(float(get_playtest_elapsed_msec()) / 1000.0))
+	return _playtest().get_elapsed_seconds()
 
 
 func format_playtest_elapsed() -> String:
-	var total_seconds := get_playtest_elapsed_seconds()
-	var minutes := int(total_seconds / 60)
-	var seconds := total_seconds % 60
-	return "%02d:%02d" % [minutes, seconds]
+	return _playtest().format_elapsed()
 
 
 func record_playtest_event(event_id: String, label: String = "") -> void:
-	if event_id.is_empty():
-		return
-	for event: Dictionary in playtest_events:
-		if str(event.get("id", "")) == event_id:
-			return
-	var elapsed_msec := get_playtest_elapsed_msec()
-	playtest_events.append({
-		"id": event_id,
-		"label": label if not label.is_empty() else event_id,
-		"elapsed_msec": elapsed_msec,
-		"elapsed_seconds": int(round(float(elapsed_msec) / 1000.0)),
-		"elapsed_text": _format_elapsed_msec(elapsed_msec)
-	})
+	_playtest().record_event(event_id, label)
 
 
 func save_to_path(path: String = DEFAULT_SAVE_PATH) -> bool:
-	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		push_error("Save open failed: %s" % path)
-		return false
-	file.store_string(JSON.stringify(debug_snapshot(), "\t"))
-	return true
+	return _persistence().save_to_path(path)
 
 
 func load_from_path(path: String = DEFAULT_SAVE_PATH) -> bool:
-	if not FileAccess.file_exists(path):
-		reset()
-		return false
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		push_error("Save read failed: %s" % path)
-		reset()
-		return false
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("Save parse failed: %s" % path)
-		reset()
-		return false
-	var data: Dictionary = parsed
-	completed_quests = _string_array_from(data.get("completed_quests", data.get("completed_tasks", [])))
-	rewards = _string_array_from(data.get("rewards", []))
-	learned_words = _string_array_from(data.get("learned_words", []))
-	learned_patterns = _string_array_from(data.get("learned_patterns", []))
-	completed_reviews = _string_array_from(data.get("completed_reviews", []))
-	story_flags = _string_array_from(data.get("story_flags", []))
-	owned_items = _string_array_from(data.get("owned_items", []))
-	_migrate_legacy_item_flags()
-	_migrate_owned_items_to_legacy_flags()
-	coins = int(data.get("coins", DEFAULT_COINS))
-	parent_bonus = int(data.get("parent_bonus", DEFAULT_PARENT_BONUS))
-	pet_state = _pet_state_from(data.get("pet_state", DEFAULT_PET_STATE))
-	pet_name = str(data.get("pet_name", DEFAULT_PET_NAME)).strip_edges()
-	if pet_name.is_empty():
-		pet_name = DEFAULT_PET_NAME
-	playtest_elapsed_msec = int(data.get("playtest_elapsed_msec", 0))
-	playtest_completed = bool(data.get("playtest_completed", false))
-	playtest_events = _event_array_from(data.get("playtest_events", []))
-	_migrate_missing_first_trip_completion()
-	playtest_started_at_msec = -1
-	coins_changed.emit(coins)
-	parent_bonus_changed.emit(parent_bonus)
-	pet_name_changed.emit(pet_name)
-	pet_state_changed.emit(get_pet_state())
-	story_flags_changed.emit(story_flags.duplicate())
-	owned_items_changed.emit(owned_items.duplicate())
-	return true
+	return _persistence().load_from_path(path)
 
 
 func reset() -> void:
-	completed_quests.clear()
-	rewards.clear()
-	learned_words.clear()
-	learned_patterns.clear()
-	completed_reviews.clear()
-	story_flags.clear()
-	owned_items.clear()
-	coins = DEFAULT_COINS
-	parent_bonus = DEFAULT_PARENT_BONUS
-	pet_name = DEFAULT_PET_NAME
-	pet_state = DEFAULT_PET_STATE.duplicate(true)
-	playtest_started_at_msec = -1
-	playtest_elapsed_msec = 0
-	playtest_completed = false
-	playtest_events.clear()
-	coins_changed.emit(coins)
-	parent_bonus_changed.emit(parent_bonus)
-	pet_name_changed.emit(pet_name)
-	pet_state_changed.emit(get_pet_state())
-	story_flags_changed.emit(story_flags.duplicate())
-	owned_items_changed.emit(owned_items.duplicate())
+	_persistence().reset()
 
 
 func save_game(path: String = DEFAULT_SAVE_PATH) -> bool:
@@ -592,14 +448,17 @@ func load_game(path: String = DEFAULT_SAVE_PATH) -> bool:
 
 
 func build_playtest_report() -> Dictionary:
-	return QA_TIMING_REPORT_SCRIPT.build(debug_snapshot())
+	return _playtest().build_report(QA_TIMING_REPORT_SCRIPT)
 
 
 func save_playtest_report(path: String = DEFAULT_PLAYTEST_REPORT_PATH) -> bool:
-	if not _can_export_playtest_report():
-		print("Playtest report export rejected: complete the full MVP flow and parent summary reading first.")
-		return false
-	return QA_TIMING_REPORT_SCRIPT.save(path, debug_snapshot())
+	return _playtest().save_report(
+		path,
+		QA_TIMING_REPORT_SCRIPT,
+		REQUIRED_FORMAL_QUEST_IDS,
+		LEGACY_REPORT_QUEST_IDS,
+		REQUIRED_PLAYTEST_EVENT_IDS
+	)
 
 
 func reset_progress() -> void:
@@ -607,253 +466,32 @@ func reset_progress() -> void:
 
 
 func debug_snapshot() -> Dictionary:
-	return {
-		"completed_tasks": _completed_tasks_legacy_snapshot(),
-		"completed_quests": get_completed_quests(),
-		"rewards": rewards.duplicate(),
-		"learned_words": learned_words.duplicate(),
-		"learned_patterns": learned_patterns.duplicate(),
-		"completed_reviews": completed_reviews.duplicate(),
-		"story_flags": story_flags.duplicate(),
-		"owned_items": owned_items.duplicate(),
-		"coins": coins,
-		"parent_bonus": parent_bonus,
-		"pet_name": pet_name,
-		"pet_state": get_pet_state(),
-		"playtest_elapsed_msec": get_playtest_elapsed_msec(),
-		"playtest_elapsed_seconds": get_playtest_elapsed_seconds(),
-		"playtest_elapsed_text": format_playtest_elapsed(),
-		"playtest_completed": playtest_completed,
-		"playtest_events": playtest_events.duplicate(true)
-	}
-
-
-func _string_array_from(value: Variant) -> Array[String]:
-	var result: Array[String] = []
-	if typeof(value) != TYPE_ARRAY:
-		return result
-	for item: Variant in value:
-		var text: String = str(item)
-		if not result.has(text):
-			result.append(text)
-	return result
-
-
-func _event_array_from(value: Variant) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	if typeof(value) != TYPE_ARRAY:
-		return result
-	for item: Variant in value:
-		if typeof(item) != TYPE_DICTIONARY:
-			continue
-		var event: Dictionary = item
-		var event_id := str(event.get("id", ""))
-		if event_id.is_empty():
-			continue
-		result.append({
-			"id": event_id,
-			"label": str(event.get("label", event_id)),
-			"elapsed_msec": int(event.get("elapsed_msec", 0)),
-			"elapsed_seconds": int(event.get("elapsed_seconds", 0)),
-			"elapsed_text": str(event.get("elapsed_text", _format_elapsed_msec(int(event.get("elapsed_msec", 0)))))
-		})
-	return result
-
-
-func _migrate_missing_first_trip_completion() -> void:
-	if completed_quests.has("prologue_go_to_school"):
-		return
-	if not _has_any_completed_quest([
-		"g4_u1_school_tour",
-		"g4_u1_tidy_classroom",
-		"g4_u1_garden_bird"
-	]):
-		return
-	completed_quests.append("prologue_go_to_school")
-	if not story_flags.has("prologue_go_to_school_done"):
-		story_flags.append("prologue_go_to_school_done")
-	if not story_flags.has("az_full_unlocked_after_prologue"):
-		story_flags.append("az_full_unlocked_after_prologue")
-	if not _has_playtest_event("prologue_go_to_school_completed"):
-		_insert_playtest_event_before(
-			"g4_u1_school_tour_started",
-			_synthetic_playtest_event_from_neighbor(
-				"prologue_go_to_school_completed",
-				"First Trip 完成",
-				"g4_u1_school_tour_started"
-			)
-		)
-
-
-func _has_any_completed_quest(quest_ids: Array[String]) -> bool:
-	for quest_id: String in quest_ids:
-		if completed_quests.has(quest_id):
-			return true
-	return false
-
-
-func _synthetic_playtest_event_from_neighbor(event_id: String, label: String, neighbor_event_id: String) -> Dictionary:
-	var elapsed_msec := playtest_elapsed_msec
-	for event: Dictionary in playtest_events:
-		if str(event.get("id", "")) == neighbor_event_id:
-			elapsed_msec = int(event.get("elapsed_msec", elapsed_msec))
-			break
-	return {
-		"id": event_id,
-		"label": label,
-		"elapsed_msec": elapsed_msec,
-		"elapsed_seconds": int(round(float(elapsed_msec) / 1000.0)),
-		"elapsed_text": _format_elapsed_msec(elapsed_msec)
-	}
-
-
-func _insert_playtest_event_before(before_event_id: String, event_to_insert: Dictionary) -> void:
-	for index in range(playtest_events.size()):
-		if str(playtest_events[index].get("id", "")) == before_event_id:
-			playtest_events.insert(index, event_to_insert)
-			return
-	playtest_events.append(event_to_insert)
-
-
-func _pet_state_from(value: Variant) -> Dictionary:
-	var result := DEFAULT_PET_STATE.duplicate(true)
-	if typeof(value) != TYPE_DICTIONARY:
-		return result
-	var data: Dictionary = value
-	for key in DEFAULT_PET_STATE.keys():
-		result[key] = clampi(int(data.get(key, DEFAULT_PET_STATE[key])), 0, 100)
-	return result
-
-
-func _adjust_pet_stat(key: String, delta: int) -> void:
-	pet_state[key] = clampi(int(pet_state.get(key, DEFAULT_PET_STATE.get(key, 0))) + delta, 0, 100)
-
-
-func _format_elapsed_msec(elapsed_msec: int) -> String:
-	var total_seconds := int(round(float(max(0, elapsed_msec)) / 1000.0))
-	var minutes := int(total_seconds / 60)
-	var seconds := total_seconds % 60
-	return "%02d:%02d" % [minutes, seconds]
-
-
-func _can_export_playtest_report() -> bool:
-	if not playtest_completed:
-		return false
-	if not _has_completed_quest_set(REQUIRED_FORMAL_QUEST_IDS) and not _has_completed_quest_set(LEGACY_REPORT_QUEST_IDS):
-		return false
-	if completed_reviews.is_empty():
-		return false
-	for event_id in REQUIRED_PLAYTEST_EVENT_IDS:
-		if not _has_playtest_event(event_id):
-			return false
-	return true
-
-
-func _has_completed_quest_set(quest_ids: Array[String]) -> bool:
-	for quest_id: String in quest_ids:
-		if not completed_quests.has(quest_id):
-			return false
-	return true
-
-
-func _sync_owned_item_from_legacy_flag(flag_id: String) -> void:
-	var item_id := str(LEGACY_ITEM_FLAGS.get(flag_id, ""))
-	if item_id.is_empty() or owned_items.has(item_id):
-		return
-	owned_items.append(item_id)
-	owned_items_changed.emit(owned_items.duplicate())
-
-
-func _migrate_legacy_item_flags() -> void:
-	for flag_id: String in LEGACY_ITEM_FLAGS.keys():
-		if story_flags.has(flag_id):
-			_sync_owned_item_from_legacy_flag(flag_id)
-
-
-func _migrate_owned_items_to_legacy_flags() -> void:
-	for flag_id: String in LEGACY_ITEM_FLAGS.keys():
-		var item_id := str(LEGACY_ITEM_FLAGS[flag_id])
-		if owned_items.has(item_id) and not story_flags.has(flag_id):
-			story_flags.append(flag_id)
-
-
-func _has_playtest_event(event_id: String) -> bool:
-	for event: Dictionary in playtest_events:
-		if str(event.get("id", "")) == event_id:
-			return true
-	return false
-
-
-func _completed_tasks_legacy_snapshot() -> Array[String]:
-	return completed_quests.duplicate()
+	return _persistence().debug_snapshot()
 
 
 func _run_starter_action(action_id: String, default_message: String) -> Dictionary:
-	var result := {
-		"success": false,
-		"message": default_message
-	}
-	var config := _starter_action_config(action_id)
-	if config.is_empty():
-		result["message"] = "That action is not ready."
-		return result
-	var owned_item := str(config.get("owned_item", ""))
-	var legacy_flag := str(config.get("legacy_flag", ""))
-	if not owned_item.is_empty() and (has_owned_item(owned_item) or (not legacy_flag.is_empty() and has_story_flag(legacy_flag))):
-		result["message"] = str(config.get("already_message", default_message))
-		return result
-	var story_flag := str(config.get("story_flag", ""))
-	if not story_flag.is_empty() and has_story_flag(story_flag):
-		result["message"] = str(config.get("already_message", default_message))
-		return result
-	var cost := int(config.get("cost", 0))
-	var currency := str(config.get("currency", "coins"))
-	if currency == "parent_bonus":
-		if not spend_parent_bonus(cost):
-			result["message"] = str(config.get("not_enough_message", default_message))
-			return result
-	else:
-		if not spend_coins(cost):
-			result["message"] = str(config.get("not_enough_message", default_message))
-			return result
-	if not owned_item.is_empty():
-		own_item(owned_item, legacy_flag)
-	if not story_flag.is_empty():
-		mark_story_flag(story_flag)
-	var reward_coins := int(config.get("reward_coins", 0))
-	if reward_coins > 0:
-		add_coins(reward_coins)
-	for word_value: Variant in config.get("learned_words", []):
-		add_learned_word(str(word_value))
-	for pattern_value: Variant in config.get("learned_patterns", []):
-		add_learned_pattern(str(pattern_value))
-	result["success"] = true
-	result["message"] = str(config.get("success_message", default_message))
-	return result
+	return _starter_engine().run_starter_action(action_id, default_message)
 
 
-func _starter_action_config(action_id: String) -> Dictionary:
-	var actions := _starter_actions()
-	var config: Variant = actions.get(action_id, {})
-	if typeof(config) != TYPE_DICTIONARY:
-		return {}
-	return config as Dictionary
+func _pet_care():
+	if _pet_care_manager == null:
+		_pet_care_manager = PET_CARE_MANAGER_SCRIPT.new(self)
+	return _pet_care_manager
 
 
-func _starter_actions() -> Dictionary:
-	if not _starter_actions_cache.is_empty():
-		return _starter_actions_cache
-	var file := FileAccess.open(STARTER_ACTIONS_PATH, FileAccess.READ)
-	if file == null:
-		push_warning("Starter action config not found: %s" % STARTER_ACTIONS_PATH)
-		return {}
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	if typeof(parsed) != TYPE_DICTIONARY:
-		push_warning("Starter action config parse failed: %s" % STARTER_ACTIONS_PATH)
-		return {}
-	var data: Dictionary = parsed
-	var actions: Variant = data.get("actions", {})
-	if typeof(actions) != TYPE_DICTIONARY:
-		return {}
-	_starter_actions_cache = actions as Dictionary
-	return _starter_actions_cache
+func _starter_engine():
+	if _starter_action_engine == null:
+		_starter_action_engine = STARTER_ACTION_ENGINE_SCRIPT.new(self, STARTER_ACTIONS_PATH)
+	return _starter_action_engine
+
+
+func _playtest():
+	if _playtest_reporter == null:
+		_playtest_reporter = PLAYTEST_REPORTER_SCRIPT.new(self)
+	return _playtest_reporter
+
+
+func _persistence():
+	if _persistence_manager == null:
+		_persistence_manager = GAME_STATE_PERSISTENCE_SCRIPT.new(self)
+	return _persistence_manager

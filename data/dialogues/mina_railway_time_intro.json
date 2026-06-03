@@ -1,0 +1,15 @@
+{
+  "id": "mina_railway_time_intro",
+  "speaker": "Mina",
+  "starts_quest": "town_railway_time_stop",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "The railway station has a big clock."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's check the train time."
+    }
+  ]
+}

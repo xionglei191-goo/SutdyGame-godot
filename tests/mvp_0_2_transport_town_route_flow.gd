@@ -95,7 +95,8 @@ func _initialize() -> void:
 	_assert(game_state.learned_words.has("stop"), "choosing the train stop should add stop to word records")
 	_assert(game_state.learned_patterns.has("Take the train to the station."), "choosing the train stop should add a train pattern")
 	_assert(reward_label.text == PlaceCardDataAssertions.action_success_status_text(town_map, "railway_station", "choose_train_stop"), "railway action should update status from action data")
-	_assert(not action_button.visible, "train stop action should hide after the stop is marked")
+	_assert(action_button.visible, "railway station should expose the next helper action after the route is marked")
+	_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, "railway_station", "check_train_time"), "railway station should advance to the time helper action")
 	_assert(town_map.get_world_overview_camera_rect().has_point(train_rect.get_center()), "train action should focus the railway area")
 
 	print("mvp_0_2_transport_town_route_flow passed.")

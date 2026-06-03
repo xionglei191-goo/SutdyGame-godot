@@ -170,6 +170,11 @@ func quest_title(quest_id: String) -> String:
 func _add_quest_reward_coins(quest_id: String) -> void:
 	var reward_coins := _quest_reward_coins_from_data(quest_id)
 	if reward_coins >= 0:
+		var reward_once_flag := _quest_reward_once_flag_from_data(quest_id)
+		if not reward_once_flag.is_empty():
+			if GameState.has_story_flag(reward_once_flag):
+				return
+			GameState.mark_story_flag(reward_once_flag)
 		GameState.add_coins(reward_coins)
 		return
 	match quest_id:
@@ -192,6 +197,13 @@ func _quest_reward_coins_from_data(quest_id: String) -> int:
 	if quest_data.is_empty() or not quest_data.has("reward_coins"):
 		return -1
 	return int(quest_data.get("reward_coins", 0))
+
+
+func _quest_reward_once_flag_from_data(quest_id: String) -> String:
+	var quest_data := _load_quest_data(quest_id)
+	if quest_data.is_empty():
+		return ""
+	return str(quest_data.get("reward_once_story_flag", ""))
 
 
 func _show_legacy_quest_start_scene(quest_id: String) -> void:

@@ -1,11 +1,28 @@
 # StudyGame 开发计划：赛道 B & 赛道 C
 
 > 日期：2026-06-02  
+> 完成更新：2026-06-03  
 > 角色：项目经理  
 > 基线：MVP 0.2 全量 38+ 自动化测试通过，赛道 A（Git 推送 + 测试修复）已关闭  
 > 产品北极星：`home → school → town → transport → world` 生活冒险游戏
+> 执行状态：赛道 B / 赛道 C 已完成，最终自动化检查通过
 
 ---
+
+## 最终完成记录
+
+| 维度 | 完成状态 |
+|------|----------|
+| B1 Pet 可视化 | 已完成：新增 happy / neutral / sleepy 与 eating / playing / sleeping 资产，HomeLayer 根据 `GameState.pet_state` 刷新并播放 action feedback |
+| B2 Room 探索 | 已完成：新增 `home_room_explore_a` / `home_room_explore_b` 可重复 quest，扩展 lamp / clock / window targets 与入口 UI |
+| B3 Home 装饰 | 已完成：购买 `star_rug` / `explorer_cape` 后显示 `DecorSlot_Rug` / `DecorSlot_Cape`，save/load 后恢复 |
+| B4 School 美术 | 已完成：`ClassroomLayer` / `GardenLayer` 接入 1280x720 v002 生成背景，保留交互节点 |
+| B5 Transport | 已完成：bus / taxi / railway 三条轻量路线保留 story flag，并补齐地图聚焦与 PlaceCard 成功展示 |
+| C1 GameState 拆分 | 已完成：抽取 `PetCareManager`、`StarterActionEngine`、`PlaytestReporter`、`GameStatePersistence`，公共 API 不变，`game_state.gd` 降至 497 行 |
+| C2 第一篇内容 | 已完成：新增「第一篇：小镇新朋友」设计文档、Ava NPC 规格/肖像、3 个 town quest 与 dialogue |
+| C3 PlaceCard 升级 | 已完成：hospital / airport / railway_station 上线可玩 PlaceCard action，不加入 Parent Bonus gate |
+| C4 Music / Art Room | 已完成：`music_room` / `art_room` 改为 `after_prologue` 解锁，各有 1 个 world_overview click quest |
+| 最终验证 | 已通过：`godot --headless --path . --check-only --quit` 与 `./scripts/dev/run_mvp_0_2_checks.sh` |
 
 ## 当前已完成基线
 
@@ -19,8 +36,8 @@
 | A-Z Memory Spark | 全量 26 锚点参数化 |
 | 数据驱动 | Quest / PlaceCard / MemorySpark / Reward / StarterAction 均从 JSON 读取 |
 | Controller 架构 | MainFlowController / WorldInteractionController / PlaceCardController 已抽取 |
-| 美术资产 | 36 个生成 PNG (地图/角色/道具/UI)；classroom/garden 仍为程序搭建色块 |
-| 代码规模 | game_state.gd 859行 / main.gd 217行 / 全 systems/ 2904行 |
+| 美术资产 | 50 个生成 PNG (地图/角色/道具/UI)，新增 pet 状态/动作、room props、home decor、school v002 背景、Ava 肖像 |
+| 代码规模 | game_state.gd 497行 / main.gd 224行 / 全 systems/ 3413行 |
 
 ---
 
@@ -51,12 +68,12 @@
 
 #### 验收标准
 
-- [ ] `pet_state.mood >= 70` 时显示 happy 表情，`< 40` 时显示 sleepy，其余显示 neutral
-- [ ] 执行 `care_for_pet("feed")` 后 PetCorner 播放 eating 反馈动画
-- [ ] 所有状态图从 `assets/generated/` 加载，不使用 ColorRect 占位
-- [ ] `GameState.pet_state_changed` 信号触发后 200ms 内刷新完毕
-- [ ] 不新增平行宠物存档；复用现有 `GameState.pet_state`
-- [ ] 现有 `mvp_0_2_game_state_pet_care.gd` 和 `mvp_0_2_home_pet_care_input_flow.gd` 继续通过
+- [x] `pet_state.mood >= 70` 时显示 happy 表情，`< 40` 时显示 sleepy，其余显示 neutral
+- [x] 执行 `care_for_pet("feed")` 后 PetCorner 播放 eating 反馈动画
+- [x] 所有状态图从 `assets/generated/` 加载，不使用 ColorRect 占位
+- [x] `GameState.pet_state_changed` 信号触发后 200ms 内刷新完毕
+- [x] 不新增平行宠物存档；复用现有 `GameState.pet_state`
+- [x] 现有 `mvp_0_2_game_state_pet_care.gd` 和 `mvp_0_2_home_pet_care_input_flow.gd` 继续通过
 
 #### 验证命令
 
@@ -89,11 +106,11 @@ godot --headless --path . -s res://tests/mvp_0_2_home_pet_care_input_flow.gd
 
 #### 验收标准
 
-- [ ] 2 个新 quest 均从 JSON 读取，不新增 `main.gd` match 分支
-- [ ] 新增 targets 从 `scene_click_targets_v001.json` 读取，不新增脚本常量
-- [ ] 每个事件奖励 `+1 coin`，不加入 Parent Bonus gate
-- [ ] 儿童端用 `Find the...` / `Where is the...` 生活化用语，不出现 lesson/test
-- [ ] 现有 `mvp_new_home_prologue_flow.gd` 继续通过
+- [x] 2 个新 quest 均从 JSON 读取，不新增 `main.gd` match 分支
+- [x] 新增 targets 从 `scene_click_targets_v001.json` 读取，不新增脚本常量
+- [x] 每个事件奖励 `+1 coin`，不加入 Parent Bonus gate
+- [x] 儿童端用 `Find the...` / `Where is the...` 生活化用语，不出现 lesson/test
+- [x] 现有 `mvp_new_home_prologue_flow.gd` 继续通过
 
 #### 验证命令
 
@@ -125,11 +142,11 @@ godot --headless --path . -s res://tests/mvp_0_2_quest_data_integrity.gd
 
 #### 验收标准
 
-- [ ] 购买 star_rug 后 HomeLayer 显示地毯 Sprite
-- [ ] 购买 explorer_cape 后 HomeLayer 显示披风展示
-- [ ] 未购买时 DecorSlot 隐藏，不显示占位图
-- [ ] save/load 后装饰状态正确恢复
-- [ ] 不引入完整背包 UI / 数量 / 消耗品系统
+- [x] 购买 star_rug 后 HomeLayer 显示地毯 Sprite
+- [x] 购买 explorer_cape 后 HomeLayer 显示披风展示
+- [x] 未购买时 DecorSlot 隐藏，不显示占位图
+- [x] save/load 后装饰状态正确恢复
+- [x] 不引入完整背包 UI / 数量 / 消耗品系统
 
 #### 验证命令
 
@@ -161,11 +178,11 @@ classroom 和 garden 当前仍使用 ColorRect/Polygon 程序搭建。`assets/ge
 
 #### 验收标准
 
-- [ ] ClassroomLayer / GardenLayer 不再使用 ColorRect 作为主背景
-- [ ] 背景图为 1280x720 PNG，无拉伸变形
-- [ ] DeskA/Shelf/Tree/Bird 等可交互节点位置与碰撞区域保持功能正常
-- [ ] `Walk With Mina → Room Helper → Bird Watch` quest 链路不受影响
-- [ ] 现有 `mvp_0_2_smoke.gd` 继续通过
+- [x] ClassroomLayer / GardenLayer 不再使用 ColorRect 作为主背景
+- [x] 背景图为 1280x720 PNG，无拉伸变形
+- [x] DeskA/Shelf/Tree/Bird 等可交互节点位置与碰撞区域保持功能正常
+- [x] `Walk With Mina → Room Helper → Bird Watch` quest 链路不受影响
+- [x] 现有 `mvp_0_2_smoke.gd` 继续通过
 
 #### 验证命令
 
@@ -196,10 +213,10 @@ godot --headless --path . -s res://tests/mvp_0_2_world_overview_input_flow.gd
 
 #### 验收标准
 
-- [ ] 完成 taxi route 后地图聚焦 taxi stand 区域
-- [ ] 完成 railway route 后地图聚焦 railway station 区域
-- [ ] 三条 transport 使用轻量 story flag，不引入路线背包
-- [ ] 现有 transport flow 测试继续通过
+- [x] 完成 taxi route 后地图聚焦 taxi stand 区域
+- [x] 完成 railway route 后地图聚焦 railway station 区域
+- [x] 三条 transport 使用轻量 story flag，不引入路线背包
+- [x] 现有 transport flow 测试继续通过
 
 #### 验证命令
 
@@ -254,11 +271,11 @@ godot --headless --path . -s res://tests/mvp_0_2_transport_town_route_flow.gd
 
 #### 验收标准
 
-- [ ] `game_state.gd` 行数降至 ~500 行以下
-- [ ] 外部调用方（main.gd、controllers、tests）零修改
-- [ ] `GameState.care_for_pet()` / `GameState.buy_pet_bowl()` 等公共 API 签名不变
-- [ ] 三个新文件均有 `class_name` 并由 `GameState` autoload 内部引用
-- [ ] `./scripts/dev/run_mvp_0_2_checks.sh` 全量通过
+- [x] `game_state.gd` 行数降至 ~500 行以下
+- [x] 外部调用方（main.gd、controllers、tests）零修改
+- [x] `GameState.care_for_pet()` / `GameState.buy_pet_bowl()` 等公共 API 签名不变
+- [x] 三个新文件均有 `class_name` 并由 `GameState` autoload 内部引用
+- [x] `./scripts/dev/run_mvp_0_2_checks.sh` 全量通过
 
 #### 验证命令
 
@@ -289,12 +306,12 @@ godot --headless --path . --check-only --quit
 
 #### 验收标准
 
-- [ ] 第一篇包含 3-5 个可执行 quest，每个有明确 words/patterns/reward
-- [ ] 至少 1 个新 NPC，有名字、对话、可生成的肖像规格
-- [ ] 所有 quest 从 JSON 启动，不新增 `main.gd` / `main_flow_controller.gd` match 分支
-- [ ] 儿童端用 help/visit/discover/meet 语气，不用 lesson/test/review
-- [ ] 不改 A-Z 锚点 route_order
-- [ ] `mvp_0_2_quest_data_integrity.gd` 通过
+- [x] 第一篇包含 3-5 个可执行 quest，每个有明确 words/patterns/reward
+- [x] 至少 1 个新 NPC，有名字、对话、可生成的肖像规格
+- [x] 所有 quest 从 JSON 启动，不新增 `main.gd` / `main_flow_controller.gd` match 分支
+- [x] 儿童端用 help/visit/discover/meet 语气，不用 lesson/test/review
+- [x] 不改 A-Z 锚点 route_order
+- [x] `mvp_0_2_quest_data_integrity.gd` 通过
 
 #### 验证命令
 
@@ -334,10 +351,10 @@ godot --headless --path . -s res://tests/mvp_0_2_docs_audit.gd
 
 #### 验收标准
 
-- [ ] 首批至少 2 个新可玩 PlaceCard action 上线
-- [ ] 新 quest 不加入 Parent Bonus gate
-- [ ] 每个新 quest 包含 2-3 个 words + 1 个 pattern
-- [ ] 现有 `mvp_0_2_non_school_place_card_matrix.gd` 继续通过
+- [x] 首批至少 2 个新可玩 PlaceCard action 上线
+- [x] 新 quest 不加入 Parent Bonus gate
+- [x] 每个新 quest 包含 2-3 个 words + 1 个 pattern
+- [x] 现有 `mvp_0_2_non_school_place_card_matrix.gd` 继续通过
 
 #### 验证命令
 
@@ -369,9 +386,9 @@ godot --headless --path . -s res://tests/mvp_0_2_quest_data_integrity.gd
 
 #### 验收标准
 
-- [ ] music_room / art_room 在序章完成后从 disabled 变为可见
-- [ ] 各有 1 个可玩首访事件
-- [ ] 现有 hotspot enablement 测试更新后通过
+- [x] music_room / art_room 在序章完成后从 disabled 变为可见
+- [x] 各有 1 个可玩首访事件
+- [x] 现有 hotspot enablement 测试更新后通过
 
 #### 验证命令
 

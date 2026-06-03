@@ -1,0 +1,31 @@
+{
+  "id": "school_music_room_sound_find",
+  "title": "Sound Finder",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Find the music room and listen for a bright sound.",
+  "vocabulary": ["music", "sound", "listen"],
+  "patterns": [
+    "Listen to the sound.",
+    "The music room is here."
+  ],
+  "targets": ["music_room"],
+  "target_labels": {
+    "music_room": "music room"
+  },
+  "correct_target": "music_room",
+  "wrong_target_text": "Look inside the school area for the music room.",
+  "success_text": "Ding! You found the bright sound.",
+  "reward_id": "sound_note",
+  "reward_name": "Sound Note",
+  "reward_coins": 1,
+  "start_focus_hotspot": "music_room",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["school_music_room_sound_find_done"],
+    "focus_hotspot": "music_room"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the music room to find the sound."
+}

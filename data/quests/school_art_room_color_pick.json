@@ -1,0 +1,31 @@
+{
+  "id": "school_art_room_color_pick",
+  "title": "Color Pick",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Find the art room and pick a happy color.",
+  "vocabulary": ["art", "color", "paint"],
+  "patterns": [
+    "Pick a color.",
+    "I like blue paint."
+  ],
+  "targets": ["art_room"],
+  "target_labels": {
+    "art_room": "art room"
+  },
+  "correct_target": "art_room",
+  "wrong_target_text": "Look inside the school area for the art room.",
+  "success_text": "Bright choice! The color is ready.",
+  "reward_id": "color_dot",
+  "reward_name": "Color Dot",
+  "reward_coins": 1,
+  "start_focus_hotspot": "art_room",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["school_art_room_color_pick_done"],
+    "focus_hotspot": "art_room"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the art room to pick a color."
+}

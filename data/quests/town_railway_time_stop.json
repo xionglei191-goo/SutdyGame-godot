@@ -1,0 +1,31 @@
+{
+  "id": "town_railway_time_stop",
+  "title": "Time Stop",
+  "scene_id": "world_overview",
+  "type": "click_target",
+  "prompt": "Help check the train time at the railway station.",
+  "vocabulary": ["railway", "train", "time", "stop"],
+  "patterns": [
+    "What time is it?",
+    "The train stops here."
+  ],
+  "targets": ["railway_station"],
+  "target_labels": {
+    "railway_station": "railway station"
+  },
+  "correct_target": "railway_station",
+  "wrong_target_text": "Look for the railway station and the big clock.",
+  "success_text": "All set! The train time is marked.",
+  "reward_id": "train_time_ticket",
+  "reward_name": "Train Time Ticket",
+  "reward_coins": 1,
+  "start_focus_hotspot": "railway_station",
+  "completion": {
+    "scene_id": "world_overview",
+    "click_input_enabled": true,
+    "story_flags": ["town_railway_time_stop_done"],
+    "focus_hotspot": "railway_station"
+  },
+  "next_quest": "",
+  "start_feedback": "Tap the railway station to check the train time."
+}

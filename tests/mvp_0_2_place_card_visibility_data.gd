@@ -78,9 +78,12 @@ func _assert_action_visibility(
 	await process_frame
 	_assert(place_card.visible, "%s should open a place card" % place_id)
 	_assert(PlaceCardDataAssertions.action_visible_when(town_map, place_id, action_id) == visible_when, "%s should declare visible_when for %s" % [place_id, action_id])
-	_assert(action_button.visible == should_be_visible, "%s action visibility should follow %s" % [place_id, visible_when])
+	_assert(PlaceCardDataAssertions.action_is_visible(town_map, place_id, action_id) == should_be_visible, "%s action visibility should follow %s" % [place_id, visible_when])
 	if should_be_visible:
+		_assert(action_button.visible, "%s should show its primary action button" % place_id)
 		_assert(action_button.text == PlaceCardDataAssertions.action_label(town_map, place_id, action_id), "%s action label should come from hotspot data" % place_id)
+	elif not PlaceCardDataAssertions.has_visible_action(town_map, place_id):
+		_assert(not action_button.visible, "%s should hide the primary action button when no actions remain" % place_id)
 	place_card._unhandled_input(close_event)
 	await process_frame
 

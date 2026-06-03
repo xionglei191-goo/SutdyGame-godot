@@ -1,0 +1,15 @@
+{
+  "id": "mina_airport_weather_intro",
+  "speaker": "Mina",
+  "starts_quest": "town_airport_weather_check",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "The airport board needs a tiny weather sticker."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Let's check the travel weather."
+    }
+  ]
+}

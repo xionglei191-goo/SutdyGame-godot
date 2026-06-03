@@ -31,6 +31,7 @@ func _initialize() -> void:
 	_assert_quest_diary_layout(main.get_node("QuestDiary"))
 	_assert_parent_summary_layout(main.get_node("ParentSummary"))
 	_assert_home_pet_layout(main.get_node("TownMap"))
+	_assert_school_subscene_backgrounds(main.get_node("TownMap"))
 	_assert_place_card_layout(main.get_node("PlaceCard"))
 	_assert_child_visible_copy_baseline(main)
 	_assert_child_data_source_copy_baseline()
@@ -254,6 +255,14 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	var pet_food: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetFood")
 	var pet_toy: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetToy")
 	var pet_soap: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetSoap")
+	var pet_state_display: Sprite2D = _required_node(town_map, "HomeLayer/PetCorner/PetStateDisplay")
+	var decor_slot_rug: Sprite2D = _required_node(town_map, "HomeLayer/DecorSlot_Rug")
+	var decor_slot_cape: Sprite2D = _required_node(town_map, "HomeLayer/DecorSlot_Cape")
+	var room_explore_button: Button = _required_node(town_map, "HomeLayer/RoomExploreButton")
+	var room_explore_panel: Panel = _required_node(town_map, "HomeLayer/RoomExplorePanel")
+	var home_lamp: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeLampProp")
+	var home_clock: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeClockProp")
+	var home_window: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeWindowProp")
 	var bedroom_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/BedroomLabel")
 	var kitchen_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/KitchenLabel")
 	var yard_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/YardLabel")
@@ -265,6 +274,18 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	_assert(pet_food.texture != null, "home pet food prop texture should be connected")
 	_assert(pet_toy.texture != null, "home pet toy prop texture should be connected")
 	_assert(pet_soap.texture != null, "home pet soap prop texture should be connected")
+	_assert(pet_state_display.texture != null, "home pet visual state texture should be connected at runtime")
+	_assert(pet_state_display.texture.resource_path == "res://assets/generated/characters/pet/pet_mood_neutral_v001.png", "default pet visual should use generated neutral pet art")
+	_assert(not decor_slot_rug.visible, "star rug decor should start hidden before purchase")
+	_assert(decor_slot_rug.texture != null, "star rug decor slot should have generated art assigned")
+	_assert(not decor_slot_cape.visible, "cape display should start hidden before purchase")
+	_assert(decor_slot_cape.texture != null, "cape decor slot should have generated art assigned")
+	_assert(home_lamp.texture != null, "home lamp prop texture should be connected")
+	_assert(home_clock.texture != null, "home clock prop texture should be connected")
+	_assert(home_window.texture != null, "home window prop texture should be connected")
+	_assert(room_explore_button.visible, "Room Finds button should be visible at home")
+	_assert(room_explore_button.custom_minimum_size.y >= 46.0 or room_explore_button.size.y >= 46.0, "Room Finds button should meet minimum touch height")
+	_assert(not room_explore_panel.visible, "Room Finds panel should start closed")
 	_assert(pet_name_value.text == "Sunny", "home pet panel should include the starter pet name")
 	_assert(feedback_label.autowrap_mode != TextServer.AUTOWRAP_OFF, "home pet feedback should wrap text")
 	_assert(pet_state_value.autowrap_mode != TextServer.AUTOWRAP_OFF, "home pet state should wrap text")
@@ -275,7 +296,7 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	_assert(yard_label.text == "Yard", "home should expose a yard section")
 	_assert(pet_corner_space_label.text == "Pet Corner", "home should expose a pet corner section")
 	var home_rects: Dictionary = town_map.get_node("ClickGame").get_place_rects_for_scene("home")
-	for target_id in ["home_door", "home_kitchen", "home_yard", "home_pet_toy", "home_pet_bed"]:
+	for target_id in ["home_door", "home_kitchen", "home_yard", "home_pet_toy", "home_pet_bed", "home_lamp", "home_clock", "home_window"]:
 		_assert(home_rects.has(target_id), "home expanded space target should come from scene_click_targets data: %s" % target_id)
 	for button_path in [
 		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton",
@@ -286,6 +307,23 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	]:
 		var button: Button = _required_node(town_map, button_path)
 		_assert(button.custom_minimum_size.y >= 46.0 or button.size.y >= 46.0, "%s should meet minimum touch height" % button_path)
+
+
+func _assert_school_subscene_backgrounds(town_map: Node) -> void:
+	var classroom_background: Sprite2D = _required_node(town_map, "ClassroomLayer/Background")
+	var garden_background: Sprite2D = _required_node(town_map, "GardenLayer/Background")
+	_assert(classroom_background.texture != null, "classroom should use generated background art")
+	_assert(garden_background.texture != null, "garden should use generated background art")
+	_assert(classroom_background.texture.resource_path == "res://assets/generated/maps/classroom/map_classroom_interior_v002.png", "classroom should use v002 generated background")
+	_assert(garden_background.texture.resource_path == "res://assets/generated/maps/garden/map_garden_bg_v002.png", "garden should use v002 generated background")
+	var classroom_image := classroom_background.texture.get_image()
+	var garden_image := garden_background.texture.get_image()
+	_assert(classroom_image.get_width() == 1280 and classroom_image.get_height() == 720, "classroom background should be 1280x720")
+	_assert(garden_image.get_width() == 1280 and garden_image.get_height() == 720, "garden background should be 1280x720")
+	var classroom_floor: ColorRect = _required_node(town_map, "ClassroomLayer/ClassroomFloor")
+	var garden_grass: ColorRect = _required_node(town_map, "GardenLayer/GardenGrass")
+	_assert(classroom_floor.color.a <= 0.01, "classroom ColorRect should not be the visible main background")
+	_assert(garden_grass.color.a <= 0.01, "garden ColorRect should not be the visible main background")
 
 
 func _assert_place_card_layout(place_card: CanvasLayer) -> void:
@@ -589,6 +627,8 @@ func _assert_generated_assets_present() -> void:
 	for path in [
 			"res://assets/generated/maps/school_arrival/map_school_arrival_bg_v002.png",
 			"res://assets/generated/maps/home/map_home_interior_bg_v001.png",
+			"res://assets/generated/maps/classroom/map_classroom_interior_v002.png",
+			"res://assets/generated/maps/garden/map_garden_bg_v002.png",
 			"res://assets/generated/maps/classroom/map_classroom_bg_v001.png",
 		"res://assets/generated/maps/garden/map_garden_bg_v001.png",
 		"res://assets/generated/characters/player/char_player_walk_v001.png",
@@ -606,11 +646,28 @@ func _assert_generated_assets_present() -> void:
 		"res://assets/generated/props/home/prop_pet_food_v001.png",
 		"res://assets/generated/props/home/prop_pet_toy_v001.png",
 		"res://assets/generated/props/home/prop_soap_v001.png",
+		"res://assets/generated/characters/pet/pet_mood_happy_v001.png",
+		"res://assets/generated/characters/pet/pet_mood_neutral_v001.png",
+		"res://assets/generated/characters/pet/pet_mood_sleepy_v001.png",
+		"res://assets/generated/characters/pet/pet_action_eating_v001.png",
+		"res://assets/generated/characters/pet/pet_action_playing_v001.png",
+		"res://assets/generated/characters/pet/pet_action_sleeping_v001.png",
+		"res://assets/generated/props/room/prop_lamp_v001.png",
+		"res://assets/generated/props/room/prop_clock_v001.png",
+		"res://assets/generated/props/room/prop_window_v001.png",
+		"res://assets/generated/props/home/prop_star_rug_placed_v001.png",
+		"res://assets/generated/props/home/prop_explorer_cape_display_v001.png",
+		"res://assets/generated/characters/npcs/char_ava_portrait_neutral_v001.png",
 		"res://assets/generated/ui/ui_place_card_ornament_v001.png",
 		"res://assets/generated/ui/ui_quest_diary_ornament_v001.png",
 		"res://assets/generated/ui/ui_memory_spark_ornament_v001.png",
 		"res://assets/source_prompts/maps/map_backgrounds_v001.md",
+		"res://assets/source_prompts/maps/school_subscene_backgrounds_v002.md",
 		"res://assets/source_prompts/characters/character_sprites_v001.md",
+		"res://assets/source_prompts/characters/pet_visual_states_v001.md",
+		"res://assets/source_prompts/characters/npc_portraits_v001.md",
+		"res://assets/source_prompts/props/home_room_explore_props_v001.md",
+		"res://assets/source_prompts/props/home_decor_props_v001.md",
 		"res://assets/source_prompts/props/icon_atlas_v001.md"
 	]:
 		_assert(FileAccess.file_exists(path), "generated asset or prompt should exist: %s" % path)

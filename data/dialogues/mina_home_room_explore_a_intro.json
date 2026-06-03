@@ -1,0 +1,15 @@
+{
+  "id": "mina_home_room_explore_a_intro",
+  "speaker": "Mina",
+  "starts_quest": "home_room_explore_a",
+  "lines": [
+    {
+      "speaker": "Mina",
+      "text": "This room has a warm little light."
+    },
+    {
+      "speaker": "Mina",
+      "text": "Can you find the lamp?"
+    }
+  ]
+}
