@@ -52,7 +52,7 @@ npm install
 一次成功验证的关键现象：
 
 - `get_project_info` 返回 `project_name: "StudyGame"`。
-- `get_scene_tree` 能读到 `TownMap` 或当前编辑器场景。
+- `get_scene_tree` 能读到 `SceneHost` 或当前编辑器场景。
 - `wait_for_node("/root/Main")` 返回 `found: true`。
 - `get_game_screenshot` 返回 PNG base64 数据。
 

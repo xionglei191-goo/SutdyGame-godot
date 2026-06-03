@@ -13,7 +13,7 @@ const STORY_FLAG_LETTER_BOX_DONE := "prologue_letter_box_done"
 const STORY_FLAG_PROLOGUE_DONE := "prologue_go_to_school_done"
 const QUEST_DATA_DIR := "res://data/quests"
 
-var town_map: Node
+var scene_host: Node
 var dialogue_box: CanvasLayer
 var quest_diary: CanvasLayer
 var drag_place_game: Node
@@ -23,7 +23,7 @@ var parent_summary: CanvasLayer
 
 
 func configure(
-	town_map_node: Node,
+	scene_host_node: Node,
 	dialogue_box_node: CanvasLayer,
 	quest_diary_node: CanvasLayer,
 	drag_place_game_node: Node,
@@ -31,7 +31,7 @@ func configure(
 	story_show_node: CanvasLayer,
 	parent_summary_node: CanvasLayer
 ) -> void:
-	town_map = town_map_node
+	scene_host = scene_host_node
 	dialogue_box = dialogue_box_node
 	quest_diary = quest_diary_node
 	drag_place_game = drag_place_game_node
@@ -45,20 +45,20 @@ func handle_quest_started(quest_id: String) -> void:
 	parent_summary.visible = false
 	reward_popup.visible = false
 	dialogue_box.visible = false
-	town_map.set_npc_prompts_visible(false)
+	scene_host.set_npc_prompts_visible(false)
 	var quest_data := _load_quest_data(quest_id)
 	var quest_type := str(quest_data.get("type", ""))
 	var scene_id := str(quest_data.get("scene_id", ""))
-	town_map.set_click_input_enabled(quest_type == "click_target")
-	town_map.set_quest_active(true)
-	town_map.set_current_quest_id(quest_id)
+	scene_host.set_click_input_enabled(quest_type == "click_target")
+	scene_host.set_quest_active(true)
+	scene_host.set_current_quest_id(quest_id)
 	if scene_id.is_empty():
 		_show_legacy_quest_start_scene(quest_id)
 	else:
-		town_map.show_scene(scene_id)
+		scene_host.show_scene(scene_id)
 	var start_focus_hotspot := str(quest_data.get("start_focus_hotspot", ""))
-	if not start_focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot(start_focus_hotspot)
+	if not start_focus_hotspot.is_empty() and scene_host.has_method("focus_world_hotspot"):
+		scene_host.focus_world_hotspot(start_focus_hotspot)
 	drag_place_game.visible = quest_type == "drag_place"
 	if drag_place_game.visible and drag_place_game.has_method("reset_game"):
 		drag_place_game.reset_game()
@@ -69,10 +69,10 @@ func handle_quest_completed(quest_id: String, reward_id: String, reward_name: St
 	if quest_diary.has_method("dismiss"):
 		quest_diary.dismiss()
 	dialogue_box.visible = false
-	town_map.set_npc_prompts_visible(false)
-	town_map.set_click_input_enabled(false)
-	town_map.set_quest_active(false)
-	town_map.set_current_quest_id("")
+	scene_host.set_npc_prompts_visible(false)
+	scene_host.set_click_input_enabled(false)
+	scene_host.set_quest_active(false)
+	scene_host.set_current_quest_id("")
 	if reward_popup.has_method("show_reward"):
 		reward_popup.show_reward(reward_id, reward_name)
 	_add_quest_reward_coins(quest_id)
@@ -95,26 +95,26 @@ func handle_story_show_completed() -> void:
 
 func restore_scene_from_progress() -> void:
 	if GameState.has_completed_quest(TIDY_CLASSROOM_QUEST_ID):
-		town_map.show_scene("garden")
+		scene_host.show_scene("garden")
 		if GameState.has_completed_quest(GARDEN_BIRD_QUEST_ID):
 			open_review_or_summary()
 	elif GameState.has_completed_quest(SCHOOL_TOUR_QUEST_ID):
-		town_map.show_scene("classroom")
+		scene_host.show_scene("classroom")
 	elif GameState.has_completed_quest(PROLOGUE_QUEST_ID):
-		town_map.show_scene("campus_gate")
-		town_map.set_click_input_enabled(false)
-		town_map.set_quest_active(false)
-		town_map.set_current_quest_id("")
+		scene_host.show_scene("campus_gate")
+		scene_host.set_click_input_enabled(false)
+		scene_host.set_quest_active(false)
+		scene_host.set_current_quest_id("")
 	elif GameState.has_completed_quest(LETTER_BOX_QUEST_ID):
-		town_map.show_scene("home")
-		town_map.set_click_input_enabled(false)
-		town_map.set_quest_active(false)
-		town_map.set_current_quest_id("")
+		scene_host.show_scene("home")
+		scene_host.set_click_input_enabled(false)
+		scene_host.set_quest_active(false)
+		scene_host.set_current_quest_id("")
 	else:
-		town_map.show_scene("home")
-		town_map.set_click_input_enabled(false)
-		town_map.set_quest_active(false)
-		town_map.set_current_quest_id("")
+		scene_host.show_scene("home")
+		scene_host.set_click_input_enabled(false)
+		scene_host.set_quest_active(false)
+		scene_host.set_current_quest_id("")
 
 
 func open_review_or_summary() -> void:
@@ -139,10 +139,10 @@ func hide_active_overlays() -> void:
 	story_show.visible = false
 	if quest_diary.has_method("dismiss"):
 		quest_diary.dismiss()
-	town_map.set_npc_prompts_visible(false)
-	town_map.set_click_input_enabled(false)
-	town_map.set_quest_active(false)
-	town_map.set_current_quest_id("")
+	scene_host.set_npc_prompts_visible(false)
+	scene_host.set_click_input_enabled(false)
+	scene_host.set_quest_active(false)
+	scene_host.set_current_quest_id("")
 
 
 func quest_title(quest_id: String) -> String:
@@ -209,23 +209,23 @@ func _quest_reward_once_flag_from_data(quest_id: String) -> String:
 func _show_legacy_quest_start_scene(quest_id: String) -> void:
 	match quest_id:
 		LETTER_BOX_QUEST_ID:
-			town_map.show_scene("home")
-			town_map.set_click_input_enabled(true)
+			scene_host.show_scene("home")
+			scene_host.set_click_input_enabled(true)
 		PROLOGUE_QUEST_ID:
-			town_map.show_scene("world_overview")
-			town_map.set_click_input_enabled(true)
+			scene_host.show_scene("world_overview")
+			scene_host.set_click_input_enabled(true)
 		BOOKSHOP_QUEST_ID:
-			town_map.show_scene("world_overview")
-			town_map.set_click_input_enabled(true)
-			if town_map.has_method("focus_world_hotspot"):
-				town_map.focus_world_hotspot("bookshop")
+			scene_host.show_scene("world_overview")
+			scene_host.set_click_input_enabled(true)
+			if scene_host.has_method("focus_world_hotspot"):
+				scene_host.focus_world_hotspot("bookshop")
 		SCHOOL_TOUR_QUEST_ID:
-			town_map.show_scene("campus_gate")
+			scene_host.show_scene("campus_gate")
 		TIDY_CLASSROOM_QUEST_ID:
-			town_map.show_scene("classroom")
-			town_map.set_click_input_enabled(false)
+			scene_host.show_scene("classroom")
+			scene_host.set_click_input_enabled(false)
 		GARDEN_BIRD_QUEST_ID:
-			town_map.show_scene("garden")
+			scene_host.show_scene("garden")
 
 
 func _apply_quest_completion_from_data(quest_id: String) -> bool:
@@ -252,14 +252,14 @@ func _apply_quest_completion_from_data(quest_id: String) -> bool:
 		return true
 	var scene_id := str(completion_data.get("scene_id", ""))
 	if not scene_id.is_empty():
-		town_map.show_scene(scene_id)
+		scene_host.show_scene(scene_id)
 	var focus_hotspot := str(completion_data.get("focus_hotspot", ""))
-	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot(focus_hotspot)
+	if not focus_hotspot.is_empty() and scene_host.has_method("focus_world_hotspot"):
+		scene_host.focus_world_hotspot(focus_hotspot)
 	if completion_data.has("npc_prompts_visible"):
-		town_map.set_npc_prompts_visible(bool(completion_data.get("npc_prompts_visible", false)))
+		scene_host.set_npc_prompts_visible(bool(completion_data.get("npc_prompts_visible", false)))
 	if completion_data.has("click_input_enabled"):
-		town_map.set_click_input_enabled(bool(completion_data.get("click_input_enabled", false)))
+		scene_host.set_click_input_enabled(bool(completion_data.get("click_input_enabled", false)))
 	var dialogue_id := str(completion_data.get("dialogue_id", ""))
 	if not dialogue_id.is_empty():
 		dialogue_box.start_dialogue(dialogue_id)
@@ -270,22 +270,22 @@ func _apply_legacy_quest_completion(quest_id: String) -> void:
 	match quest_id:
 		LETTER_BOX_QUEST_ID:
 			GameState.mark_story_flag(STORY_FLAG_LETTER_BOX_DONE)
-			town_map.show_scene("home")
-			town_map.set_npc_prompts_visible(true)
+			scene_host.show_scene("home")
+			scene_host.set_npc_prompts_visible(true)
 		SCHOOL_TOUR_QUEST_ID:
-			town_map.show_scene("classroom")
+			scene_host.show_scene("classroom")
 		TIDY_CLASSROOM_QUEST_ID:
-			town_map.show_scene("garden")
+			scene_host.show_scene("garden")
 		GARDEN_BIRD_QUEST_ID:
 			open_review_or_summary()
 		BOOKSHOP_QUEST_ID:
-			town_map.show_scene("world_overview")
-			town_map.set_click_input_enabled(true)
+			scene_host.show_scene("world_overview")
+			scene_host.set_click_input_enabled(true)
 		PROLOGUE_QUEST_ID:
 			GameState.mark_story_flag(STORY_FLAG_PROLOGUE_DONE)
 			GameState.mark_story_flag(WorldOverviewRules.STORY_FLAG_AZ_FULL_UNLOCKED)
-			town_map.show_scene("campus_gate")
-			town_map.set_npc_prompts_visible(true)
+			scene_host.show_scene("campus_gate")
+			scene_host.set_npc_prompts_visible(true)
 			dialogue_box.start_dialogue("mina_school_arrival_intro")
 
 

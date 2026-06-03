@@ -51,7 +51,7 @@ For the new MVP P0.5/P0.7/P1.7 slice, prefer the focused prompt records before r
 
 - Runtime currently uses the room icons `prop_book_v001.png`, `prop_pencil_v001.png`, and `prop_schoolbag_blue_v001.png` in `DragPlaceGame`.
 - `first_trip_ticket` now uses standalone `reward_first_trip_ticket_v001.png` through `data/rewards/reward_icons_v001.json`.
-- School, garden, desk/shelf, and UI ornament PNGs are generated asset-library items, but are not proof of direct `TownMap.tscn` or UI scene wiring.
+- School, garden, desk/shelf, and UI ornament PNGs are generated asset-library items, but are not proof of direct split map scene or UI scene wiring.
 - The generated pet-care, First Trip Ticket, and PlaceCard ornament assets must remain original: no external IP, logos, brands, trademarks, readable packaging, real transit marks, or store/school logos.
 
 ## Prompt

@@ -14,6 +14,12 @@ StudyGame 当前以自生成图片素材为主。本规范用于保证素材：
 - 能被 Godot 稳定使用。
 - 方便后续替换、追踪和复用。
 
+### 1.1 生成工具口径
+
+后续由 Codex 生成图片素材时，默认直接调用模型内置的 image generation 接口，不依赖外部图片生成工具、第三方 API、浏览器服务或临时脚本链路。
+
+只有在用户明确要求外部 CLI / API / 指定模型路径时，才允许改用外部生成链路。若当前轮次无法调用内置接口，应先记录 prompt、目标文件和 `pending` 状态，不应静默切换到其他生成后端。
+
 ## 2. 风格定位
 
 ### 2.1 核心风格
@@ -385,7 +391,7 @@ existing IP, logo, trademark, brand name, celebrity, realistic adult fashion, ma
 
 当前状态补充：
 
-- `map_home_interior_bg_v001.png` 已生成并接入 `TownMap.tscn` 的 `HomeLayer/HomeBackgroundSlot`；旧 Godot 节点色块仅作为隐藏备份层保留。
+- `map_home_interior_bg_v001.png` 已生成并接入 `HomeScene.tscn` 的 `HomeBackgroundSlot`；旧 Godot 节点色块仅作为隐藏备份层保留。
 - `reward_first_trip_ticket_v001.png` 已生成并由 `data/rewards/reward_icons_v001.json` 映射到 `first_trip_ticket`；不得再复用 Adventure Star 图标作为当前 runtime 事实。
 - `props/home/`、`props/town/` 与 `ui_place_card_ornament_v001.png` 中列出的若干图标仍是待生成项。
 - 已生成的 school/garden 图标、desk/shelf、UI ornament 多数是备用资产，不能在文档中等同于已接入 runtime。

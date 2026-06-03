@@ -12,8 +12,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var town_map: Node = main.get_node("SceneHost")
+	var click_game: Node = town_map.get_click_game()
 	var place_card: CanvasLayer = main.get_node("PlaceCard")
 	_assert(town_map.get_active_scene() == "home", "new game should start at home")
 	town_map.show_scene("world_overview")
@@ -47,12 +47,12 @@ func _initialize() -> void:
 	click_game.target_clicked.emit("home")
 	await process_frame
 	_assert(town_map.get_active_scene() == "home", "home should stay routable after buying the pet ball")
-	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
+	var pet_item_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
 	_assert(pet_item_value.text == "Pet ball ready", "home pet panel should show the purchased pet ball")
-	var play_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
+	var play_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
 	play_button.pressed.emit()
 	await process_frame
-	var feedback_label: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
+	var feedback_label: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
 	_assert(feedback_label.text == "Your pet had fun with the new ball.", "play feedback should mention the new ball after purchase")
 	_assert(game_state.coins == 4, "playing after the ball purchase should not spend coins")
 

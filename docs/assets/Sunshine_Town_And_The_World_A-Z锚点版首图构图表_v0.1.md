@@ -13,7 +13,7 @@
 
 固定前提：
 
-1. 世界主图作为从 `HomeLayer/home` 打开的 `TownMap/world_overview` 总览底图，子场景继续承接 school_arrival/classroom/garden。
+1. 世界主图作为从 `HomeLayer/home` 打开的 `SceneHost/world_overview` 总览底图，子场景继续承接 school_arrival/classroom/garden。
 2. 地图形态为 `总览图 + 子场景`。
 3. 英文地点标签常显。
 4. A-Z 锚点采用固定顺时针路线。

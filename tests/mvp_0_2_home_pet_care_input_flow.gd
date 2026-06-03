@@ -13,15 +13,15 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	_assert(town_map.get_active_scene() == "home", "new game should start at home")
-	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
-	var clean_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
-	var play_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
-	var rest_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
-	var pet_name_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
-	var pet_corner_label: Label = town_map.get_node("HomeLayer/PetCorner/PetCornerLabel")
+	var feed_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	var clean_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
+	var play_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
+	var rest_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
+	var pet_name_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
+	var pet_corner_label: Label = town_map.get_scene_root("home").get_node("PetCorner/PetCornerLabel")
 	_assert(pet_name_value.text == "Sunny", "home pet panel should show the starter pet name")
 	_assert(pet_corner_label.text == "Sunny's corner", "home should show a visible pet corner")
 	var starting_coins: int = game_state.coins
@@ -43,12 +43,12 @@ func _initialize() -> void:
 	_assert(int(game_state.get_pet_state().get("cleanliness", -1)) >= 82, "clean should raise cleanliness")
 	_assert(int(game_state.get_pet_state().get("mood", -1)) >= 92, "play should raise mood")
 	_assert(int(game_state.get_pet_state().get("bond", -1)) >= 16, "rest should add one more bond point")
-	var return_button: Button = town_map.get_node("HomeLayer/ReturnButton")
+	var return_button: Button = town_map.get_scene_root("home").get_node("ReturnButton")
 	return_button.pressed.emit()
 	await process_frame
 	_assert(town_map.get_active_scene() == "world_overview", "return button should go back to world overview")
 	var place_card: CanvasLayer = main.get_node("PlaceCard")
-	var place_click_game: Node = town_map.get_node("ClickGame")
+	var place_click_game: Node = town_map.get_click_game()
 	place_click_game.target_clicked.emit("bookshop")
 	await process_frame
 	_assert(place_card.visible, "non-school place click should open a place card")
@@ -103,7 +103,7 @@ func _initialize() -> void:
 	place_click_game.target_clicked.emit("home")
 	await process_frame
 	_assert(town_map.get_active_scene() == "home", "home should stay accessible after school-tour-compatible progress begins")
-	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
+	var pet_item_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
 	_assert(pet_item_value.text == "Pet bowl ready", "home pet panel should reflect the purchased pet bowl")
 	print("mvp_0_2_home_pet_care_input_flow passed.")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(game_state.DEFAULT_SAVE_PATH))
@@ -111,7 +111,7 @@ func _initialize() -> void:
 
 
 func click_home(town_map: Node) -> void:
-	var click_game: Node = town_map.get_node("ClickGame")
+	var click_game: Node = town_map.get_click_game()
 	click_game.target_clicked.emit("home")
 
 

@@ -3,15 +3,15 @@ class_name MemorySparkController
 
 const WorldOverviewRules = preload("res://scripts/systems/world_overview_rules.gd")
 
-var town_map: Node
+var scene_host: Node
 var card: CanvasLayer
 var refresh_home_pet_ui_callback: Callable
 var memory_spark_defs: Dictionary = {}
 var pilot_memory_spark_anchor_ids: Array[String] = []
 
 
-func configure(town_map_node: Node, card_node: CanvasLayer, refresh_callback: Callable) -> void:
-	town_map = town_map_node
+func configure(scene_host_node: Node, card_node: CanvasLayer, refresh_callback: Callable) -> void:
+	scene_host = scene_host_node
 	card = card_node
 	refresh_home_pet_ui_callback = refresh_callback
 	pilot_memory_spark_anchor_ids = WorldOverviewRules.collect_memory_spark_anchor_ids(_all_world_hotspots())
@@ -64,12 +64,12 @@ func _build_memory_spark_defs() -> Dictionary:
 	var defs := {}
 	var keywords_by_id := {}
 	for anchor_id in pilot_memory_spark_anchor_ids:
-		var hotspot: Dictionary = town_map.get_hotspot_by_id(anchor_id)
+		var hotspot: Dictionary = scene_host.get_hotspot_by_id(anchor_id)
 		if hotspot.is_empty():
 			continue
 		keywords_by_id[anchor_id] = str(hotspot.get("keyword", anchor_id))
 	for anchor_id in pilot_memory_spark_anchor_ids:
-		var hotspot: Dictionary = town_map.get_hotspot_by_id(anchor_id)
+		var hotspot: Dictionary = scene_host.get_hotspot_by_id(anchor_id)
 		if hotspot.is_empty():
 			continue
 		defs[anchor_id] = _memory_spark_def_from_hotspot(anchor_id, hotspot, keywords_by_id)
@@ -164,10 +164,8 @@ func _string_array_from(value: Variant) -> Array[String]:
 
 
 func _all_world_hotspots() -> Array[Dictionary]:
-	if town_map != null and town_map.has_node("ClickGame"):
-		var click_game: Node = town_map.get_node("ClickGame")
-		if "_world_map_hotspots" in click_game:
-			return click_game._world_map_hotspots
+	if scene_host != null and scene_host.has_method("get_all_world_hotspots"):
+		return scene_host.get_all_world_hotspots()
 	return []
 
 
@@ -181,7 +179,7 @@ func _anchor_recall_done_flag(anchor_id: String) -> String:
 
 
 func _should_show_memory_spark(anchor_id: String, quest_active: bool) -> bool:
-	if town_map == null or town_map.get_active_scene() != "world_overview":
+	if scene_host == null or scene_host.get_active_scene() != "world_overview":
 		return false
 	if quest_active:
 		return false

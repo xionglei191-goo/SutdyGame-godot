@@ -6,7 +6,7 @@ const PlaceCardController = preload("res://scripts/systems/place_card_controller
 
 const SCHOOL_TOUR_QUEST_ID := WorldOverviewRules.SCHOOL_TOUR_QUEST_ID
 
-var town_map: Node
+var scene_host: Node
 var quest_diary: CanvasLayer
 var dialogue_box: CanvasLayer
 var place_card: CanvasLayer
@@ -16,7 +16,7 @@ var hide_active_overlays_callback: Callable
 
 
 func configure(
-	town_map_node: Node,
+	scene_host_node: Node,
 	quest_diary_node: CanvasLayer,
 	dialogue_box_node: CanvasLayer,
 	place_card_node: CanvasLayer,
@@ -24,7 +24,7 @@ func configure(
 	refresh_callback: Callable,
 	hide_overlays_callback: Callable
 ) -> void:
-	town_map = town_map_node
+	scene_host = scene_host_node
 	quest_diary = quest_diary_node
 	dialogue_box = dialogue_box_node
 	place_card = place_card_node
@@ -36,10 +36,10 @@ func configure(
 func handle_place_clicked(target_id: String) -> void:
 	if quest_diary.active:
 		if _should_route_active_quest_home(target_id):
-			town_map.show_scene("home")
-			town_map.set_click_input_enabled(false)
-			town_map.set_quest_active(true)
-			town_map.set_current_quest_id(quest_diary.quest_id)
+			scene_host.show_scene("home")
+			scene_host.set_click_input_enabled(false)
+			scene_host.set_quest_active(true)
+			scene_host.set_current_quest_id(quest_diary.quest_id)
 			if refresh_home_pet_ui_callback.is_valid():
 				refresh_home_pet_ui_callback.call()
 			return
@@ -50,11 +50,11 @@ func handle_place_clicked(target_id: String) -> void:
 		"scene":
 			var scene_id := str(resolution.get("scene_id", ""))
 			if not scene_id.is_empty():
-				town_map.show_scene(scene_id)
-				town_map.set_click_input_enabled(false)
-				town_map.set_quest_active(false)
+				scene_host.show_scene(scene_id)
+				scene_host.set_click_input_enabled(false)
+				scene_host.set_quest_active(false)
 				if not quest_diary.active:
-					town_map.set_current_quest_id("")
+					scene_host.set_current_quest_id("")
 				if scene_id == "home" and refresh_home_pet_ui_callback.is_valid():
 					refresh_home_pet_ui_callback.call()
 				return
@@ -67,12 +67,12 @@ func handle_place_clicked(target_id: String) -> void:
 
 
 func handle_home_pet_action(action_id: String) -> void:
-	if town_map.get_active_scene() != "home":
+	if scene_host.get_active_scene() != "home":
 		return
 	var result: Dictionary = GameState.care_for_pet(action_id)
 	if bool(result.get("success", false)):
-		if town_map.has_method("play_home_pet_action_feedback"):
-			town_map.play_home_pet_action_feedback(action_id)
+		if scene_host.has_method("play_home_pet_action_feedback"):
+			scene_host.play_home_pet_action_feedback(action_id)
 		if quest_diary.active and quest_diary.has_method("complete_pet_care_action"):
 			quest_diary.complete_pet_care_action(action_id)
 		GameState.save_game()
@@ -81,10 +81,10 @@ func handle_home_pet_action(action_id: String) -> void:
 
 
 func handle_place_card_closed() -> void:
-	if town_map.get_active_scene() == "world_overview":
-		town_map.set_click_input_enabled(true)
-		town_map.set_quest_active(false)
-		town_map.set_current_quest_id("")
+	if scene_host.get_active_scene() == "world_overview":
+		scene_host.set_click_input_enabled(true)
+		scene_host.set_quest_active(false)
+		scene_host.set_current_quest_id("")
 
 
 func handle_memory_spark_completed(anchor_id: String) -> void:
@@ -98,10 +98,10 @@ func handle_memory_spark_completed(anchor_id: String) -> void:
 
 
 func handle_memory_spark_closed() -> void:
-	if town_map.get_active_scene() == "world_overview":
-		town_map.set_click_input_enabled(true)
-		town_map.set_quest_active(false)
-		town_map.set_current_quest_id("")
+	if scene_host.get_active_scene() == "world_overview":
+		scene_host.set_click_input_enabled(true)
+		scene_host.set_quest_active(false)
+		scene_host.set_current_quest_id("")
 
 
 func handle_memory_anchor_clicked(anchor_id: String) -> void:
@@ -114,7 +114,7 @@ func handle_memory_anchor_clicked(anchor_id: String) -> void:
 
 
 func show_place_card(target_id: String) -> void:
-	PlaceCardController.show_place_card(place_card, town_map, target_id, Callable())
+	PlaceCardController.show_place_card(place_card, scene_host, target_id, Callable())
 
 
 func handle_place_card_action(place_id: String, action_id: String) -> void:
@@ -131,21 +131,21 @@ func handle_place_card_action(place_id: String, action_id: String) -> void:
 	if not start_quest_id.is_empty():
 		_start_place_card_quest(start_quest_id, str(current_action.get("success_focus_hotspot", place_id)))
 		return
-	PlaceCardController.handle_action(place_card, place_id, action_id, refresh_home_pet_ui_callback)
+	PlaceCardController.handle_action(place_card, scene_host, place_id, action_id, refresh_home_pet_ui_callback)
 
 
 func _should_route_active_quest_home(target_id: String) -> bool:
 	return (
 		target_id == "home"
-		and town_map.get_active_scene() == "world_overview"
+		and scene_host.get_active_scene() == "world_overview"
 		and quest_diary.quest_id == WorldOverviewRules.PROLOGUE_QUEST_ID
 	)
 
 
 func _resolve_world_overview_target(target_id: String) -> Dictionary:
-	if town_map.get_active_scene() != "world_overview":
+	if scene_host.get_active_scene() != "world_overview":
 		return {}
-	var hotspot: Dictionary = town_map.get_hotspot_by_id(target_id)
+	var hotspot: Dictionary = scene_host.get_hotspot_by_id(target_id)
 	if hotspot.is_empty():
 		return {}
 	if str(hotspot.get("kind", "")) != "place":
@@ -163,12 +163,12 @@ func _start_place_card_quest(quest_id: String, focus_hotspot: String = "") -> vo
 		place_card.visible = false
 	if hide_active_overlays_callback.is_valid():
 		hide_active_overlays_callback.call()
-	town_map.show_scene("world_overview")
-	town_map.set_click_input_enabled(true)
-	town_map.set_quest_active(true)
-	town_map.set_current_quest_id(quest_id)
-	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot(focus_hotspot)
+	scene_host.show_scene("world_overview")
+	scene_host.set_click_input_enabled(true)
+	scene_host.set_quest_active(true)
+	scene_host.set_current_quest_id(quest_id)
+	if not focus_hotspot.is_empty() and scene_host.has_method("focus_world_hotspot"):
+		scene_host.focus_world_hotspot(focus_hotspot)
 	quest_diary.start_quest(quest_id)
 
 
@@ -177,10 +177,10 @@ func _start_place_card_dialogue(dialogue_id: String, focus_hotspot: String = "")
 		place_card.visible = false
 	if hide_active_overlays_callback.is_valid():
 		hide_active_overlays_callback.call()
-	town_map.show_scene("world_overview")
-	town_map.set_click_input_enabled(false)
-	town_map.set_quest_active(false)
-	town_map.set_current_quest_id("")
-	if not focus_hotspot.is_empty() and town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot(focus_hotspot)
+	scene_host.show_scene("world_overview")
+	scene_host.set_click_input_enabled(false)
+	scene_host.set_quest_active(false)
+	scene_host.set_current_quest_id("")
+	if not focus_hotspot.is_empty() and scene_host.has_method("focus_world_hotspot"):
+		scene_host.focus_world_hotspot(focus_hotspot)
 	dialogue_box.start_dialogue(dialogue_id)

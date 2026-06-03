@@ -17,8 +17,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var display: Sprite2D = town_map.get_node("HomeLayer/PetCorner/PetStateDisplay")
+	var town_map: Node = main.get_node("SceneHost")
+	var display: Sprite2D = town_map.get_scene_root("home").get_node("PetCorner/PetStateDisplay")
 	_assert(display.visible, "pet state display should be visible")
 	_assert(_texture_path(display) == NEUTRAL_PATH, "default pet mood should show neutral texture")
 
@@ -38,10 +38,10 @@ func _initialize() -> void:
 	game_state.pet_state_changed.emit(game_state.get_pet_state())
 	await process_frame
 
-	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
-	var play_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
-	var rest_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
-	var clean_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
+	var feed_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	var play_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
+	var rest_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
+	var clean_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
 
 	feed_button.pressed.emit()
 	await process_frame

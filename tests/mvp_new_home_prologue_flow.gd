@@ -183,7 +183,7 @@ func _run_runtime_flow() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	quest_diary.quest_completed.connect(func(quest_id: String, _reward_id: String, _reward_name: String) -> void:
 		completed_quests.append(quest_id)
@@ -206,7 +206,7 @@ func _run_runtime_flow() -> void:
 
 
 func _complete_step(main: Node, step: Dictionary) -> void:
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	var game_state: Node = root.get_node("GameState")
 	var quest_id := str(step.get("id", ""))
@@ -263,10 +263,10 @@ func _complete_step(main: Node, step: Dictionary) -> void:
 
 
 func _exercise_pet_care_buttons(town_map: Node, game_state: Node, quest_id: String, correct_action: String) -> void:
-	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
-	var clean_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
-	var play_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
-	var rest_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
+	var feed_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	var clean_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton")
+	var play_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton")
+	var rest_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton")
 	clean_button.pressed.emit()
 	await process_frame
 	_assert(not completed_quests.has(quest_id), "wrong pet care action should not complete %s" % quest_id)
@@ -287,7 +287,7 @@ func _exercise_pet_care_buttons(town_map: Node, game_state: Node, quest_id: Stri
 	_assert(int(pet_state.get("cleanliness", 0)) > int(game_state.DEFAULT_PET_STATE.get("cleanliness", 0)), "Home Pet Care should raise cleanliness")
 	_assert(int(pet_state.get("mood", 0)) > int(game_state.DEFAULT_PET_STATE.get("mood", 0)), "Home Pet Care should raise mood")
 	_assert(int(pet_state.get("rest", 0)) > int(game_state.DEFAULT_PET_STATE.get("rest", 0)), "Home Pet Care should raise rest")
-	var feedback_label: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
+	var feedback_label: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
 	_assert(feedback_label.text == "%s had a cozy rest." % _expected_pet_name(), "rest feedback should use the starter pet name")
 
 
@@ -306,7 +306,7 @@ func _assert_pet_name_and_care_persist(game_state: Node) -> void:
 
 
 func _assert_runtime_home_target_provider(town_map: Node) -> void:
-	var click_game: Node = town_map.get_node("ClickGame")
+	var click_game: Node = town_map.get_click_game()
 	var home_rects: Dictionary = click_game.get_place_rects_for_scene("home")
 	for target_id: String in REQUIRED_HOME_TARGETS:
 		_assert(home_rects.has(target_id), "runtime home target provider should expose data target: %s" % target_id)
@@ -404,7 +404,7 @@ func _collect_child_visible_texts_into(node: Node, results: Array[Dictionary]) -
 
 func _child_visible_roots(main: Node) -> Array[Node]:
 	return [
-		main.get_node("TownMap"),
+		main.get_node("SceneHost"),
 		main.get_node("DialogueBox"),
 		main.get_node("QuestDiary"),
 		main.get_node("DragPlaceGame"),
@@ -528,25 +528,26 @@ func _supported_pet_care_actions() -> Array[String]:
 
 
 func _pet_name_label(town_map: Node) -> Label:
-	return town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
+	return town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
 
 
 func _pet_panel(town_map: Node) -> Panel:
-	return town_map.get_node("HomeLayer/PetPanel")
+	return town_map.get_scene_root("home").get_node("PetPanel")
 
 
 func _assert_pet_panel_can_close_and_reopen(town_map: Node) -> void:
+	var home_scene: Node = town_map.get_scene_root("home")
 	var pet_panel := _pet_panel(town_map)
-	var close_button: Button = town_map.get_node("HomeLayer/PetPanel/CloseButton")
-	var open_button: Button = town_map.get_node("HomeLayer/PetCorner/OpenPetPanelButton")
+	var close_button: Button = home_scene.get_node("PetPanel/CloseButton")
+	var open_button: Button = home_scene.get_node("PetCorner/OpenPetPanelButton")
 	_assert(pet_panel.visible, "My Pet panel should start open after Pet Hello")
 	var close_point := _control_screen_center(close_button)
-	_assert(town_map._screen_point_in_button(close_button, close_point), "Close button screen center should be hittable")
-	await _send_mouse_click(town_map, close_point)
+	_assert(_screen_point_in_button(close_button, close_point), "Close button screen center should be hittable")
+	await _send_mouse_click(home_scene, close_point)
 	await process_frame
 	_assert(not pet_panel.visible, "My Pet close button should hide the panel")
 	_assert(open_button.visible, "Care button should appear after closing My Pet")
-	await _send_mouse_click(town_map, _control_screen_center(open_button))
+	await _send_mouse_click(home_scene, _control_screen_center(open_button))
 	await process_frame
 	_assert(pet_panel.visible, "Care button should reopen My Pet")
 	_assert(not open_button.visible, "Care button should hide while My Pet is open")
@@ -573,8 +574,15 @@ func _control_screen_center(control: Control) -> Vector2:
 	return control.get_global_transform_with_canvas() * (control.size * 0.5)
 
 
+func _screen_point_in_button(button: Button, screen_point: Vector2) -> bool:
+	if button == null or not button.visible or not button.is_visible_in_tree() or button.disabled:
+		return false
+	var local_point := button.get_global_transform_with_canvas().affine_inverse() * screen_point
+	return Rect2(Vector2.ZERO, button.size).has_point(local_point)
+
+
 func _pet_corner_label(town_map: Node) -> Label:
-	return town_map.get_node("HomeLayer/PetCorner/PetCornerLabel")
+	return town_map.get_scene_root("home").get_node("PetCorner/PetCornerLabel")
 
 
 func _contains_token(text: String, token: String) -> bool:

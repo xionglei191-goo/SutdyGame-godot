@@ -218,7 +218,7 @@ func _assert_quest_file(path: String) -> void:
 	_assert(quest_id == file_stem, "quest id should match filename stem: %s" % path)
 	_assert(not str(quest.get("title", "")).is_empty(), "quest title should be present: %s" % path)
 	var scene_id := str(quest.get("scene_id", ""))
-	_assert(SUPPORTED_SCENE_IDS.has(scene_id), "quest scene_id should map to a supported TownMap scene: %s -> %s" % [quest_id, scene_id])
+	_assert(SUPPORTED_SCENE_IDS.has(scene_id), "quest scene_id should map to a supported SceneHost scene: %s -> %s" % [quest_id, scene_id])
 	var next_quest := str(quest.get("next_quest", ""))
 	if not next_quest.is_empty():
 		_assert(FileAccess.file_exists("%s/%s.json" % [QUEST_DIR, next_quest]), "next_quest should point to an existing quest: %s -> %s" % [quest_id, next_quest])
@@ -260,7 +260,7 @@ func _assert_completion_contract(quest: Dictionary, quest_id: String) -> void:
 	var completion := completion_value as Dictionary
 	var scene_id := str(completion.get("scene_id", ""))
 	if not scene_id.is_empty():
-		_assert(SUPPORTED_SCENE_IDS.has(scene_id), "quest completion scene_id should map to a supported TownMap scene: %s -> %s" % [quest_id, scene_id])
+		_assert(SUPPORTED_SCENE_IDS.has(scene_id), "quest completion scene_id should map to a supported SceneHost scene: %s -> %s" % [quest_id, scene_id])
 	var action := str(completion.get("action", ""))
 	_assert(SUPPORTED_COMPLETION_ACTIONS.has(action), "quest completion action should be supported: %s -> %s" % [quest_id, action])
 	_assert(not scene_id.is_empty() or not action.is_empty(), "quest completion should define scene_id or action: %s" % quest_id)

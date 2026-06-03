@@ -22,7 +22,7 @@ Current product north star: `StudyGame` is a children’s English life-adventure
 Important runtime baselines:
 
 - `docs/product/教学玩法重构策划_v0.1.md` is the current upper-level product truth for gameplay direction. Use it to interpret future PRD, story, world-map, and implementation changes unless the user explicitly supersedes it. If a lower-level document conflicts with it, update the lower-level document rather than reviving the older direction.
-- New games start at `HomeLayer` for the `Welcome Box` opener. `TownMap.tscn` / `world_overview` remains the world-map runtime scene opened from home and used for A-Z anchors, town exploration, PlaceCard, and transport/world routing. The current generated overview map is a large `2560x1440` exploration surface shown through the `1280x720` runtime viewport.
+- New games start at `HomeLayer` for the `Welcome Box` opener. `SceneHost.tscn` / `WorldOverviewScene.tscn` remains the world-map runtime scene opened from home and used for A-Z anchors, town exploration, PlaceCard, and transport/world routing. The current generated overview map is a large `2560x1440` exploration surface shown through the `1280x720` runtime viewport.
 - `HomeLayer` is the runtime default entry and `HomeBackgroundSlot` is connected to `assets/generated/maps/home/map_home_interior_bg_v001.png`. The older Godot-node color/shape home background remains only as a hidden backup layer. Do not describe the `world_overview` home starting area as the generated `HomeLayer` interior background.
 - The current opener starts with the micro-prologue `Welcome Box` (`prologue_letter_box`) at `home`, then continues into `First Trip` (`prologue_go_to_school`) and hands off into `Walk With Mina` at school arrival. `Welcome Box` may appear in completed quest/reward lists, but the current Parent Bonus gate still uses the four formal MVP events plus `Story Show`.
 - `home` and `school` are both part of the first playable map experience. School is a key region inside the wider life-adventure world, not the whole face of the product.
@@ -303,3 +303,5 @@ Pull requests should include:
 ## Asset & Content Safety
 
 All game images should be self-generated and follow `docs/assets/AI图片素材生成规范_v0.1.md`. Do not add existing IP, logos, trademarked characters, or untracked web images. Keep prompt records for generated assets.
+
+When generating new image assets during Codex work, call the model's built-in image generation interface directly by default. Do not rely on external image-generation CLIs, third-party APIs, browser tools, or ad hoc network services unless the user explicitly asks for that path. If the built-in interface is unavailable, record the prompt and asset target as pending instead of silently switching generation backends.

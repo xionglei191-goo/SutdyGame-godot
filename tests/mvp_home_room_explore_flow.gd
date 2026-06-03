@@ -10,14 +10,14 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var town_map: Node = main.get_node("SceneHost")
+	var click_game: Node = town_map.get_click_game()
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	var reward_popup: CanvasLayer = main.get_node("RewardPopup")
-	var room_button: Button = town_map.get_node("HomeLayer/RoomExploreButton")
-	var room_panel: Panel = town_map.get_node("HomeLayer/RoomExplorePanel")
-	var room_light_button: Button = town_map.get_node("HomeLayer/RoomExplorePanel/MarginContainer/VBoxContainer/RoomLightButton")
-	var window_watch_button: Button = town_map.get_node("HomeLayer/RoomExplorePanel/MarginContainer/VBoxContainer/WindowWatchButton")
+	var room_button: Button = town_map.get_scene_root("home").get_node("RoomExploreButton")
+	var room_panel: Panel = town_map.get_scene_root("home").get_node("RoomExplorePanel")
+	var room_light_button: Button = town_map.get_scene_root("home").get_node("RoomExplorePanel/MarginContainer/VBoxContainer/RoomLightButton")
+	var window_watch_button: Button = town_map.get_scene_root("home").get_node("RoomExplorePanel/MarginContainer/VBoxContainer/WindowWatchButton")
 	var close_event := InputEventAction.new()
 	close_event.action = "ui_accept"
 	close_event.pressed = true
@@ -26,11 +26,11 @@ func _initialize() -> void:
 	for target_id in ["home_lamp", "home_clock", "home_window"]:
 		_assert(home_rects.has(target_id), "home room target should come from scene_click_targets data: %s" % target_id)
 	for node_path in [
-		"HomeLayer/HomeSpaces/HomeLampProp",
-		"HomeLayer/HomeSpaces/HomeClockProp",
-		"HomeLayer/HomeSpaces/HomeWindowProp"
+		"HomeSpaces/HomeLampProp",
+		"HomeSpaces/HomeClockProp",
+		"HomeSpaces/HomeWindowProp"
 	]:
-		var sprite: Sprite2D = town_map.get_node(node_path)
+		var sprite: Sprite2D = town_map.get_scene_root("home").get_node(node_path)
 		_assert(sprite.texture != null, "%s should use generated room prop art" % node_path)
 
 	_assert(room_button.visible, "Room Finds button should be visible at home")

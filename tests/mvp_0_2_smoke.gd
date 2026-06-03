@@ -19,12 +19,12 @@ func _initialize() -> void:
 	quest_diary.quest_completed.connect(func(quest_id: String, _reward_id: String, _reward_name: String) -> void:
 		_completed_quests.append(quest_id)
 	)
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	_assert_runtime_quest_titles(main)
 	_assert_scene_structure(town_map)
 	town_map.show_scene("home")
 	await process_frame
-	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	var feed_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
 	feed_button.pressed.emit()
 	await process_frame
 	_assert(game_state.coins == 3, "home pet feed should spend 2 coins from the default 5")
@@ -61,7 +61,7 @@ func _initialize() -> void:
 	_assert_contains(_completed_quests, "prologue_letter_box", "Welcome Box completion")
 	_assert(game_state.coins == 4, "Welcome Box should add reward_coins from quest data after home pet feed")
 	_assert(quest_diary.status_label.text == "Done", "Quest Diary should show done status after Welcome Box completion")
-	_assert(town_map.get_node("HomeLayer").visible, "home scene should remain visible after Welcome Box")
+	_assert(town_map.get_scene_root("home").visible, "home scene should remain visible after Welcome Box")
 	_assert(mina.dialogue_id == "mina_room_starter_intro", "Mina should switch to Room Starter dialogue after Welcome Box")
 	mina.interaction_requested.emit(mina.dialogue_id)
 	await process_frame
@@ -143,7 +143,7 @@ func _initialize() -> void:
 	var completed_after_school_quest := _completed_quests.size()
 	quest_diary.check_target("library")
 	_assert(_completed_quests.size() == completed_after_school_quest, "completed school quest should not complete twice")
-	_assert(town_map.get_node("ClassroomLayer").visible, "classroom scene should be visible after school quest")
+	_assert(town_map.get_scene_root("classroom").visible, "classroom scene should be visible after school quest")
 
 	quest_diary.start_quest("g4_u1_tidy_classroom")
 	_assert(quest_diary.event_label.text == "Room Helper", "Quest Diary should show the room helper event name")
@@ -161,7 +161,7 @@ func _initialize() -> void:
 	await process_frame
 	_assert_contains(_completed_quests, "g4_u1_tidy_classroom", "tidy classroom completion")
 	_assert(game_state.coins == 11, "Room Helper should add reward_coins from quest data")
-	_assert(town_map.get_node("GardenLayer").visible, "garden scene should be visible after Room Helper quest")
+	_assert(town_map.get_scene_root("garden").visible, "garden scene should be visible after Room Helper quest")
 
 	quest_diary.start_quest("g4_u1_garden_bird")
 	_assert(quest_diary.event_label.text == "Bird Watch", "Quest Diary should show the garden event name")
@@ -274,8 +274,8 @@ func _initialize() -> void:
 	var restored_main: Node = main_scene.instantiate()
 	root.add_child(restored_main)
 	await process_frame
-	var restored_map: Node = restored_main.get_node("TownMap")
-	_assert(restored_map.get_node("GardenLayer").visible, "default save should restore garden scene")
+	var restored_map: Node = restored_main.get_node("SceneHost")
+	_assert(restored_map.get_scene_root("garden").visible, "default save should restore garden scene")
 	_assert(restored_main.get_node("ParentSummary").visible, "completed review save should restore parent summary")
 	restored_main.queue_free()
 	await process_frame
@@ -353,9 +353,9 @@ func _assert_parent_summary_empty(parent_summary: CanvasLayer) -> void:
 
 
 func _assert_scene_structure(town_map: Node) -> void:
-	var campus_layer: Node = town_map.get_node("CampusGateLayer")
-	var classroom_layer: Node = town_map.get_node("ClassroomLayer")
-	var garden_layer: Node = town_map.get_node("GardenLayer")
+	var campus_layer: Node = town_map.get_scene_root("campus_gate")
+	var classroom_layer: Node = town_map.get_scene_root("classroom")
+	var garden_layer: Node = town_map.get_scene_root("garden")
 	_assert(campus_layer.get_node("GateSign") != null, "campus gate should have a visible sign")
 	_assert(classroom_layer.get_node("DeskA") != null, "classroom should have a desk")
 	_assert(classroom_layer.get_node("Shelf") != null, "classroom should have a shelf")

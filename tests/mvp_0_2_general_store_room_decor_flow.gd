@@ -12,8 +12,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var town_map: Node = main.get_node("SceneHost")
+	var click_game: Node = town_map.get_click_game()
 	var place_card: CanvasLayer = main.get_node("PlaceCard")
 	_assert(town_map.get_active_scene() == "home", "new game should start at home")
 	town_map.show_scene("world_overview")
@@ -48,10 +48,10 @@ func _initialize() -> void:
 	click_game.target_clicked.emit("home")
 	await process_frame
 	_assert(town_map.get_active_scene() == "home", "home should stay routable after buying room decor")
-	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
-	var outfit_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
-	var room_decor_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
-	var decor_slot_rug: Sprite2D = town_map.get_node("HomeLayer/DecorSlot_Rug")
+	var pet_item_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
+	var outfit_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
+	var room_decor_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
+	var decor_slot_rug: Sprite2D = town_map.get_scene_root("home").get_node("DecorSlot_Rug")
 	_assert(pet_item_value.text != "Star rug ready", "star rug should not pollute pet item status")
 	_assert(outfit_value.text != "Star rug ready", "star rug should not pollute outfit status")
 	_assert(room_decor_value.text == "Star rug ready", "home room decor status should show the purchased star rug")

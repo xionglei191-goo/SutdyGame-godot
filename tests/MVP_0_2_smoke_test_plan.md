@@ -272,7 +272,7 @@ godot --headless --path . -s res://tests/mvp_0_2_smoke.gd
 - 断言 Quest Diary 接入装饰素材、事件名、状态标签和 `Keepsake` 奖励提示。
 - 断言 Quest Diary 词汇提示使用 `Quest clues:`，不回退到 `Look for:` 词表式前台表达。
 - 断言前期 Quest prompt 使用 `Start Mina's first trip. / Find Mina's story stop. / Help Leo set up the story room.` 等生活事件提示。
-- 断言儿童层可见 UI（TownMap、DialogueBox、Quest Diary、Story Show、PlaceCard、Memory Spark、RewardPopup、DragPlaceGame）不暴露 `QuestDiary`、`StoryShow`、`ReviewChallenge`、`lesson panel`、`word list`、`review test`、`L1/L2/L3` 等内部或学校化词；`ParentSummary` 属于成人层，不纳入该儿童层 denylist。
+- 断言儿童层可见 UI（SceneHost、DialogueBox、Quest Diary、Story Show、PlaceCard、Memory Spark、RewardPopup、DragPlaceGame）不暴露 `QuestDiary`、`StoryShow`、`ReviewChallenge`、`lesson panel`、`word list`、`review test`、`L1/L2/L3` 等内部或学校化词；`ParentSummary` 属于成人层，不纳入该儿童层 denylist。
 
 ### 2.8 素材安全轻量扫描
 

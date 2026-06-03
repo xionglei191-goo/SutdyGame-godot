@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://world_overview_scene_split"]
+
+[ext_resource type="Script" path="res://scripts/maps/world_overview_scene.gd" id="1_world_overview_scene"]
+[ext_resource type="PackedScene" path="res://scenes/minigames/SceneClickGame.tscn" id="4_click_game"]
+[ext_resource type="Texture2D" path="res://assets/generated/maps/world/map_sunshine_world_overview_v001.png" id="8_world_overview_bg"]
+
+[node name="WorldOverviewScene" type="Node2D"]
+script = ExtResource("1_world_overview_scene")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=801902211]
+texture = ExtResource("8_world_overview_bg")
+centered = false
+
+[node name="ClickGame" parent="." unique_id=1005686246 instance=ExtResource("4_click_game")]

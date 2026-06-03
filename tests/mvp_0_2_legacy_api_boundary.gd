@@ -22,11 +22,11 @@ const ALLOWED_LEGACY_PATTERNS := {
 		"res://scripts/systems/quest_diary.gd"
 	],
 	"set_current_lesson_id(": [
-		"res://scripts/maps/town_map.gd",
+		"res://scripts/maps/scene_host.gd",
 		"res://scripts/minigames/scene_click_game.gd"
 	],
 	"set_task_active(": [
-		"res://scripts/maps/town_map.gd",
+		"res://scripts/maps/scene_host.gd",
 		"res://scripts/minigames/scene_click_game.gd"
 	],
 	"is_task_active(": [

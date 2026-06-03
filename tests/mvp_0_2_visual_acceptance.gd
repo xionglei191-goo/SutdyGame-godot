@@ -10,14 +10,14 @@ func _initialize() -> void:
 	await process_frame
 	game_state.reset_progress()
 
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	_assert_marker_center_in_click_rect(town_map, "PlaceLayer/ClassroomMarker", "classroom")
 	_assert_marker_center_in_click_rect(town_map, "PlaceLayer/LibraryMarker", "library")
 	_assert_marker_center_in_click_rect(town_map, "PlaceLayer/PlaygroundMarker", "playground")
 	_assert_garden_bird_in_click_rect(town_map)
-	_assert_garden_target_in_click_rect(town_map, "GardenLayer/TreeTrunk", "tree")
-	_assert_garden_target_in_click_rect(town_map, "GardenLayer/FlowerBed", "flower")
-	_assert_garden_target_in_click_rect(town_map, "GardenLayer/Bench", "bench")
+	_assert_garden_target_in_click_rect(town_map, "TreeTrunk", "tree")
+	_assert_garden_target_in_click_rect(town_map, "FlowerBed", "flower")
+	_assert_garden_target_in_click_rect(town_map, "Bench", "bench")
 	_assert_boundaries_present(town_map)
 	_assert_player_outfit_layer(town_map)
 	_assert_npc_dialogues_short()
@@ -30,8 +30,8 @@ func _initialize() -> void:
 	_assert_world_hotspot_enablement_baseline(town_map)
 	_assert_quest_diary_layout(main.get_node("QuestDiary"))
 	_assert_parent_summary_layout(main.get_node("ParentSummary"))
-	_assert_home_pet_layout(main.get_node("TownMap"))
-	_assert_school_subscene_backgrounds(main.get_node("TownMap"))
+	_assert_home_pet_layout(main.get_node("SceneHost"))
+	_assert_school_subscene_backgrounds(main.get_node("SceneHost"))
 	_assert_place_card_layout(main.get_node("PlaceCard"))
 	_assert_child_visible_copy_baseline(main)
 	_assert_child_data_source_copy_baseline()
@@ -45,16 +45,16 @@ func _initialize() -> void:
 
 
 func _assert_marker_center_in_click_rect(town_map: Node, node_path: String, target_id: String) -> void:
-	var marker: Node2D = town_map.get_node(node_path)
-	var click_game: Node = town_map.get_node("ClickGame")
+	var marker: Node2D = town_map.get_scene_root("campus_gate").get_node(node_path)
+	var click_game: Node = town_map.get_click_game()
 	var rects: Dictionary = click_game.get_place_rects_for_scene("campus_gate")
 	_assert(rects.has(target_id), "missing click rect for %s" % target_id)
 	_assert(rects[target_id].has_point(marker.global_position), "click rect should cover %s visual center" % target_id)
 
 
 func _assert_garden_bird_in_click_rect(town_map: Node) -> void:
-	var bird: Polygon2D = town_map.get_node("GardenLayer/Bird")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var bird: Polygon2D = town_map.get_scene_root("garden").get_node("Bird")
+	var click_game: Node = town_map.get_click_game()
 	var rects: Dictionary = click_game.get_place_rects_for_scene("garden")
 	_assert(rects.has("bird"), "missing click rect for bird")
 	var bounds := Rect2(bird.polygon[0], Vector2.ZERO)
@@ -64,8 +64,8 @@ func _assert_garden_bird_in_click_rect(town_map: Node) -> void:
 
 
 func _assert_garden_target_in_click_rect(town_map: Node, node_path: String, target_id: String) -> void:
-	var visual: Control = town_map.get_node(node_path)
-	var click_game: Node = town_map.get_node("ClickGame")
+	var visual: Control = town_map.get_scene_root("garden").get_node(node_path)
+	var click_game: Node = town_map.get_click_game()
 	var rects: Dictionary = click_game.get_place_rects_for_scene("garden")
 	_assert(rects.has(target_id), "missing click rect for %s" % target_id)
 	_assert(rects[target_id].has_point(visual.global_position + visual.size * 0.5), "click rect should cover %s visual center" % target_id)
@@ -241,32 +241,32 @@ func _assert_parent_summary_layout(parent_summary: CanvasLayer) -> void:
 
 
 func _assert_home_pet_layout(town_map: Node) -> void:
-	var pet_panel: Panel = _required_node(town_map, "HomeLayer/PetPanel")
+	var pet_panel: Panel = _required_node(town_map.get_scene_root("home"), "PetPanel")
 	_assert(pet_panel.size.x >= 360.0, "home pet panel should be wide enough")
 	_assert(pet_panel.size.y >= 320.0, "home pet panel should be tall enough")
-	var pet_corner_label: Label = _required_node(town_map, "HomeLayer/PetCorner/PetCornerLabel")
-	var home_background_slot: Sprite2D = _required_node(town_map, "HomeLayer/HomeBackgroundSlot")
-	var pet_name_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
-	var feedback_label: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
-	var pet_state_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetStateValue")
-	var outfit_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
-	var room_decor_value: Label = _required_node(town_map, "HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
-	var pet_bowl: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetBowl")
-	var pet_food: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetFood")
-	var pet_toy: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetToy")
-	var pet_soap: TextureRect = _required_node(town_map, "HomeLayer/PetCorner/PetSoap")
-	var pet_state_display: Sprite2D = _required_node(town_map, "HomeLayer/PetCorner/PetStateDisplay")
-	var decor_slot_rug: Sprite2D = _required_node(town_map, "HomeLayer/DecorSlot_Rug")
-	var decor_slot_cape: Sprite2D = _required_node(town_map, "HomeLayer/DecorSlot_Cape")
-	var room_explore_button: Button = _required_node(town_map, "HomeLayer/RoomExploreButton")
-	var room_explore_panel: Panel = _required_node(town_map, "HomeLayer/RoomExplorePanel")
-	var home_lamp: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeLampProp")
-	var home_clock: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeClockProp")
-	var home_window: Sprite2D = _required_node(town_map, "HomeLayer/HomeSpaces/HomeWindowProp")
-	var bedroom_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/BedroomLabel")
-	var kitchen_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/KitchenLabel")
-	var yard_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/YardLabel")
-	var pet_corner_space_label: Label = _required_node(town_map, "HomeLayer/HomeSpaces/PetCornerSpaceLabel")
+	var pet_corner_label: Label = _required_node(town_map.get_scene_root("home"), "PetCorner/PetCornerLabel")
+	var home_background_slot: Sprite2D = _required_node(town_map.get_scene_root("home"), "HomeBackgroundSlot")
+	var pet_name_value: Label = _required_node(town_map.get_scene_root("home"), "PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetNameValue")
+	var feedback_label: Label = _required_node(town_map.get_scene_root("home"), "PetPanel/MarginContainer/VBoxContainer/FeedbackLabel")
+	var pet_state_value: Label = _required_node(town_map.get_scene_root("home"), "PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetStateValue")
+	var outfit_value: Label = _required_node(town_map.get_scene_root("home"), "PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
+	var room_decor_value: Label = _required_node(town_map.get_scene_root("home"), "PetPanel/MarginContainer/VBoxContainer/StatsGrid/RoomDecorValue")
+	var pet_bowl: TextureRect = _required_node(town_map.get_scene_root("home"), "PetCorner/PetBowl")
+	var pet_food: TextureRect = _required_node(town_map.get_scene_root("home"), "PetCorner/PetFood")
+	var pet_toy: TextureRect = _required_node(town_map.get_scene_root("home"), "PetCorner/PetToy")
+	var pet_soap: TextureRect = _required_node(town_map.get_scene_root("home"), "PetCorner/PetSoap")
+	var pet_state_display: Sprite2D = _required_node(town_map.get_scene_root("home"), "PetCorner/PetStateDisplay")
+	var decor_slot_rug: Sprite2D = _required_node(town_map.get_scene_root("home"), "DecorSlot_Rug")
+	var decor_slot_cape: Sprite2D = _required_node(town_map.get_scene_root("home"), "DecorSlot_Cape")
+	var room_explore_button: Button = _required_node(town_map.get_scene_root("home"), "RoomExploreButton")
+	var room_explore_panel: Panel = _required_node(town_map.get_scene_root("home"), "RoomExplorePanel")
+	var home_lamp: Sprite2D = _required_node(town_map.get_scene_root("home"), "HomeSpaces/HomeLampProp")
+	var home_clock: Sprite2D = _required_node(town_map.get_scene_root("home"), "HomeSpaces/HomeClockProp")
+	var home_window: Sprite2D = _required_node(town_map.get_scene_root("home"), "HomeSpaces/HomeWindowProp")
+	var bedroom_label: Label = _required_node(town_map.get_scene_root("home"), "HomeSpaces/BedroomLabel")
+	var kitchen_label: Label = _required_node(town_map.get_scene_root("home"), "HomeSpaces/KitchenLabel")
+	var yard_label: Label = _required_node(town_map.get_scene_root("home"), "HomeSpaces/YardLabel")
+	var pet_corner_space_label: Label = _required_node(town_map.get_scene_root("home"), "HomeSpaces/PetCornerSpaceLabel")
 	_assert(pet_corner_label.text.contains("corner"), "home should include a visible pet corner label")
 	_assert(home_background_slot.visible, "home background slot should be visible after generated art is connected")
 	_assert(home_background_slot.texture != null, "home background slot should use generated home interior art")
@@ -295,23 +295,23 @@ func _assert_home_pet_layout(town_map: Node) -> void:
 	_assert(kitchen_label.text == "Kitchen", "home should expose a kitchen section")
 	_assert(yard_label.text == "Yard", "home should expose a yard section")
 	_assert(pet_corner_space_label.text == "Pet Corner", "home should expose a pet corner section")
-	var home_rects: Dictionary = town_map.get_node("ClickGame").get_place_rects_for_scene("home")
+	var home_rects: Dictionary = town_map.get_click_game().get_place_rects_for_scene("home")
 	for target_id in ["home_door", "home_kitchen", "home_yard", "home_pet_toy", "home_pet_bed", "home_lamp", "home_clock", "home_window"]:
 		_assert(home_rects.has(target_id), "home expanded space target should come from scene_click_targets data: %s" % target_id)
 	for button_path in [
-		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton",
-		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton",
-		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton",
-		"HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton",
-		"HomeLayer/ReturnButton"
+		"PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton",
+		"PetPanel/MarginContainer/VBoxContainer/ActionButtons/CleanButton",
+		"PetPanel/MarginContainer/VBoxContainer/ActionButtons/PlayButton",
+		"PetPanel/MarginContainer/VBoxContainer/ActionButtons/RestButton",
+		"ReturnButton"
 	]:
-		var button: Button = _required_node(town_map, button_path)
+		var button: Button = _required_node(town_map.get_scene_root("home"), button_path)
 		_assert(button.custom_minimum_size.y >= 46.0 or button.size.y >= 46.0, "%s should meet minimum touch height" % button_path)
 
 
 func _assert_school_subscene_backgrounds(town_map: Node) -> void:
-	var classroom_background: Sprite2D = _required_node(town_map, "ClassroomLayer/Background")
-	var garden_background: Sprite2D = _required_node(town_map, "GardenLayer/Background")
+	var classroom_background: Sprite2D = _required_node(town_map.get_scene_root("classroom"), "Background")
+	var garden_background: Sprite2D = _required_node(town_map.get_scene_root("garden"), "Background")
 	_assert(classroom_background.texture != null, "classroom should use generated background art")
 	_assert(garden_background.texture != null, "garden should use generated background art")
 	_assert(classroom_background.texture.resource_path == "res://assets/generated/maps/classroom/map_classroom_interior_v002.png", "classroom should use v002 generated background")
@@ -320,8 +320,8 @@ func _assert_school_subscene_backgrounds(town_map: Node) -> void:
 	var garden_image := garden_background.texture.get_image()
 	_assert(classroom_image.get_width() == 1280 and classroom_image.get_height() == 720, "classroom background should be 1280x720")
 	_assert(garden_image.get_width() == 1280 and garden_image.get_height() == 720, "garden background should be 1280x720")
-	var classroom_floor: ColorRect = _required_node(town_map, "ClassroomLayer/ClassroomFloor")
-	var garden_grass: ColorRect = _required_node(town_map, "GardenLayer/GardenGrass")
+	var classroom_floor: ColorRect = _required_node(town_map.get_scene_root("classroom"), "ClassroomFloor")
+	var garden_grass: ColorRect = _required_node(town_map.get_scene_root("garden"), "GardenGrass")
 	_assert(classroom_floor.color.a <= 0.01, "classroom ColorRect should not be the visible main background")
 	_assert(garden_grass.color.a <= 0.01, "garden ColorRect should not be the visible main background")
 
@@ -345,7 +345,7 @@ func _assert_place_card_layout(place_card: CanvasLayer) -> void:
 
 func _assert_child_visible_copy_baseline(main: Node) -> void:
 	var child_roots: Array[Node] = [
-		main.get_node("TownMap"),
+		main.get_node("SceneHost"),
 		main.get_node("QuestDiary"),
 		main.get_node("DialogueBox"),
 		main.get_node("RewardPopup"),
@@ -599,7 +599,7 @@ func _contains_token(text: String, token: String) -> bool:
 
 
 func _assert_world_hotspot_enablement_baseline(town_map: Node) -> void:
-	var click_game: Node = town_map.get_node("ClickGame")
+	var click_game: Node = town_map.get_click_game()
 	var world_rects: Dictionary = click_game.get_place_rects_for_scene("world_overview")
 	_assert(not world_rects.has("music_room"), "music room should not yet be world-clickable without a route")
 	_assert(not world_rects.has("art_room"), "art room should not yet be world-clickable without a route")
@@ -707,7 +707,7 @@ func _assert_memory_spark_data_is_derived_from_hotspots(main: Node) -> void:
 	_assert(memory_spark_defs.size() == 26, "Memory Spark defs should cover the full frozen A-Z memory palace")
 	_assert(memory_spark_defs.has("anchor_a_apple"), "Memory Spark defs should preserve A = Apple coverage")
 	_assert(memory_spark_defs.has("anchor_y_yo_yo"), "Memory Spark defs should cover non-pilot anchors after the home prologue foundation")
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var b_hotspot: Dictionary = town_map.get_hotspot_by_id("anchor_b_bear")
 	var b_spark: Dictionary = b_hotspot.get("memory_spark", {})
 	_assert(not b_spark.is_empty(), "anchor B should keep parameterized Memory Spark data in hotspot data")

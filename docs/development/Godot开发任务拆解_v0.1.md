@@ -31,7 +31,7 @@
 ### 2.1 必须保留的实现资产
 
 - `Main.tscn` 主流程
-- `TownMap.tscn` 及 `world_overview`
+- `SceneHost.tscn`、拆分地图子场景及 `world_overview`
 - `DialogueBox`
 - 任务状态流转
 - 场景点击小游戏
@@ -148,7 +148,12 @@ SutdyGame-godot/
     main/
       Main.tscn
     maps/
-      TownMap.tscn
+      SceneHost.tscn
+      HomeScene.tscn
+      WorldOverviewScene.tscn
+      CampusGateScene.tscn
+      ClassroomScene.tscn
+      GardenScene.tscn
       SchoolGate.tscn
       Classroom.tscn
       Garden.tscn
@@ -179,7 +184,9 @@ SutdyGame-godot/
       story_show.gd
       parent_summary.gd
     maps/
-      town_map.gd
+      scene_host.gd
+      home_scene.gd
+      world_overview_scene.gd
     minigames/
       scene_click_game.gd
       drag_place_game.gd

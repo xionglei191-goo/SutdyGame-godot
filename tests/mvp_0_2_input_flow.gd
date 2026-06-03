@@ -10,7 +10,7 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var player: CharacterBody2D = town_map.get_node("Player")
 	_assert_npc_prompt_cycle(player, town_map.get_node("NpcLayer/Mina"))
 
@@ -18,7 +18,7 @@ func _initialize() -> void:
 	quest_diary.quest_completed.connect(func(_quest_id: String, _reward_id: String, _reward_name: String) -> void:
 		_quest_completed_count += 1
 	)
-	var click_game: Node = town_map.get_node("ClickGame")
+	var click_game: Node = town_map.get_click_game()
 	quest_diary.start_quest("prologue_letter_box")
 	_assert(town_map.get_active_scene() == "home", "Welcome Box should start in scene_id from quest data")
 	_assert(bool(click_game.input_enabled), "click_target quest should enable click input from quest data")

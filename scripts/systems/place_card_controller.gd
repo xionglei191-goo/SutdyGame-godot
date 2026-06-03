@@ -11,12 +11,13 @@ const PLACE_CARD_ACTION_CHOOSE_TRAIN_STOP := "choose_train_stop"
 const PLACE_CARD_ACTION_HELP_FIND_BOOK := "help_find_book"
 
 
-static func show_place_card(place_card: CanvasLayer, town_map: Node, target_id: String, feedback_callback: Callable) -> void:
+static func show_place_card(place_card: CanvasLayer, scene_host: Node, target_id: String, feedback_callback: Callable) -> void:
 	if not place_card.has_method("show_place"):
 		return
-	town_map.set_click_input_enabled(false)
-	town_map.set_quest_active(false)
-	var hotspot: Dictionary = town_map.get_hotspot_by_id(target_id)
+	place_card.set_meta("scene_host", scene_host)
+	scene_host.set_click_input_enabled(false)
+	scene_host.set_quest_active(false)
+	var hotspot: Dictionary = scene_host.get_hotspot_by_id(target_id)
 	var display_name := str(hotspot.get("label", target_id))
 	var first_visit := not GameState.has_story_flag("visited_place_%s" % target_id)
 	if first_visit:
@@ -28,7 +29,8 @@ static func show_place_card(place_card: CanvasLayer, town_map: Node, target_id: 
 		feedback_callback.call()
 
 
-static func handle_action(place_card: CanvasLayer, place_id: String, action_id: String, refresh_home_pet_ui: Callable) -> void:
+static func handle_action(place_card: CanvasLayer, scene_host: Node, place_id: String, action_id: String, refresh_home_pet_ui: Callable) -> void:
+	place_card.set_meta("scene_host", scene_host)
 	var current_action := current_action_for_place_card(place_card, place_id, action_id)
 	if current_action.is_empty():
 		if place_card.has_method("set_status"):
@@ -49,10 +51,10 @@ static func handle_action(place_card: CanvasLayer, place_id: String, action_id: 
 		if place_card.has_method("set_status"):
 			place_card.set_status(_success_status_text(current_action, result))
 		if place_card.has_method("set_primary_action"):
-			place_card.set_primary_action(place_card_action(place_id, _hotspot_from_place_card(place_card, place_id)))
+			place_card.set_primary_action(place_card_action(place_id, _hotspot_from_scene_host(scene_host, place_id)))
 		if refresh_home_pet_ui.is_valid():
 			refresh_home_pet_ui.call(str(current_action.get("home_feedback", "")))
-		_apply_success_focus_hotspot(place_card, current_action)
+		_apply_success_focus_hotspot(scene_host, current_action)
 		GameState.save_game()
 		return
 	if place_card.has_method("set_status"):
@@ -106,7 +108,7 @@ static func current_action_for_place_card(place_card: CanvasLayer, place_id: Str
 		return {}
 	if str(place_card.get("primary_action_id")) != action_id:
 		return {}
-	var hotspot := _hotspot_from_place_card(place_card, place_id)
+	var hotspot := _hotspot_from_place_card_meta(place_card, place_id)
 	var current_action := place_card_action(place_id, hotspot)
 	if str(current_action.get("id", "")) != action_id:
 		return {}
@@ -159,25 +161,23 @@ static func _success_status_text(action: Dictionary, result: Dictionary) -> Stri
 	return str(result.get("message", ""))
 
 
-static func _apply_success_focus_hotspot(place_card: CanvasLayer, action: Dictionary) -> void:
+static func _apply_success_focus_hotspot(scene_host: Node, action: Dictionary) -> void:
 	var focus_hotspot := str(action.get("success_focus_hotspot", ""))
-	if focus_hotspot.is_empty() or place_card.get_parent() == null:
+	if focus_hotspot.is_empty() or scene_host == null:
 		return
-	var main := place_card.get_parent()
-	if not main.has_node("TownMap"):
-		return
-	var town_map := main.get_node("TownMap")
-	if town_map.has_method("focus_world_hotspot"):
-		town_map.focus_world_hotspot(focus_hotspot)
+	if scene_host.has_method("focus_world_hotspot"):
+		scene_host.focus_world_hotspot(focus_hotspot)
 
 
-static func _hotspot_from_place_card(place_card: CanvasLayer, place_id: String) -> Dictionary:
-	if place_card == null or place_card.get_parent() == null:
+static func _hotspot_from_place_card_meta(place_card: CanvasLayer, place_id: String) -> Dictionary:
+	if place_card == null or not place_card.has_meta("scene_host"):
 		return {}
-	var main := place_card.get_parent()
-	if not main.has_node("TownMap"):
+	return _hotspot_from_scene_host(place_card.get_meta("scene_host") as Node, place_id)
+
+
+static func _hotspot_from_scene_host(scene_host: Node, place_id: String) -> Dictionary:
+	if scene_host == null:
 		return {}
-	var town_map := main.get_node("TownMap")
-	if not town_map.has_method("get_hotspot_by_id"):
+	if not scene_host.has_method("get_hotspot_by_id"):
 		return {}
-	return town_map.get_hotspot_by_id(place_id)
+	return scene_host.get_hotspot_by_id(place_id)

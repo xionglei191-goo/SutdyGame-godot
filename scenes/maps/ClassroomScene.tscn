@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://classroom_scene_split"]
+
+[ext_resource type="Texture2D" path="res://assets/generated/maps/classroom/map_classroom_interior_v002.png" id="6_classroom_bg"]
+
+[node name="ClassroomScene" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=73901003]
+texture = ExtResource("6_classroom_bg")
+centered = false
+
+[node name="ClassroomFloor" type="ColorRect" parent="." unique_id=1759140880]
+offset_left = 98.0
+offset_top = 76.0
+offset_right = 1182.0
+offset_bottom = 640.0
+mouse_filter = 2
+color = Color(0.8, 0.88, 0.95, 0)
+
+[node name="DeskA" type="ColorRect" parent="." unique_id=216359481]
+offset_left = 220.0
+offset_top = 210.0
+offset_right = 410.0
+offset_bottom = 302.0
+mouse_filter = 2
+color = Color(0.88, 0.67, 0.42, 0.12)
+
+[node name="DeskB" type="ColorRect" parent="." unique_id=1462060837]
+offset_left = 505.0
+offset_top = 210.0
+offset_right = 695.0
+offset_bottom = 302.0
+mouse_filter = 2
+color = Color(0.88, 0.67, 0.42, 0.12)
+
+[node name="Shelf" type="ColorRect" parent="." unique_id=367967871]
+offset_left = 870.0
+offset_top = 185.0
+offset_right = 1040.0
+offset_bottom = 405.0
+mouse_filter = 2
+color = Color(0.58, 0.42, 0.28, 0.12)
+
+[node name="ClassroomTitleLabel" type="Label" parent="." unique_id=110651728]
+offset_left = 120.0
+offset_top = 92.0
+offset_right = 1160.0
+offset_bottom = 132.0
+theme_override_font_sizes/font_size = 26
+text = "Classroom"
+horizontal_alignment = 1

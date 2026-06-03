@@ -12,8 +12,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var town_map: Node = main.get_node("SceneHost")
+	var click_game: Node = town_map.get_click_game()
 	var place_card: CanvasLayer = main.get_node("PlaceCard")
 	var explorer_cape: Polygon2D = town_map.get_node("Player/ExplorerCape")
 	_assert(town_map.get_active_scene() == "home", "new game should start at home")
@@ -59,9 +59,9 @@ func _initialize() -> void:
 	await process_frame
 	_assert(town_map.get_active_scene() == "home", "home should stay routable after buying the explorer cape")
 	_assert(explorer_cape.visible, "explorer cape should remain visible after routing home")
-	var pet_item_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
-	var outfit_value: Label = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
-	var decor_slot_cape: Sprite2D = town_map.get_node("HomeLayer/DecorSlot_Cape")
+	var pet_item_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/PetItemValue")
+	var outfit_value: Label = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/StatsGrid/OutfitValue")
+	var decor_slot_cape: Sprite2D = town_map.get_scene_root("home").get_node("DecorSlot_Cape")
 	_assert(pet_item_value.text != "Explorer cape ready", "explorer cape should not pollute pet item status")
 	_assert(outfit_value.text == "Explorer cape ready", "home outfit status should show the purchased explorer cape")
 	_assert(decor_slot_cape.visible, "buying the explorer cape should show the cape display at home")

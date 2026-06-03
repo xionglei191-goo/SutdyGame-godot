@@ -4,7 +4,7 @@ const MemorySparkController = preload("res://scripts/systems/memory_spark_contro
 const MainFlowController = preload("res://scripts/systems/main_flow_controller.gd")
 const WorldInteractionController = preload("res://scripts/systems/world_interaction_controller.gd")
 
-@onready var town_map = $TownMap
+@onready var scene_host = $SceneHost
 @onready var dialogue_box = $DialogueBox
 @onready var quest_diary = $QuestDiary
 @onready var drag_place_game = $DragPlaceGame
@@ -32,14 +32,14 @@ func _ready() -> void:
 	GameState.load_game()
 	if not GameState.playtest_completed:
 		GameState.start_playtest_timer()
-	town_map.set_click_input_enabled(false)
-	town_map.set_quest_active(false)
-	town_map.npc_interaction_requested.connect(dialogue_box.start_dialogue)
-	town_map.place_clicked.connect(_on_place_clicked)
-	town_map.memory_anchor_clicked.connect(_on_memory_anchor_clicked)
-	town_map.home_pet_action_requested.connect(_on_home_pet_action)
-	if town_map.has_signal("home_room_explore_requested"):
-		town_map.home_room_explore_requested.connect(_on_home_room_explore_requested)
+	scene_host.set_click_input_enabled(false)
+	scene_host.set_quest_active(false)
+	scene_host.npc_interaction_requested.connect(dialogue_box.start_dialogue)
+	scene_host.place_clicked.connect(_on_place_clicked)
+	scene_host.memory_anchor_clicked.connect(_on_memory_anchor_clicked)
+	scene_host.home_pet_action_requested.connect(_on_home_pet_action)
+	if scene_host.has_signal("home_room_explore_requested"):
+		scene_host.home_room_explore_requested.connect(_on_home_room_explore_requested)
 	if place_card.has_signal("closed") and not place_card.closed.is_connected(_on_place_card_closed):
 		place_card.closed.connect(_on_place_card_closed)
 	if place_card.has_signal("action_requested") and not place_card.action_requested.is_connected(_on_place_card_action_requested):
@@ -54,9 +54,9 @@ func _ready() -> void:
 	GameState.pet_state_changed.connect(_on_game_state_pet_state_changed)
 	if GameState.has_signal("story_flags_changed"):
 		GameState.story_flags_changed.connect(_on_game_state_story_flags_changed)
-	memory_spark_controller.configure(town_map, memory_spark_card, _refresh_home_pet_ui)
+	memory_spark_controller.configure(scene_host, memory_spark_card, _refresh_home_pet_ui)
 	main_flow_controller.configure(
-		town_map,
+		scene_host,
 		dialogue_box,
 		quest_diary,
 		drag_place_game,
@@ -65,7 +65,7 @@ func _ready() -> void:
 		parent_summary
 	)
 	world_interaction_controller.configure(
-		town_map,
+		scene_host,
 		quest_diary,
 		dialogue_box,
 		place_card,
@@ -100,9 +100,9 @@ func _on_dialogue_finished(dialogue_id: String) -> void:
 		GameState.record_playtest_event(_playtest_event_id_for_dialogue(dialogue_id), _event_label_for_dialogue(dialogue_id))
 		quest_diary.start_quest(quest_id)
 		return
-	if memory_spark_controller.handle_anchor_dialogue_finished(dialogue_id, town_map.get_active_scene()):
-		town_map.set_click_input_enabled(true)
-		town_map.set_quest_active(false)
+	if memory_spark_controller.handle_anchor_dialogue_finished(dialogue_id, scene_host.get_active_scene()):
+		scene_host.set_click_input_enabled(true)
+		scene_host.set_quest_active(false)
 
 
 func _on_quest_completed(quest_id: String, reward_id: String, reward_name: String) -> void:
@@ -179,8 +179,8 @@ func _on_place_card_action_requested(place_id: String, action_id: String) -> voi
 
 
 func _refresh_home_pet_ui(feedback: String = "") -> void:
-	if town_map.has_method("update_home_pet_ui"):
-		town_map.update_home_pet_ui(
+	if scene_host.has_method("update_home_pet_ui"):
+		scene_host.update_home_pet_ui(
 			GameState.coins,
 			GameState.get_pet_state(),
 			feedback,
@@ -192,8 +192,8 @@ func _refresh_home_pet_ui(feedback: String = "") -> void:
 
 
 func _refresh_player_outfit() -> void:
-	if town_map.player != null and town_map.player.has_method("set_explorer_cape_visible"):
-		town_map.player.set_explorer_cape_visible(GameState.has_explorer_cape())
+	if scene_host.player != null and scene_host.player.has_method("set_explorer_cape_visible"):
+		scene_host.player.set_explorer_cape_visible(GameState.has_explorer_cape())
 
 
 func _on_memory_anchor_clicked(anchor_id: String) -> void:

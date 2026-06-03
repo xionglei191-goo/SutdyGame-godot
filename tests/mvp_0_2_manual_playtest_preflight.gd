@@ -25,12 +25,12 @@ func _initialize() -> void:
 	_assert(int(snapshot["playtest_elapsed_msec"]) >= 0, "preflight timer should be initialized")
 	_assert(_has_event(snapshot["playtest_events"], "playtest_started"), "preflight should record playtest start on Main ready")
 
-	var town_map: Node = main.get_node("TownMap")
-	_assert(town_map.get_node("HomeLayer").visible, "preflight should start at home")
-	_assert(not town_map.get_node("WorldOverviewLayer").visible, "preflight should not start on world overview")
-	_assert(not town_map.get_node("CampusGateLayer").visible, "preflight should not restore campus gate immediately")
-	_assert(not town_map.get_node("ClassroomLayer").visible, "preflight should not restore classroom")
-	_assert(not town_map.get_node("GardenLayer").visible, "preflight should not restore garden")
+	var town_map: Node = main.get_node("SceneHost")
+	_assert(town_map.get_scene_root("home").visible, "preflight should start at home")
+	_assert(not town_map.get_scene_root("world_overview").visible, "preflight should not start on world overview")
+	_assert(not town_map.get_scene_root("campus_gate").visible, "preflight should not restore campus gate immediately")
+	_assert(not town_map.get_scene_root("classroom").visible, "preflight should not restore classroom")
+	_assert(not town_map.get_scene_root("garden").visible, "preflight should not restore garden")
 
 	var parent_summary: CanvasLayer = main.get_node("ParentSummary")
 	parent_summary.refresh()

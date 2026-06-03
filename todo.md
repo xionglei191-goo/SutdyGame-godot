@@ -9,6 +9,27 @@
 
 ---
 
+## 当前决策：世界地图基准
+
+- 当前只保留 `assets/generated/maps/world/map_sunshine_world_overview_v006.png` 作为下一版 `world_overview` 风格候选。
+- v002-v005 世界地图过程 prompt 与 `docs/assets/world_map_*` 过程预览图已清理，不再作为当前决策依据。
+- A-Z 记忆路线保持独立覆盖层，当前候选资产为 `assets/generated/maps/world/map_sunshine_world_memory_overlay_v001.png`，后续不应直接烘死在常驻底图里。
+- 现阶段先确认世界地图本体，再进入游戏数据调整；`data/maps/sunshine_world_hotspots_v001.json`、视口聚焦、PlaceCard/scene routing 应在下一阶段围绕确认后的底图对齐。
+- 当前 runtime 尚未替换已接入的 `assets/generated/maps/world/map_sunshine_world_overview_v001.png`。
+
+## 下一阶段建议
+
+| 优先级 | 任务 | 交付物 |
+|--------|------|--------|
+| P0 | 将确认后的世界地图风格候选复制/版本化到 `assets/generated/maps/world/` | 已完成：`map_sunshine_world_overview_v006.png` |
+| P0 | 评估 v006 是否作为最终接入版本 | 选定最终接入版本 |
+| P0 | 接入新版 world_overview 背景并保留可回退路径 | Godot 场景引用更新 + visual acceptance |
+| P0 | 基于确认后的底图重新微调 hotspot rect | `data/maps/sunshine_world_hotspots_v001.json` |
+| P1 | 将 A-Z 记忆路线作为独立显示层接入 | Memory Spark / debug / recall overlay 控制 |
+| P1 | 重新验收 1280x720 初始视口和拖动视口 | opening viewport + town/transport viewport 手动检查 |
+
+---
+
 ## 最终完成记录
 
 | 维度 | 完成状态 |

@@ -22,4 +22,4 @@ Post-processing workflow: generated as wide background images, then resized and 
 - Style pass: bright pastel toy-town environment art.
 - Age pass: safe, warm, child-friendly places.
 - Copyright pass: no brands, logos, readable text, or existing IP.
-- Usability pass: connected in `TownMap.tscn`; existing interaction hit areas remain separate.
+- Usability pass: connected in the split school subscenes under `SceneHost.tscn`; existing interaction hit areas remain separate.

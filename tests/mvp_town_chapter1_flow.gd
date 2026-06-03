@@ -55,8 +55,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var town_map: Node = main.get_node("SceneHost")
+	var click_game: Node = town_map.get_click_game()
 	var place_card: CanvasLayer = main.get_node("PlaceCard")
 	var dialogue_box: CanvasLayer = main.get_node("DialogueBox")
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")

@@ -10,12 +10,12 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var town_map: Node = main.get_node("TownMap")
+	var town_map: Node = main.get_node("SceneHost")
 	var dialogue_box: CanvasLayer = main.get_node("DialogueBox")
 	var quest_diary: CanvasLayer = main.get_node("QuestDiary")
 	var player: CharacterBody2D = town_map.get_node("Player")
 	var camera: Camera2D = player.get_node("Camera2D")
-	var click_game: Node = town_map.get_node("ClickGame")
+	var click_game: Node = town_map.get_click_game()
 
 	_assert(town_map.has_method("get_active_scene"), "town map should expose active scene")
 	_assert(town_map.get_active_scene() == "home", "new game should start at home for the Welcome Box opener")
@@ -56,7 +56,7 @@ func _initialize() -> void:
 	click_game.target_clicked.emit("home")
 	await process_frame
 	_assert(town_map.get_active_scene() == "home", "home click should route to the home subscene before Walk With Mina completion")
-	_assert(town_map.get_node("HomeLayer").visible, "home layer should become visible after routing to home")
+	_assert(town_map.get_scene_root("home").visible, "home layer should become visible after routing to home")
 	_assert(mina.dialogue_id == "mina_letter_box_intro", "new home scene should begin with the Welcome Box dialogue")
 	var main_dialogue_box: CanvasLayer = main.get_node("DialogueBox")
 	mina.interaction_requested.emit(mina.dialogue_id)
@@ -106,7 +106,7 @@ func _initialize() -> void:
 	await process_frame
 	_assert(quest_diary.active, "Home Pet Care intro should start the pet care quest")
 	_assert(quest_diary.quest_id == "prologue_home_pet_care", "home intro should continue into Home Pet Care")
-	var feed_button: Button = town_map.get_node("HomeLayer/PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
+	var feed_button: Button = town_map.get_scene_root("home").get_node("PetPanel/MarginContainer/VBoxContainer/ActionButtons/FeedButton")
 	feed_button.pressed.emit()
 	await process_frame
 	_assert(game_state.has_completed_quest("prologue_home_pet_care"), "Home Pet Care completion should be saved after feeding Coco")

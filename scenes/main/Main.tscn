@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://study_main"]
 
 [ext_resource type="Script" path="res://scripts/main/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/maps/TownMap.tscn" id="2_town_map"]
+[ext_resource type="PackedScene" path="res://scenes/maps/SceneHost.tscn" id="2_scene_host"]
 [ext_resource type="PackedScene" path="res://scenes/ui/DialogueBox.tscn" id="3_dialogue_box"]
 [ext_resource type="PackedScene" path="res://scenes/ui/QuestDiary.tscn" id="4_quest_diary"]
 [ext_resource type="PackedScene" path="res://scenes/ui/RewardPopup.tscn" id="5_reward_popup"]
@@ -14,7 +14,7 @@
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 
-[node name="TownMap" parent="." instance=ExtResource("2_town_map")]
+[node name="SceneHost" parent="." instance=ExtResource("2_scene_host")]
 
 [node name="QuestDiary" parent="." instance=ExtResource("4_quest_diary")]
 

@@ -31,13 +31,17 @@ func _initialize() -> void:
 	var gameplay_rework := _read_text("res://docs/product/教学玩法重构策划_v0.1.md")
 	var story_design := _read_text("res://docs/product/小学英语故事线与关卡内容设计.md")
 	var prototype_acceptance := _read_text("res://docs/development/Prototype_0_1_验收记录.md")
-	var town_map_scene := _read_text("res://scenes/maps/TownMap.tscn")
+	var scene_host_scene := _read_text("res://scenes/maps/SceneHost.tscn")
+	var home_scene := _read_text("res://scenes/maps/HomeScene.tscn")
+	var world_overview_scene := _read_text("res://scenes/maps/WorldOverviewScene.tscn")
+	var classroom_scene := _read_text("res://scenes/maps/ClassroomScene.tscn")
+	var garden_scene := _read_text("res://scenes/maps/GardenScene.tscn")
 	var walk_with_mina_quest := _read_text("res://data/quests/g4_u1_school_tour.json")
 	var bird_watch_quest := _read_text("res://data/quests/g4_u1_garden_bird.json")
 	var world_overview_rules := _read_text("res://scripts/systems/world_overview_rules.gd")
 	var quest_diary_script := _read_text("res://scripts/systems/quest_diary.gd")
 	var scene_click_game := _read_text("res://scripts/minigames/scene_click_game.gd")
-	var town_map_script := _read_text("res://scripts/maps/town_map.gd")
+	var scene_host_script := _read_text("res://scripts/maps/scene_host.gd")
 	var game_state_script := _read_text("res://scripts/core/game_state.gd")
 	var game_state_persistence_script := _read_text("res://scripts/systems/game_state_persistence.gd")
 
@@ -62,13 +66,13 @@ func _initialize() -> void:
 	_assert_current_agents_guidelines(agents_guidelines)
 	_assert_current_product_docs(prd, gameplay_rework, story_design)
 	_assert_current_prototype_acceptance(prototype_acceptance)
-	_assert_current_town_map_scene_text(town_map_scene)
+	_assert_current_scene_host_text(scene_host_scene, home_scene, world_overview_scene, classroom_scene, garden_scene)
 	_assert_current_walk_with_mina_quest_data(walk_with_mina_quest)
 	_assert_current_bird_watch_quest_data(bird_watch_quest)
 	_assert_current_world_overview_rules(world_overview_rules)
 	_assert_current_quest_diary_script(quest_diary_script)
 	_assert_current_scene_click_game(scene_click_game)
-	_assert_current_town_map_script(town_map_script)
+	_assert_current_scene_host_script(scene_host_script)
 	_assert_current_game_state_script(game_state_script, game_state_persistence_script)
 	_assert_current_anchor_dialogue_speakers()
 	_assert_current_check_script(check_script)
@@ -175,12 +179,19 @@ func _assert_current_prototype_acceptance(text: String) -> void:
 	_assert_not_contains(text, "`GameState` 记录完成任务 `g4_u1_school_tour`", "prototype acceptance should not use task-complete wording for Walk With Mina")
 
 
-func _assert_current_town_map_scene_text(text: String) -> void:
-	_assert_contains(text, "HomeTitleLabel", "TownMap should use neutral Home title label naming")
-	_assert_contains(text, "ClassroomTitleLabel", "TownMap should use neutral Classroom title label naming")
-	_assert_contains(text, "[node name=\"WorldOverviewLayer\" type=\"Node2D\" parent=\".\" unique_id=445001101]\nvisible = false", "TownMap scene should not show world overview before runtime restore")
-	_assert_not_contains(text, "HomeTaskLabel", "TownMap should not keep legacy task label node naming")
-	_assert_not_contains(text, "ClassroomTaskLabel", "TownMap should not keep legacy task label node naming")
+func _assert_current_scene_host_text(scene_host_text: String, home_text: String, world_text: String, classroom_text: String, garden_text: String) -> void:
+	_assert_contains(scene_host_text, "[node name=\"SceneHost\" type=\"Node2D\"]", "SceneHost scene should own the runtime map host")
+	_assert_contains(scene_host_text, "res://scenes/maps/HomeScene.tscn", "SceneHost should instance the split home scene")
+	_assert_contains(scene_host_text, "res://scenes/maps/WorldOverviewScene.tscn", "SceneHost should instance the split world overview scene")
+	_assert_contains(scene_host_text, "res://scenes/maps/CampusGateScene.tscn", "SceneHost should instance the split campus gate scene")
+	_assert_contains(scene_host_text, "res://scenes/maps/ClassroomScene.tscn", "SceneHost should instance the split classroom scene")
+	_assert_contains(scene_host_text, "res://scenes/maps/GardenScene.tscn", "SceneHost should instance the split garden scene")
+	_assert_contains(home_text, "HomeTitleLabel", "HomeScene should use neutral Home title label naming")
+	_assert_contains(classroom_text, "ClassroomTitleLabel", "ClassroomScene should use neutral Classroom title label naming")
+	_assert_contains(world_text, "[node name=\"WorldOverviewScene\" type=\"Node2D\"]", "world overview should be a split scene")
+	_assert_contains(garden_text, "[node name=\"GardenScene\" type=\"Node2D\"]", "garden should be a split scene")
+	_assert_not_contains(home_text, "HomeTaskLabel", "HomeScene should not keep legacy task label node naming")
+	_assert_not_contains(classroom_text, "ClassroomTaskLabel", "ClassroomScene should not keep legacy task label node naming")
 
 
 func _assert_current_walk_with_mina_quest_data(text: String) -> void:
@@ -224,11 +235,12 @@ func _assert_current_scene_click_game(text: String) -> void:
 	_assert_not_contains(text, "LEGACY_SCENE_TARGETS", "SceneClickGame should not preserve legacy scene target provider naming")
 
 
-func _assert_current_town_map_script(text: String) -> void:
-	_assert_contains(text, "var active_scene_id := \"home\"", "TownMap script should default to the current HomeLayer entry state")
-	_assert_contains(text, "show_scene(active_scene_id)", "TownMap ready should apply its default active scene")
-	_assert_contains(text, "Legacy compatibility wrapper. New code should call set_quest_active().", "TownMap should mark set_task_active as legacy wrapper")
-	_assert_contains(text, "Legacy compatibility wrapper. New code should call set_current_quest_id().", "TownMap should mark set_current_lesson_id as legacy wrapper")
+func _assert_current_scene_host_script(text: String) -> void:
+	_assert_contains(text, "var active_scene_id := \"home\"", "SceneHost script should default to the current HomeScene entry state")
+	_assert_contains(text, "show_scene(active_scene_id)", "SceneHost ready should apply its default active scene")
+	_assert_contains(text, "func get_scene_root(scene_id: String) -> Node:", "SceneHost should expose split scene roots for tests and controllers")
+	_assert_contains(text, "func set_task_active(is_active: bool) -> void:", "SceneHost should keep set_task_active compatibility wrapper")
+	_assert_contains(text, "func set_current_lesson_id(lesson_id: String) -> void:", "SceneHost should keep set_current_lesson_id compatibility wrapper")
 
 
 func _assert_current_game_state_script(text: String, persistence_text: String) -> void:
@@ -272,7 +284,7 @@ func _assert_current_asset_guideline(text: String) -> void:
 	_assert_contains(text, "PlaceCard / Memory Spark", "asset guideline should cover current UI/runtime support art")
 	_assert_contains(text, "pet bowl / pet food / pet ball toy / soap", "asset guideline should cover pet-care props")
 	_assert_contains(text, "`HomeLayer + world_overview + town/shop/pet economy + Memory Spark`", "asset guideline should prioritize the current home/town/pet runtime baseline")
-	_assert_contains(text, "`map_home_interior_bg_v001.png` 已生成并接入 `TownMap.tscn` 的 `HomeLayer/HomeBackgroundSlot`", "asset guideline should mark home interior background as connected")
+	_assert_contains(text, "`map_home_interior_bg_v001.png` 已生成并接入 `HomeScene.tscn` 的 `HomeBackgroundSlot`", "asset guideline should mark home interior background as connected")
 	_assert_contains(text, "`assets/generated/ui/ui_place_card_ornament_v001.png`", "asset guideline should prioritize PlaceCard ornament")
 	_assert_contains(text, "`assets/generated/rewards/reward_first_trip_ticket_v001.png`", "asset guideline should prioritize First Trip ticket")
 	_assert_contains(text, "ui_quest_diary_ornament_v001.png", "asset guideline should use Quest Diary ornament naming")
@@ -394,10 +406,10 @@ func _assert_current_map_planning_docs(map_plan: String, az_plan: String, az_lay
 	_assert_not_contains(az_plan, "从 `Sunshine School` 中心广场出发", "A-Z plan should not start the memory route at school")
 	_assert_not_contains(az_plan, "小测中让孩子从图像回忆字母", "A-Z plan should not use quiz/test wording")
 	_assert_contains(az_plan, "pilot recall 锚点", "A-Z plan should mention current pilot recall runtime baseline")
-	_assert_contains(az_layout, "从 `HomeLayer/home` 打开的 `TownMap/world_overview` 总览底图", "A-Z layout should frame world overview as opened from HomeLayer/home")
+	_assert_contains(az_layout, "从 `HomeLayer/home` 打开的 `SceneHost/world_overview` 总览底图", "A-Z layout should frame world overview as opened from HomeLayer/home")
 	_assert_contains(az_layout, "当前主图基线为 `home-first`", "A-Z layout should document home-first map baseline")
 	_assert_contains(az_layout, "`home` 是开局锚点", "A-Z layout should make home the opening anchor")
-	_assert_not_contains(az_layout, "世界主图作为 `TownMap` 的首屏总览", "A-Z layout should not frame world overview as first screen")
+	_assert_not_contains(az_layout, "世界主图作为 `SceneHost` 的首屏总览", "A-Z layout should not frame world overview as first screen")
 	_assert_contains(az_layout, "runtime 底图、工程对位图、展示审阅图必须明确分离", "A-Z layout should separate runtime and overlay assets")
 	_assert_contains(az_layout, "`home_core`：开局 home 锚点 / home-first origin", "A-Z layout should include home_core zone")
 	_assert_contains(az_layout, "`school_core`：起步学校区 / school cluster", "A-Z layout should avoid school-only center wording")
