@@ -710,7 +710,16 @@ func _assert_world_overview_layer_map(town_map: Node) -> void:
 	_assert(layer_map.has_method("has_loaded_layer_map"), "layer map renderer should expose load status")
 	_assert(layer_map.has_loaded_layer_map(), "layer map renderer should load its data source")
 	_assert(layer_map.get_layer_map_id() == "sunshine_world_layer_map", "layer map renderer should load the current world map layer data")
+	_assert(layer_map.get_render_mode() == "tile_grid_object_layers", "world overview should render from tile-grid object-layer data")
 	_assert(layer_map.get_layer_canvas_size() == Vector2(2560.0, 2560.0), "layer map should preserve the current world overview logic size")
+	_assert(layer_map.get_tile_layer_count() >= 5, "world overview should have multiple tile layers")
+	_assert(layer_map.has_method("get_native_tile_map_layer_count"), "layer map renderer should expose native TileMapLayer count")
+	_assert(layer_map.get_native_tile_map_layer_count() >= layer_map.get_tile_layer_count(), "world overview tile layers should be backed by native TileMapLayer nodes")
+	_assert(layer_map.has_method("get_native_tile_cell_count"), "layer map renderer should expose native tile cell count")
+	_assert(layer_map.get_native_tile_cell_count() >= 400, "world overview should populate native tile cells across the 20x20 base grid")
+	_assert(layer_map.get_object_layer_count() >= 2, "world overview should have object layers")
+	_assert(layer_map.get_landmark_object_count() >= 15, "world overview should reserve independent landmark object slots for primary town and transport places")
+	_assert(layer_map.get_pending_landmark_asset_count() >= 15, "landmark art should stay explicitly pending built-in imagegen until the tool is available")
 
 
 func _assert_memory_spark_data_is_derived_from_hotspots(main: Node) -> void:

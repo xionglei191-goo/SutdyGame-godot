@@ -150,6 +150,7 @@ run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_general_store_room_d
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_memory_spark_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_az_unlock_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_world_hotspot_enablement.gd
+run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_world_layer_map_data.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_music_art_room_unlock_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_new_home_prologue_flow.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_parent_bonus_gate_migration.gd

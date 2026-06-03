@@ -6,215 +6,348 @@
     "height": 2560
   },
   "tile_size": 128,
-  "render_mode": "procedural_layer_tiles",
+  "grid_size": {
+    "columns": 20,
+    "rows": 20
+  },
+  "render_mode": "tile_grid_object_layers",
   "reference_background": "res://assets/generated/maps/world/map_sunshine_world_overview_v007_square.png",
-  "layers": [
-    {
-      "id": "ground_base",
-      "type": "tile_rect",
-      "rect": {"x": 0, "y": 0, "w": 2560, "h": 2560},
-      "tile_size": 128,
+  "tile_palette": {
+    "grass": {
       "color": "#bfe7b2",
       "alternate_color": "#b5dda9"
     },
-    {
-      "id": "home_green",
-      "type": "rect",
-      "rect": {"x": 64, "y": 688, "w": 560, "h": 440},
+    "home_yard": {
       "color": "#a9d98f",
+      "alternate_color": "#9fd185",
       "outline_color": "#6fb86b",
-      "outline_width": 5
+      "outline_width": 3
     },
-    {
-      "id": "school_footprint",
-      "type": "rect",
-      "rect": {"x": 700, "y": 640, "w": 1040, "h": 760},
+    "school_ground": {
       "color": "#d7e9ff",
+      "alternate_color": "#cce2fa",
       "outline_color": "#5a91c8",
-      "outline_width": 6
+      "outline_width": 3
     },
-    {
-      "id": "town_core",
-      "type": "rect",
-      "rect": {"x": 430, "y": 1500, "w": 1240, "h": 600},
+    "town_plaza": {
       "color": "#f4dfb6",
+      "alternate_color": "#ecd3a2",
       "outline_color": "#c6924b",
-      "outline_width": 5
+      "outline_width": 3
     },
-    {
-      "id": "transport_edge",
-      "type": "rect",
-      "rect": {"x": 1560, "y": 260, "w": 820, "h": 660},
+    "transport_ground": {
       "color": "#d9e5e2",
+      "alternate_color": "#cedbd8",
       "outline_color": "#7f9c97",
-      "outline_width": 5
+      "outline_width": 3
     },
-    {
-      "id": "main_road",
-      "type": "polyline",
-      "points": [
-        {"x": 330, "y": 985},
-        {"x": 740, "y": 1040},
-        {"x": 1170, "y": 1450},
-        {"x": 1160, "y": 1770},
-        {"x": 1800, "y": 1770},
-        {"x": 2090, "y": 750}
-      ],
+    "road": {
       "color": "#e5d18d",
+      "alternate_color": "#dcc47b",
       "outline_color": "#b7964d",
-      "width": 86,
-      "outline_width": 110
+      "outline_width": 4
     },
-    {
-      "id": "school_loop_path",
-      "type": "polyline",
-      "points": [
-        {"x": 840, "y": 760},
-        {"x": 1570, "y": 760},
-        {"x": 1570, "y": 1280},
-        {"x": 840, "y": 1280},
-        {"x": 840, "y": 760}
-      ],
+    "school_path": {
       "color": "#f1e6bf",
+      "alternate_color": "#ead9a7",
       "outline_color": "#b99d65",
-      "width": 40,
-      "outline_width": 54
+      "outline_width": 3
     },
-    {
-      "id": "town_shop_street",
-      "type": "polyline",
-      "points": [
-        {"x": 560, "y": 1780},
-        {"x": 1510, "y": 1780}
-      ],
-      "color": "#efe0aa",
-      "outline_color": "#b99a59",
-      "width": 64,
-      "outline_width": 82
-    },
-    {
-      "id": "home_house",
-      "type": "landmark",
-      "rect": {"x": 130, "y": 790, "w": 360, "h": 240},
-      "color": "#f7c8c3",
-      "outline_color": "#b86762",
-      "outline_width": 5,
-      "hotspot_id": "home"
-    },
-    {
-      "id": "school_main",
-      "type": "landmark",
-      "rect": {"x": 820, "y": 760, "w": 820, "h": 270},
-      "color": "#fff0a6",
-      "outline_color": "#c49b35",
-      "outline_width": 5,
-      "hotspot_id": "sunshine_school"
-    },
-    {
-      "id": "classroom_block",
-      "type": "landmark",
-      "rect": {"x": 845, "y": 835, "w": 300, "h": 245},
-      "color": "#ffe7b2",
-      "outline_color": "#c79b52",
-      "outline_width": 4,
-      "hotspot_id": "classroom"
-    },
-    {
-      "id": "library_block",
-      "type": "landmark",
-      "rect": {"x": 1255, "y": 835, "w": 300, "h": 245},
-      "color": "#e8d7ff",
-      "outline_color": "#8b6fc2",
-      "outline_width": 4,
-      "hotspot_id": "library"
-    },
-    {
-      "id": "canteen_block",
-      "type": "landmark",
-      "rect": {"x": 845, "y": 915, "w": 205, "h": 150},
-      "color": "#ffd8a8",
-      "outline_color": "#b87a33",
-      "outline_width": 4,
-      "hotspot_id": "canteen"
-    },
-    {
-      "id": "playground_yard",
-      "type": "landmark",
-      "rect": {"x": 1325, "y": 1100, "w": 295, "h": 215},
-      "color": "#aee0a2",
-      "outline_color": "#57975b",
-      "outline_width": 4,
-      "hotspot_id": "playground"
-    },
-    {
-      "id": "bookshop_block",
-      "type": "landmark",
-      "rect": {"x": 650, "y": 1570, "w": 240, "h": 190},
-      "color": "#d6c2ff",
-      "outline_color": "#7a5eb2",
-      "outline_width": 4,
-      "hotspot_id": "bookshop"
-    },
-    {
-      "id": "pet_shop_block",
-      "type": "landmark",
-      "rect": {"x": 920, "y": 1570, "w": 240, "h": 190},
-      "color": "#ffc7d2",
-      "outline_color": "#b86579",
-      "outline_width": 4,
-      "hotspot_id": "pet_shop"
-    },
-    {
-      "id": "supermarket_block",
-      "type": "landmark",
-      "rect": {"x": 1190, "y": 1570, "w": 260, "h": 190},
-      "color": "#c4e9f2",
-      "outline_color": "#5b9dad",
-      "outline_width": 4,
-      "hotspot_id": "supermarket"
-    },
-    {
-      "id": "bus_station_block",
-      "type": "landmark",
-      "rect": {"x": 1760, "y": 620, "w": 260, "h": 170},
-      "color": "#dce3e8",
-      "outline_color": "#6f8793",
-      "outline_width": 4,
-      "hotspot_id": "bus_station"
-    },
-    {
-      "id": "taxi_stand_block",
-      "type": "landmark",
-      "rect": {"x": 2060, "y": 600, "w": 220, "h": 150},
-      "color": "#ffe78a",
-      "outline_color": "#b89420",
-      "outline_width": 4,
-      "hotspot_id": "taxi"
-    },
-    {
-      "id": "railway_station_block",
-      "type": "landmark",
-      "rect": {"x": 1840, "y": 320, "w": 300, "h": 190},
-      "color": "#d4d0c8",
-      "outline_color": "#7f7770",
-      "outline_width": 4,
-      "hotspot_id": "railway_station"
-    },
-    {
-      "id": "soft_tree_cluster_a",
-      "type": "circle_cluster",
-      "points": [
-        {"x": 360, "y": 620},
-        {"x": 520, "y": 640},
-        {"x": 1850, "y": 1120},
-        {"x": 2100, "y": 1300},
-        {"x": 760, "y": 2200},
-        {"x": 1560, "y": 2240}
-      ],
-      "radius": 38,
+    "tree": {
       "color": "#7fc46c",
       "outline_color": "#4d8d4b",
-      "outline_width": 5
+      "outline_width": 4
+    },
+    "home_roof": {
+      "color": "#f7c8c3",
+      "outline_color": "#b86762",
+      "outline_width": 4
+    },
+    "school_building": {
+      "color": "#fff0a6",
+      "outline_color": "#c49b35",
+      "outline_width": 4
+    },
+    "shop_building": {
+      "color": "#d6c2ff",
+      "outline_color": "#7a5eb2",
+      "outline_width": 4
+    },
+    "pet_shop_building": {
+      "color": "#ffc7d2",
+      "outline_color": "#b86579",
+      "outline_width": 4
+    },
+    "market_building": {
+      "color": "#c4e9f2",
+      "outline_color": "#5b9dad",
+      "outline_width": 4
+    },
+    "transport_building": {
+      "color": "#dce3e8",
+      "outline_color": "#6f8793",
+      "outline_width": 4
     }
-  ]
+  },
+  "tile_layers": [
+    {
+      "id": "base_grass",
+      "type": "tile_fill",
+      "tile_id": "grass",
+      "bounds": {"columns": 20, "rows": 20}
+    },
+    {
+      "id": "district_tiles",
+      "type": "tile_rects",
+      "rects": [
+        {"tile_id": "home_yard", "col": 0, "row": 5, "cols": 5, "rows": 4},
+        {"tile_id": "school_ground", "col": 5, "row": 5, "cols": 9, "rows": 6},
+        {"tile_id": "town_plaza", "col": 1, "row": 11, "cols": 17, "rows": 5},
+        {"tile_id": "transport_ground", "col": 12, "row": 2, "cols": 7, "rows": 6},
+        {"tile_id": "transport_ground", "col": 0, "row": 10, "cols": 7, "rows": 4},
+        {"tile_id": "transport_ground", "col": 13, "row": 13, "cols": 4, "rows": 3}
+      ]
+    },
+    {
+      "id": "main_road_tiles",
+      "type": "tile_path",
+      "tile_id": "road",
+      "cells": [
+        {"col": 2, "row": 7},
+        {"col": 3, "row": 7},
+        {"col": 4, "row": 8},
+        {"col": 5, "row": 8},
+        {"col": 6, "row": 9},
+        {"col": 7, "row": 10},
+        {"col": 8, "row": 11},
+        {"col": 9, "row": 12},
+        {"col": 9, "row": 13},
+        {"col": 9, "row": 14},
+        {"col": 10, "row": 14},
+        {"col": 11, "row": 14},
+        {"col": 12, "row": 14},
+        {"col": 13, "row": 14},
+        {"col": 14, "row": 13},
+        {"col": 15, "row": 11},
+        {"col": 16, "row": 9},
+        {"col": 16, "row": 7},
+        {"col": 16, "row": 6},
+        {"col": 16, "row": 5},
+        {"col": 15, "row": 4}
+      ]
+    },
+    {
+      "id": "school_loop_tiles",
+      "type": "tile_path",
+      "tile_id": "school_path",
+      "cells": [
+        {"col": 6, "row": 6},
+        {"col": 7, "row": 6},
+        {"col": 8, "row": 6},
+        {"col": 9, "row": 6},
+        {"col": 10, "row": 6},
+        {"col": 11, "row": 6},
+        {"col": 12, "row": 6},
+        {"col": 12, "row": 7},
+        {"col": 12, "row": 8},
+        {"col": 12, "row": 9},
+        {"col": 11, "row": 9},
+        {"col": 10, "row": 9},
+        {"col": 9, "row": 9},
+        {"col": 8, "row": 9},
+        {"col": 7, "row": 9},
+        {"col": 6, "row": 9},
+        {"col": 6, "row": 8},
+        {"col": 6, "row": 7}
+      ]
+    },
+    {
+      "id": "town_shop_street_tiles",
+      "type": "tile_path",
+      "tile_id": "road",
+      "cells": [
+        {"col": 4, "row": 14},
+        {"col": 5, "row": 14},
+        {"col": 6, "row": 14},
+        {"col": 7, "row": 14},
+        {"col": 8, "row": 14},
+        {"col": 9, "row": 14},
+        {"col": 10, "row": 14},
+        {"col": 11, "row": 14}
+      ]
+    },
+    {
+      "id": "transport_route_tiles",
+      "type": "tile_path",
+      "tile_id": "road",
+      "cells": [
+        {"col": 1, "row": 11},
+        {"col": 2, "row": 11},
+        {"col": 3, "row": 11},
+        {"col": 4, "row": 12},
+        {"col": 5, "row": 12},
+        {"col": 6, "row": 13},
+        {"col": 7, "row": 14},
+        {"col": 13, "row": 14},
+        {"col": 14, "row": 14},
+        {"col": 15, "row": 14},
+        {"col": 16, "row": 14}
+      ]
+    }
+  ],
+  "object_layers": [
+    {
+      "id": "landmark_asset_slots",
+      "type": "landmarks",
+      "objects": [
+        {
+          "id": "landmark_home_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "home",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_home_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "home_roof",
+          "rect": {"x": 110, "y": 770, "w": 450, "h": 330}
+        },
+        {
+          "id": "landmark_sunshine_school_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "sunshine_school",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_sunshine_school_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "school_building",
+          "rect": {"x": 720, "y": 680, "w": 960, "h": 700}
+        },
+        {
+          "id": "landmark_post_office_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "post_office",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_post_office_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 410, "y": 1405, "w": 300, "h": 250}
+        },
+        {
+          "id": "landmark_bookshop_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "bookshop",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_bookshop_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 720, "y": 1435, "w": 265, "h": 235}
+        },
+        {
+          "id": "landmark_restaurant_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "restaurant",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_restaurant_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 1455, "y": 1440, "w": 300, "h": 230}
+        },
+        {
+          "id": "landmark_park_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "park",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_park_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "tree",
+          "rect": {"x": 1030, "y": 1420, "w": 320, "h": 300}
+        },
+        {
+          "id": "landmark_hospital_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "hospital",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_hospital_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "market_building",
+          "rect": {"x": 1770, "y": 1380, "w": 270, "h": 300}
+        },
+        {
+          "id": "landmark_cinema_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "cinema",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_cinema_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 2040, "y": 1490, "w": 270, "h": 220}
+        },
+        {
+          "id": "landmark_clothes_shop_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "clothes_shop",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_clothes_shop_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 760, "y": 1730, "w": 250, "h": 175}
+        },
+        {
+          "id": "landmark_general_store_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "general_store",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_general_store_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "shop_building",
+          "rect": {"x": 1040, "y": 1730, "w": 250, "h": 175}
+        },
+        {
+          "id": "landmark_pet_shop_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "pet_shop",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_pet_shop_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "pet_shop_building",
+          "rect": {"x": 500, "y": 1720, "w": 220, "h": 180}
+        },
+        {
+          "id": "landmark_supermarket_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "supermarket",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_supermarket_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "market_building",
+          "rect": {"x": 145, "y": 1695, "w": 325, "h": 210}
+        },
+        {
+          "id": "landmark_bus_station_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "bus_station",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_bus_station_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "transport_building",
+          "rect": {"x": 78, "y": 1380, "w": 300, "h": 255}
+        },
+        {
+          "id": "landmark_taxi_stand_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "taxi",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_taxi_stand_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "transport_building",
+          "rect": {"x": 575, "y": 1495, "w": 210, "h": 125}
+        },
+        {
+          "id": "landmark_railway_station_v001",
+          "type": "landmark_asset",
+          "hotspot_id": "railway_station",
+          "asset_path": "res://assets/generated/maps/world/landmarks/landmark_railway_station_v001.png",
+          "asset_status": "pending_builtin_imagegen",
+          "fallback_tile_id": "transport_building",
+          "rect": {"x": 1665, "y": 1730, "w": 470, "h": 230}
+        }
+      ]
+    },
+    {
+      "id": "tree_decoration_tiles",
+      "type": "decorations",
+      "objects": [
+        {"id": "tree_cluster_01", "type": "circle_cluster", "tile_id": "tree", "points": [{"x": 360, "y": 620}, {"x": 520, "y": 640}, {"x": 1850, "y": 1120}, {"x": 2100, "y": 1300}, {"x": 760, "y": 2200}, {"x": 1560, "y": 2240}], "radius": 38}
+      ]
+    }
+  ],
+  "asset_generation": {
+    "mode": "built_in_imagegen_required",
+    "status": "pending_tool_unavailable",
+    "prompt_record": "res://assets/source_prompts/maps/world_landmark_assets_pending_v001.md"
+  }
 }
