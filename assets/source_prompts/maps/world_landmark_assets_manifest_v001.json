@@ -1,0 +1,138 @@
+{
+  "manifest_id": "world_landmark_assets_manifest_v001",
+  "version": "v001",
+  "preferred_tool": "built_in_imagegen",
+  "current_source": "local_fallback",
+  "transparent_output": true,
+  "style_preset": {
+    "use_case": "stylized-concept",
+    "asset_type": "transparent-feeling top-down / 2.5D landmark sprite for a children's English life-adventure RPG world map",
+    "style_medium": "polished modern 2D / 2.5D game-map landmark, clean shapes, soft crisp edges, child-friendly, bright but balanced colors, subtle ambient occlusion, no text",
+    "lighting_mood": "bright daytime, warm and inviting",
+    "constraints": [
+      "no readable text",
+      "no logos",
+      "no trademarked design",
+      "no UI",
+      "no arrows",
+      "no place labels",
+      "no watermark",
+      "no existing IP"
+    ],
+    "background": "flat removable chroma-key background if transparency is needed through the built-in imagegen workflow"
+  },
+  "assets": [
+    {
+      "hotspot_id": "home",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_home_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A cozy child-friendly home landmark for the left-side opening anchor of Sunshine World, small house with warm roof, garden feeling, simple family-life details, no readable text."
+    },
+    {
+      "hotspot_id": "sunshine_school",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_sunshine_school_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A contained modern school campus landmark for Sunshine World, friendly main building silhouette, courtyard footprint, classroom, library, and playground feeling inside one readable campus shape, no readable school name or labels."
+    },
+    {
+      "hotspot_id": "post_office",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_post_office_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A small town post office landmark, friendly storefront or kiosk shape with parcel and envelope forms implied by simple geometry only, no readable sign text, no logo."
+    },
+    {
+      "hotspot_id": "bookshop",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_bookshop_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A small town bookshop landmark, cozy storefront silhouette with books implied through shapes only, child-friendly colors, no readable sign text."
+    },
+    {
+      "hotspot_id": "restaurant",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_restaurant_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A cozy family restaurant landmark for a child-friendly town road, warm storefront silhouette with table, awning, or snack shapes implied visually, no readable menu or sign text."
+    },
+    {
+      "hotspot_id": "park",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_park_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A compact park landmark for a town map, bright green open-space shape with path, tree, kite, or sunny play details, no labels, no UI symbols."
+    },
+    {
+      "hotspot_id": "hospital",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_hospital_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A gentle care-place hospital landmark for a child-friendly town map, clean modern building silhouette with soft health-care color cues, no readable text, no real medical logo."
+    },
+    {
+      "hotspot_id": "cinema",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_cinema_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A small cinema landmark for a town map, playful theater facade silhouette with poster-frame or screen shapes but no readable poster text, no logos."
+    },
+    {
+      "hotspot_id": "clothes_shop",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_clothes_shop_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A clothes shop landmark for a child-friendly town road, bright storefront silhouette with outfit or cape display shapes implied, no readable text, no fashion brand."
+    },
+    {
+      "hotspot_id": "general_store",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_general_store_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A general store landmark for cozy room-decor shopping, compact storefront with home-goods shapes implied, no readable sign text, no brand elements."
+    },
+    {
+      "hotspot_id": "pet_shop",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_pet_shop_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A friendly pet shop landmark for a child's town map, soft storefront shape with pet-care hints such as bowl or paw-like abstract decoration, no readable text and no specific animal mascot requirement."
+    },
+    {
+      "hotspot_id": "supermarket",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_supermarket_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A compact supermarket landmark for a bright town shopping road, modern storefront silhouette with basket or awning shapes, no readable text or brand."
+    },
+    {
+      "hotspot_id": "bus_station",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_bus_station_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A bus station landmark connected to a town road, shelter roof and bus stop silhouette, friendly transport colors, no readable route number or text."
+    },
+    {
+      "hotspot_id": "taxi",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_taxi_stand_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A taxi stand landmark for the transport edge of a child-friendly world map, small yellow taxi and stand silhouette, no readable text, no city branding."
+    },
+    {
+      "hotspot_id": "railway_station",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_railway_station_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A railway station landmark for the wider travel edge, compact station building with track or platform hint and clock-like shape without readable numbers or text."
+    },
+    {
+      "hotspot_id": "airport",
+      "asset_path": "res://assets/generated/maps/world/landmarks/landmark_airport_v001.png",
+      "preferred_generation": "built_in_imagegen",
+      "current_source": "local_fallback",
+      "prompt": "A small airport landmark for the wider travel edge of Sunshine World, compact terminal and runway or plane-wing hints, friendly travel colors, no readable route text, no airline logo, no real airport branding."
+    }
+  ]
+}

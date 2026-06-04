@@ -5,9 +5,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT_DIR"
 
 GODOT_BIN="${GODOT_BIN:-godot}"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 PREFLIGHT="res://tests/mvp_0_2_manual_playtest_preflight.gd"
 MANUAL_PLAYTEST_SCRIPT="./scripts/dev/run_mvp_0_2_manual_playtest.sh"
 LEGACY_PREPARE="res://tests/mvp_0_2_prepare_manual_playtest.gd"
+WORLD_LANDMARK_VERIFY_SCRIPT="./scripts/dev/verify_world_landmark_generation_state.py"
 LOG_DIR="$(mktemp -d)"
 
 cleanup() {
@@ -113,6 +115,7 @@ run_legacy_prepare_checks() {
 
 run_manual_runner_checks
 run_legacy_prepare_checks
+run "$PYTHON_BIN" "$WORLD_LANDMARK_VERIFY_SCRIPT" --expected-source local_fallback
 run "$GODOT_BIN" --headless --path . --check-only --quit
 run "$GODOT_BIN" --headless --path . -s res://tests/mvp_0_2_manual_playtest_readiness.gd
 run "$GODOT_BIN" --headless --path . -s res://tests/prototype_0_1_smoke.gd

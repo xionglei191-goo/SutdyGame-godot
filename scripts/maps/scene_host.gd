@@ -37,6 +37,7 @@ var active_scene_id := "home"
 var current_quest_id := ""
 var _world_pan_dragging := false
 var _world_pan_active_pointer := MOUSE_BUTTON_RIGHT
+var _world_grid_collision_root: Node2D = null
 
 
 func _ready() -> void:
@@ -211,6 +212,7 @@ func play_home_pet_action_feedback(action_id: String) -> void:
 func _apply_scene_setup(scene_id: String, preserved_player_position: Vector2, should_preserve_player_position: bool) -> void:
 	if scene_id == "world_overview":
 		_configure_scene_geometry(get_world_overview_size())
+		_rebuild_world_grid_collisions()
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else get_world_overview_spawn_position()
 		_set_npc_active(mina, false)
@@ -218,6 +220,7 @@ func _apply_scene_setup(scene_id: String, preserved_player_position: Vector2, sh
 		_set_npc_active(nora, false)
 	elif scene_id == "home":
 		_configure_scene_geometry(STANDARD_SCENE_SIZE)
+		_clear_world_grid_collisions()
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(320, 525)
 		_set_npc_active(mina, true)
@@ -228,6 +231,7 @@ func _apply_scene_setup(scene_id: String, preserved_player_position: Vector2, sh
 		_set_npc_active(nora, false)
 	elif scene_id == "campus_gate":
 		_configure_scene_geometry(STANDARD_SCENE_SIZE)
+		_clear_world_grid_collisions()
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(640, 420)
 		_set_npc_active(mina, true)
@@ -238,6 +242,7 @@ func _apply_scene_setup(scene_id: String, preserved_player_position: Vector2, sh
 		_set_npc_active(nora, false)
 	elif scene_id == "classroom":
 		_configure_scene_geometry(STANDARD_SCENE_SIZE)
+		_clear_world_grid_collisions()
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(310, 520)
 		_set_npc_active(mina, false)
@@ -246,6 +251,7 @@ func _apply_scene_setup(scene_id: String, preserved_player_position: Vector2, sh
 		_set_npc_active(nora, false)
 	elif scene_id == "garden":
 		_configure_scene_geometry(STANDARD_SCENE_SIZE)
+		_clear_world_grid_collisions()
 		player.visible = true
 		player.position = preserved_player_position if should_preserve_player_position else Vector2(300, 560)
 		_set_npc_active(mina, false)
@@ -290,6 +296,41 @@ func _clamp_player_to_world(position: Vector2) -> Vector2:
 		clamp(position.x, 32.0, map_size.x - 32.0),
 		clamp(position.y, 32.0, map_size.y - 32.0)
 	)
+
+
+func get_world_grid_collision_count() -> int:
+	if _world_grid_collision_root == null:
+		return 0
+	return _world_grid_collision_root.get_child_count()
+
+
+func _rebuild_world_grid_collisions() -> void:
+	_clear_world_grid_collisions()
+	if not world_overview_scene.has_method("get_grid_occupied_rects"):
+		return
+	_world_grid_collision_root = Node2D.new()
+	_world_grid_collision_root.name = "WorldGridCollisions"
+	add_child(_world_grid_collision_root)
+	for rect: Rect2 in world_overview_scene.get_grid_occupied_rects():
+		if rect.size == Vector2.ZERO:
+			continue
+		var body := StaticBody2D.new()
+		body.name = "OccupiedCellBlock"
+		body.position = rect.get_center()
+		var shape := RectangleShape2D.new()
+		shape.size = rect.size
+		var collision_shape := CollisionShape2D.new()
+		collision_shape.shape = shape
+		body.add_child(collision_shape)
+		_world_grid_collision_root.add_child(body)
+
+
+func _clear_world_grid_collisions() -> void:
+	if _world_grid_collision_root == null:
+		return
+	remove_child(_world_grid_collision_root)
+	_world_grid_collision_root.queue_free()
+	_world_grid_collision_root = null
 
 
 func _set_npc_active(npc: Area2D, is_active: bool) -> void:

@@ -3,7 +3,7 @@
 > 日期：2026-06-03  
 > 基线：`HomeLayer -> world_overview -> school/town/transport/world` 生活冒险结构  
 > 当前决策：`world_overview` 后续不再以单张高分辨率整图生成为主生产方式，改为“数据化瓦块/分层地图 + 局部地标/精灵资产 + 隐藏参考底图”的路线。  
-> 执行状态：P2.1 已完成；`world_overview` 已从形状分层推进为 `tile_palette + tile_layers + object_layers` 的瓦块地图合同，运行时瓦块层已由 Godot 原生 `TileMapLayer` 承载，并已增加热点/瓦块/道路空间关系校验。地标资产目标路径和内置生图 prompt 已记录为 pending，等待内置生图工具可用后生成。
+> 执行状态：P1.1 / P1.2 / P2.1 已完成；`world_overview` 已从形状分层推进为 `tile_palette + tile_layers + object_layers` 的瓦块地图合同，运行时瓦块层已由 Godot 原生 `TileMapLayer` 承载，并已接入真实 tile atlas PNG、独立地标 PNG、热点/瓦块/道路空间关系校验。当前会话未暴露内置生图工具，地标资产按项目规则使用本机 `tools/image_generator.js` fallback 生成并记录，同时把“built-in imagegen 为首选、fallback 仅为临时来源”的元数据和测试约束补齐。
 
 ---
 
@@ -25,8 +25,8 @@
 | P0.1 | P0 | 接入 `world_overview` 分层地图骨架，隐藏旧大底图，保持热点和镜头合同不变 | 已完成 |
 | P0.2 | P0 | 将学校、home、town、transport 的主道路和区域块对齐现有 hotspot rect | 已完成 |
 | P0.3 | P0 | 新增地图层数据校验，确保热点在对应区域内、道路连接 transport/shop cluster | 已完成 |
-| P1.1 | P1 | 生成或绘制小型 tile atlas：草地、道路、广场、围墙、水面、树丛 | 待开始 |
-| P1.2 | P1 | 将关键地标拆为独立 Sprite/TextureRect：Home、School、Bookshop、Pet Shop、Bus Station 等 | 待开始 |
+| P1.1 | P1 | 生成或绘制小型 tile atlas：草地、道路、广场、围墙、水面、树丛 | 已完成 |
+| P1.2 | P1 | 将关键地标拆为独立 Sprite/TextureRect：Home、School、Bookshop、Pet Shop、Bus Station 等 | 已完成 |
 | P1.3 | P1 | 为 world_overview 增加可切换 debug overlay：hotspot rect、A-Z anchors、route focus | 待开始 |
 | P2.1 | P2 | 从过程绘制层迁移到 Godot TileMap/TileMapLayer 或稳定的 tile scene 组合 | 已完成 |
 | P2.2 | P2 | 扩展 town/transport/world 新区时只新增局部 tile/landmark，不再整图重生 | 待开始 |
@@ -60,9 +60,9 @@
 
 - [x] `world_layer_map_renderer.gd` 已从 `_draw()` 直接绘制瓦块，迁移为运行时构建 Godot 原生 `TileMapLayer` 子节点。
 - [x] 每个 `tile_layer` 会生成一个 `TileMapLayer`，使用运行时 `TileSet` 与 `TileSetAtlasSource` 填充 cell。
-- [x] object layer 继续负责地标资产位、pending PNG fallback 和树丛等装饰对象。
+- [x] object layer 继续负责地标资产位、生成 PNG 和树丛等装饰对象。
 - [x] `mvp_0_2_visual_acceptance.gd` 已锁定原生 `TileMapLayer` 数量和瓦块 cell 数量，防止退回纯过程绘制。
-- [ ] 在 `TileMapLayer` 之上接入真实 tile atlas PNG；当前瓦块纹理仍由数据色块运行时生成。
+- [x] 在 `TileMapLayer` 之上接入真实 tile atlas PNG；`world_layer_map_renderer.gd` 现在优先加载 `assets/generated/maps/world/tiles/tile_atlas_world_v001.png`，缺资源时才回退到数据色块运行时生成。
 
 ---
 
@@ -79,17 +79,27 @@
 ## 5. P1 资产策略
 
 - 优先生成小图集或单个地标，不再请求模型一次性生成完整世界图。
-- 推荐第一批资产：
-  - `tile_grass_v001.png`
-  - `tile_path_road_v001.png`
-  - `tile_plaza_v001.png`
+- 第一批瓦块资产：
+  - `assets/generated/maps/world/tiles/tile_atlas_world_v001.png`
+- 第一批地标资产：
   - `landmark_home_v001.png`
   - `landmark_sunshine_school_v001.png`
+  - `landmark_post_office_v001.png`
   - `landmark_bookshop_v001.png`
+  - `landmark_restaurant_v001.png`
+  - `landmark_park_v001.png`
+  - `landmark_hospital_v001.png`
+  - `landmark_cinema_v001.png`
+  - `landmark_clothes_shop_v001.png`
+  - `landmark_general_store_v001.png`
   - `landmark_pet_shop_v001.png`
+  - `landmark_supermarket_v001.png`
   - `landmark_bus_station_v001.png`
+  - `landmark_taxi_stand_v001.png`
+  - `landmark_railway_station_v001.png`
+  - `landmark_airport_v001.png`
 - 所有资产继续落在 `assets/generated/` 并保留 prompt 记录。
-- 本次会话未暴露内置生图工具，因此已将上述地标目标路径和 prompt 记录到 `assets/source_prompts/maps/world_landmark_assets_pending_v001.md`，状态为 `pending_builtin_imagegen`；不要使用外部生图服务替代。
+- 本次会话未暴露内置生图工具，因此按项目规则使用本机 `tools/image_generator.js` fallback 生成第一批地标；prompt 与生成方式已记录到 `assets/source_prompts/maps/world_landmark_assets_pending_v001.md`。未来有内置生图工具时仍优先使用内置路径。
 
 ---
 

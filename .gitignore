@@ -7,6 +7,9 @@ scripts/dev/mcp_bridge/node_modules/
 # Temporary working directories
 tmp/
 
+# Local image-generation fallback credentials
+tools/image_generator.js
+
 # Log files
 *.log
 

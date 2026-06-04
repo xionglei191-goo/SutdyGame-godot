@@ -79,3 +79,9 @@ func get_layer_map_id() -> String:
 	if layer_map != null and layer_map.has_method("get_layer_map_id"):
 		return layer_map.get_layer_map_id()
 	return ""
+
+
+func get_grid_occupied_rects() -> Array[Rect2]:
+	if layer_map != null and layer_map.has_method("get_grid_occupied_rects"):
+		return layer_map.get_grid_occupied_rects()
+	return []

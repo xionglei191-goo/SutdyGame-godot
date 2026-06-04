@@ -194,6 +194,12 @@ godot --headless --path . -s res://tests/mvp_0_2_world_hotspot_enablement.gd
 Verify `world_overview` hotspot visibility/enablement rules, including quest-gated garden targets and disabled planning-only hotspots.
 
 ```bash
+python3 ./scripts/dev/verify_world_landmark_generation_state.py --expected-source local_fallback
+```
+
+Verify that `world_overview` landmark PNG files, the machine-readable landmark manifest, and `sunshine_world_layer_map_v001.json` all agree on the current generation source before running broader Godot checks. When the built-in image tool is later used to replace the landmark assets, switch `--expected-source` to `built_in_imagegen`.
+
+```bash
 godot --headless --path . -s res://tests/mvp_0_2_docs_audit.gd
 ```
 
@@ -304,4 +310,4 @@ Pull requests should include:
 
 All game images should be self-generated and follow `docs/assets/AI图片素材生成规范_v0.1.md`. Do not add existing IP, logos, trademarked characters, or untracked web images. Keep prompt records for generated assets.
 
-When generating new image assets during Codex work, call the model's built-in image generation interface directly by default. Do not rely on external image-generation CLIs, third-party APIs, browser tools, or ad hoc network services unless the user explicitly asks for that path. If the built-in interface is unavailable, record the prompt and asset target as pending instead of silently switching generation backends.
+When generating new image assets during Codex work, call the model's built-in image generation interface directly by default. If the built-in interface is unavailable, use the local `tools/image_generator.js` script as the fallback image-generation path for this project. Do not replace that script's credential handling unless the user explicitly asks for it, and do not push local script credentials or generated test artifacts to GitHub. Keep prompt records for generated assets.
